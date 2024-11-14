@@ -67,26 +67,29 @@
                                 <li class="nav-item dropdown">
                                     <a class="nav-link" href="#">Edit About</a>
                                     <ul>
-                                        <li class="nav-item"><a href="@Url.Action("Index","PROFILE_COVER")">Edit Cover</a></li>
-                                        <li class="nav-item"><a href="@Url.Action("Index","MY_PROFILE")">Edit Profile</a></li>
-                                        <li class="nav-item"><a href="@Url.Action("Index","MY_SKILL")">Edit Skills</a></li>
+                                        <li class="nav-item"><a asp-action="Index" asp-controller="PROFILE_COVER">Edit Cover</a></li>
+                                        <li class="nav-item"><a asp-action="Index" asp-controller="MY_PROFILE">Edit Profile</a></li>
+                                        <li class="nav-item"><a asp-action="Index" asp-controller="MY_SKILL">Edit Skills</a></li>
                                     </ul>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link" href="#">Resume</a>
                                     <ul>
-                                        <li class="nav-item"><a href="@Url.Action("Index","EDUCATION")">Edit Education</a></li>
-                                        <li class="nav-item"><a href="@Url.Action("Index","EXPERIENCE")">Edit Experience</a></li>
+                                        <li class="nav-item"><a asp-action="Index" asp-controller="EDUCATION">Edit Education</a></li>
+                                        <li class="nav-item"><a asp-action="Index" asp-controller="EXPERIENCE">Edit Experience</a></li>
                                     </ul>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="@Url.Action("Index","CV")">Edit CV</a>
+                                    <a asp-action="Index" asp-controller="CV">Edit CV</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="@Url.Action("Index","PROJECTS")">Edit Projects</a>
+                                    <a asp-action="Index" asp-controller="PROJECTS">Edit Projects</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="@Url.Action("Index","DESCRIPTIONs")">Edit Description</a>
+                                    <a asp-action="Index" asp-controller="DESCRIPTIONs">Edit Description</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-action="Index" asp-controller="Logs">Logs</a>
                                 </li>
 
                                 <li class="nav-item">
@@ -94,16 +97,16 @@
                                     {
                                         @if (@ViewBag.Message != "0")
                                         {
-                                            <a style="color:red;" href="@Url.Action("PendingIndex","CONTACTS")">Messages <span>@ViewBag.Message</span></a>
+                                            <a style="color:red;" asp-action="PendingIndex" asp-controller="CONTACTS">Messages <span>@ViewBag.Message</span></a>
                                         }
                                         else
                                         {
-                                            <a href="@Url.Action("PendingIndex","CONTACTS")">Messages</a>
+                                            <a asp-action="PendingIndex" asp-controller="CONTACTS">Messages</a>
                                         }
                                     }
                                     else
                                     {
-                                        <a href="@Url.Action("PendingIndex","CONTACTS")">Messages</a>
+                                        <a asp-action="PendingIndex" asp-controller="CONTACTS">Messages</a>
                                     }
                                 </li>
                             </ul>

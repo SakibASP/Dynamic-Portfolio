@@ -1,0 +1,71 @@
+﻿@model List<Portfolio.ViewModels.FileInfoViewModel>
+
+<main id="main">
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-lg-12 ">
+                <div class="card" data-sortable="true">
+                    <div class="card-header">
+                        <div class="card-title custom_title">
+                            <h4 style="color: green">Info Logs</h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="btn-group">
+                            <div class="buttonexport" id="buttonlist">
+                                <a class="btn btn-danger btn-sm" asp-action="ClearBackupFolder" asp-route-folderName="InfoLogs">
+                                    <i class="fa fa-trash"></i> Clear Folder
+                                </a>
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <div class="buttonexport" id="buttonlist">
+                                <a class="btn btn-add btn-sm" asp-action="BackupErrorLogs">
+                                    <i class="fa fa-file"></i> Error Logs
+                                </a>
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <div class="buttonexport" id="buttonlist">
+                                <a class="btn btn-add btn-sm" asp-action="BackupFatalLogs">
+                                    <i class="fa fa-file"></i> Fatal Logs
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead class="back_table_color">
+                                    <tr class="info">
+                                        <th>Name</th>
+                                        <th>Modified Date</th>
+                                        <th>Type</th>
+                                        <th>Size (MB)</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var file in Model)
+                                    {
+                                        <tr>
+                                            <td>@file.Name</td>
+                                            <td>@file.ModifiedDate</td>
+                                            <td>@file.Type</td>
+                                            <td>@file.Size</td>
+                                            <td>
+                                                <a asp-action="DownloadErrorTextFile" asp-route-filePath="@file.FilePath" asp-route-fileName="@file.Name" class="btn btn-info btn-sm"><i class="bi bi-download"></i></a>
+                                                <a asp-action="DeleteErrorTextFile" asp-route-filePath="@file.FilePath" asp-route-fileName="@file.Name" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
