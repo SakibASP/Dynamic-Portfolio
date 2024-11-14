@@ -4,8 +4,8 @@
     {
         public string MailFromAddress = "sakibur.rahman.cse@gmail.com";
         public bool UseSsl = true;
-        public string Username = "sakibur.rahman.cse@gmail.com";
-        public string Password = "kerksdaxnunmcotc";
+        public string Username = "";
+        public string Password = "";
         public string ServerName = "smtp.gmail.com";
         public int ServerPort = 587;
     }
