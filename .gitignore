@@ -1,0 +1,13 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/Portfolio.Interfaces/bin/Debug/net8.0
+/Portfolio.Interfaces/obj
+/Portfolio.Models/bin/Debug/net8.0
+/Portfolio.Models/obj
+/Portfolio.Utils/bin/Debug/net8.0
+/Portfolio.Utils/obj
+/Portfolio.ViewModels/bin/Debug/net8.0
+/Portfolio.ViewModels/obj
