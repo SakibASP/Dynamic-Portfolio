@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using SAKIB_PORTFOLIO.Common;
 using SAKIB_PORTFOLIO.Data;
+using SAKIB_PORTFOLIO.Middlewares;
 using UAParser;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,13 +21,13 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 builder.Services.AddControllersWithViews();
 
 //Session
-//builder.Services.AddSession(options =>
-//{
-//    options.Cookie.Name = Constant.portfolionSession;
-//    options.IdleTimeout = TimeSpan.FromMinutes(30);
-//    options.Cookie.HttpOnly = true;
-//    options.Cookie.IsEssential = true;
-//});
+builder.Services.AddSession(options =>
+{
+    options.Cookie.Name = Constant.portfolionSession;
+    //options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 //builder.Services.AddDistributedMemoryCache();
 
 //email setting
@@ -50,47 +51,47 @@ else
     app.UseHsts();
 }
 
-//// Filter access from different bot browsers
-//app.Use(async (context, next) =>
-//{
-//    string userAgent = context.Request.Headers.UserAgent.ToString();
-//    if (userAgent.Contains("Mediatoolkitbot"))
-//    {
-//        context.Response.StatusCode = StatusCodes.Status403Forbidden;
-//        await context.Response.WriteAsync("Access Forbidden for Mediatoolkitbot");
-//        return;
-//    }
-//    //this a facebook bot
-//    else if (userAgent.Contains("WhatsApp"))
-//    {
-//        context.Response.StatusCode = StatusCodes.Status403Forbidden;
-//        await context.Response.WriteAsync("Sakib has restricted WhatsApp bot/spider for the site. Please use an external browser.");
-//        return;
-//    }
+// Filter access from different bot browsers
+app.Use(async (context, next) =>
+{
+    string userAgent = context.Request.Headers.UserAgent.ToString();
+    if (userAgent.Contains("Mediatoolkitbot"))
+    {
+        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+        await context.Response.WriteAsync("Access Forbidden for Mediatoolkitbot");
+        return;
+    }
+    //this a facebook bot
+    else if (userAgent.Contains("WhatsApp"))
+    {
+        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+        await context.Response.WriteAsync("Sakib has restricted WhatsApp bot/spider for the site. Please use an external browser.");
+        return;
+    }
 
-//    var uaParser = Parser.GetDefault();
-//    ClientInfo clientInfo = uaParser.Parse(userAgent);
-//    if (clientInfo != null)
-//    {
-//        if (clientInfo.UserAgent.Family.Contains("bot", StringComparison.CurrentCultureIgnoreCase) || clientInfo.Device.Family.Contains("spider",StringComparison.CurrentCultureIgnoreCase))
-//        {
-//            context.Response.StatusCode = StatusCodes.Status403Forbidden;
-//            await context.Response.WriteAsync("Sakib has restricted Bots and spiders for the site.");
-//            return;
-//        }
-//    }
-    
+    var uaParser = Parser.GetDefault();
+    ClientInfo? clientInfo = uaParser.Parse(userAgent);
+    if (clientInfo != null)
+    {
+        if (clientInfo is not null && clientInfo.UserAgent.Family.Contains("bot", StringComparison.CurrentCultureIgnoreCase) || clientInfo.Device.Family.Contains("spider", StringComparison.CurrentCultureIgnoreCase))
+        {
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            await context.Response.WriteAsync("Sakib has restricted Bots and spiders for the site.");
+            return;
+        }
+    }
+    await next();
+});
 
-//    await next();
-//});
+app.UseMiddleware<RequestCounterMiddleware>();
+
+//Session should be used before mvc
+app.UseSession();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
-//Session should be used before mvc
-//app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();

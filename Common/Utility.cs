@@ -1,11 +1,12 @@
 ﻿using Microsoft.Extensions.Hosting;
 using SAKIB_PORTFOLIO.Models;
+using System.Net;
 
 namespace SAKIB_PORTFOLIO.Common
 {
     public static class Utility
     {
-        public static byte[]? Getimage(byte[]? img, IFormFileCollection files)
+        public static async Task<byte[]?> Getimage(byte[]? img, IFormFileCollection files)
         {
             PROJECTS project = new();
             MemoryStream ms = new();
@@ -13,11 +14,11 @@ namespace SAKIB_PORTFOLIO.Common
             {
                 foreach (var file in files)
                 {
-                    file.CopyTo(ms);
+                    await file.CopyToAsync(ms);
                     project.LOGO = ms.ToArray();
 
                     ms.Close();
-                    ms.Dispose();
+                    await ms.DisposeAsync();
 
                     img = project.LOGO;
                 }
@@ -33,12 +34,15 @@ namespace SAKIB_PORTFOLIO.Common
             return fullName;
         }
 
-        public async static Task SaveFileAsync(string filePath, IFormFile file)
+        public static async Task SaveFileAsync(string filePath, IFormFile file)
         {
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
+            using var stream = new FileStream(filePath, FileMode.Create);
+            await file.CopyToAsync(stream);
+        }
+
+        public static string GetIpDetailsUrl(string? ipAddress)
+        {
+            return $"http://ip-api.com/json/{ipAddress}?fields=city,country,zip,timezone,isp,org,as";
         }
     }
 }

@@ -64,7 +64,7 @@ namespace SAKIB_PORTFOLIO.Controllers
                 var imgFile = Request.Form.Files.FirstOrDefault();
                 if (imgFile != null)
                 {
-                    pROJECTS.LOGO = Utility.Getimage(pROJECTS.LOGO, Request.Form.Files);
+                    pROJECTS.LOGO = await Utility.Getimage(pROJECTS.LOGO, Request.Form.Files);
                 }
 
                 _context.Add(pROJECTS);
@@ -112,7 +112,7 @@ namespace SAKIB_PORTFOLIO.Controllers
                     var imgFile = Request.Form.Files.FirstOrDefault();
                     if (imgFile != null)
                     {
-                        pROJECTS.LOGO = Utility.Getimage(pROJECTS.LOGO, Request.Form.Files);
+                        pROJECTS.LOGO = await Utility.Getimage(pROJECTS.LOGO, Request.Form.Files);
                     }
 
                     _context.Update(pROJECTS);
