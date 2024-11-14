@@ -1,0 +1,34 @@
+﻿
+@{
+    ViewData["Title"] = "CV";
+}
+
+<style>
+    /* Center the container */
+    .cv-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* Make the container full height of the viewport */
+    }
+
+    /* Set a max width for the iframe */
+    iframe {
+        max-width: 100%;
+        max-height: 100%;
+    }
+</style>
+
+<section>
+    <div class="container-fluid py-5">
+        <div class="text-center">
+            <a asp-action="DownloadCV" asp-controller="CV" asp-route-filePath="@ViewBag.FilePath" class="btn btn-info">Download</a>
+        </div>
+        <div class="cv-container">
+            <iframe src="@Url.Action("ShowCV", "CV",new{ filePath = @ViewBag.FilePath })" width="1000" height="600"></iframe>
+        </div>
+    </div>
+</section>
+
+
+

@@ -1,0 +1,101 @@
+﻿
+@using Portfolio.Models
+
+@addTagHelper*, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    MY_PROFILE? mY_PROFILEs = ViewData["PROFILES"] as MY_PROFILE;
+    List<EDUCATION>? eDUCATIONs = ViewData["EDUCATIONS"] as List<EDUCATION>;
+    List<EXPERIENCE>? eXPERIENCEs = ViewData["EXPERIENCEs"] as List<EXPERIENCE>;
+    List<DESCRIPTION>? dESCRIPTIONs = ViewData["DESCRIPTIONs"] as List<DESCRIPTION>;
+}
+
+<main id="main">
+
+    <!-- ======= Resume Section ======= -->
+    <section id="resume" class="resume">
+        <div class="container" data-aos="fade-up">
+
+            <div class="section-title">
+                <h2>Resume</h2>
+                @if(mY_PROFILEs != null){
+                    <p>@mY_PROFILEs.DES_1</p>
+                }
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <h3 class="resume-title">Sumary</h3>
+                    @if(mY_PROFILEs != null)
+                    {   
+                        <div class="resume-item pb-0">
+                            <h4>@mY_PROFILEs.MY_NAME</h4>
+                            <p><em>@mY_PROFILEs.DES_3</em></p>
+                            <p>
+                                <ul>
+                                    <li>@mY_PROFILEs.HOMETOWN</li>
+                                    <li>@mY_PROFILEs.PHONE</li>
+                                    <li>@mY_PROFILEs.EMAIL</li>
+                                </ul>
+                            </p>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>Not Found</p>
+                    }
+
+                    <h3 class="resume-title">Education</h3>
+                    @if(eDUCATIONs != null)
+                    {
+                        foreach(var item in eDUCATIONs)
+                        {
+                            <div class="resume-item">
+                            <h4>@item.COURSE</h4>
+                            <h5>@item.FROM_DATE - @item.TO_DATE</h5>
+                            <p><em>@item.INSTITUTE</em></p>
+                            <p>@item.DESCRIPTION</p>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p> Not Found</p>
+                    }
+                </div>
+                <div class="col-lg-6">
+                    <h3 class="resume-title">Professional Experience</h3>
+                    @if(eXPERIENCEs != null)
+                    {
+                        foreach(var item in eXPERIENCEs)
+                        {
+                            <div class="resume-item">
+                                <h4>@item.DESIGNATION</h4>
+                                <h5>@item.FROM_DATE - @item.TO_DATE</h5>
+                                <p><em>@item.INSTITUTE</em></p>
+                                <p>
+                                    @if(dESCRIPTIONs != null)
+                                    {
+                                        foreach (var desc in dESCRIPTIONs.Where(d => d.DESCRIPTION_TYPE_!.TYPE!.Equals("Experience", StringComparison.CurrentCultureIgnoreCase) && d.EXPERIENCE_ID == item.AUTO_ID))
+                                            {
+                                            <ul>
+                                                <li>@desc.DESCRIPTION_TEXT</li>
+                                            </ul>
+                                        }
+                                    }
+
+                                </p>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p>Not Found</p>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </section><!-- End Resume Section -->
+
+</main><!-- End #main -->

@@ -1,0 +1,80 @@
+﻿@model Portfolio.Models.DESCRIPTION
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<section>
+   <div class="container-fluid py-5">
+        <h1>Create</h1>
+
+        <h4>DESCRIPTION</h4>
+        <hr />
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="DESCRIPTION_TEXT" class="control-label"></label>
+                        <input asp-for="DESCRIPTION_TEXT" class="form-control" />
+                        <span asp-validation-for="DESCRIPTION_TEXT" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="TYPE_ID" class="control-label"></label>
+                        <select asp-for="TYPE_ID" class="form-control" asp-items="ViewBag.TYPE_ID"></select>
+                    </div>  
+                    <div class="form-group" id="idProject">
+                        <label asp-for="PROJECT_ID" class="control-label"></label>
+                        <select asp-for="PROJECT_ID" class="form-control" asp-items="ViewBag.PROJECT_ID"></select>
+                    </div>
+                    <div class="form-group" id="idExperience">
+                        <label asp-for="EXPERIENCE_ID" class="control-label"></label>
+                        <select asp-for="EXPERIENCE_ID" class="form-control" asp-items="ViewBag.EXPERIENCE_ID"></select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="SORT_ORDER" class="control-label"></label>
+                        <input asp-for="SORT_ORDER" class="form-control" />
+                    </div>
+                   
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div>
+            <a asp-action="Index">Back to List</a>
+        </div>
+   </div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.addEventListener("DOMContentLoaded", function (e) {
+            let typeList = document.getElementById("TYPE_ID");
+            let projectName = document.getElementById("idProject");
+            let experienceName = document.getElementById("idExperience");
+            var selectedText = $(typeList).find("option:selected").text();
+
+            // Capture change event
+            $(typeList).on("change", function () {
+                let currentSelectedText = $(this).find("option:selected").text();
+                showHideProject(currentSelectedText, projectName, experienceName);
+            });
+            showHideProject(selectedText, projectName, experienceName);
+        });
+        const showHideProject = function (selectedText, projectName, experienceName) {
+            //alert(selectedText);
+            if (selectedText == "Project") {
+                projectName.style.display = "block";
+                experienceName.style.display = "none";
+            }
+            else {
+                projectName.style.display = "none";
+                experienceName.style.display = "block";
+            }
+        }
+    </script>
+}

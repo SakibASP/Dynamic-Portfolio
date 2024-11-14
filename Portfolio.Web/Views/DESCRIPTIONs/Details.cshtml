@@ -1,0 +1,54 @@
+﻿@model Portfolio.Models.DESCRIPTION
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>DESCRIPTION</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DESCRIPTION_TEXT)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DESCRIPTION_TEXT)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CREATED_BY)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CREATED_BY)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CREATED_DATE)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CREATED_DATE)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.MODIFIED_BY)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MODIFIED_BY)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.MODIFIED_DATE)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MODIFIED_DATE)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DESCRIPTION_TYPE_)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DESCRIPTION_TYPE_.AUTO_ID)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.AUTO_ID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

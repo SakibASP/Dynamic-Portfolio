@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Portfolio.Models.PROJECTS>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section>
+    <div class="container-fluid p-5">
+        <h1>Index</h1>
+        <p>
+            <a class="btn btn-warning" asp-action="Create">Create New</a>
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PROJECT_NAME)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.LOGO)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PROJECT_NAME)
+                        </td>
+                        <td>
+                            @if (item.LOGO != null)
+                            {
+                                <img class="img-fluid" style="height:120px;width:120px;" src="data:ImageData;base64,@System.Convert.ToBase64String(item.LOGO)" />
+                            }
+                        </td>
+                        <td>
+                            <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.AUTO_ID">Edit</a> |
+                            <a class="btn btn-danger"  asp-action="Delete" asp-route-id="@item.AUTO_ID">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+

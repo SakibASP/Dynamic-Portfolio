@@ -1,0 +1,76 @@
+﻿@model Portfolio.Models.PROJECTS
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<DESCRIPTION>? dESCRIPTIONs = ViewData["DESCRIPTIONs"] as List<DESCRIPTION>;
+}
+
+<section>
+    <div class="container-fluid p-5">
+        <h1>Project Details</h1>
+
+        <div>
+            <hr />
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.PROJECT_NAME)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.PROJECT_NAME)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.LOGO)
+                </dt>
+                <dd class="col-sm-10">
+                    @if(Model.LOGO != null)
+                    {
+                        <img class="img-thumbnail" style="width:300px;height:150px" src="data:ImageData;base64,@System.Convert.ToBase64String(Model.LOGO)" />
+                    }
+                    else
+                    {
+                        <p>No Image Found</p>
+                    }
+                </dd>
+            </dl>
+        </div>
+        <ul>
+            @if(dESCRIPTIONs.Count > 0)
+            {
+                foreach(var item in dESCRIPTIONs)
+                {
+                    <li>@item.DESCRIPTION_TEXT</li>
+                }
+            }
+            @* @if (Model.DESCRIPTION_1 != null)
+            {
+                <li>@Html.DisplayFor(model => model.DESCRIPTION_1)</li>
+            }
+            @if (Model.DESCRIPTION_2 != null)
+            {
+                <li>@Html.DisplayFor(model => model.DESCRIPTION_2)</li>
+            }
+            @if (Model.DESCRIPTION_3 != null)
+            {
+                <li>@Html.DisplayFor(model => model.DESCRIPTION_3)</li>
+            }
+            @if (Model.DESCRIPTION_4 != null)
+            {
+                <li>@Html.DisplayFor(model => model.DESCRIPTION_4)</li>
+            }
+            @if (Model.DESCRIPTION_5 != null)
+            {
+                <li>@Html.DisplayFor(model => model.DESCRIPTION_5)</li>
+            }
+            @if (Model.DESCRIPTION_6 != null)
+            {
+                <li>@Html.DisplayFor(model => model.DESCRIPTION_6)</li>
+            } *@
+           
+        </ul>
+        <div>
+            @*<a asp-action="Edit" asp-route-id="@Model?.AUTO_ID">Edit</a> |*@
+            @*<a asp-action="Index">Back to List</a>*@
+        </div>
+    </div>
+</section>

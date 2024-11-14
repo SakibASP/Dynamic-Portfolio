@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Portfolio.Models.MY_SKILLS>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section>
+    <div class="container-fluid p-5">
+        <h1>Index</h1>
+
+        <p>
+            <a asp-action="Create">Create New</a>
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.SKILL_NAME)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.SKILL_PERCENTAGE)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SKILL_NAME)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SKILL_PERCENTAGE)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.AUTO_ID">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.AUTO_ID">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.AUTO_ID">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>

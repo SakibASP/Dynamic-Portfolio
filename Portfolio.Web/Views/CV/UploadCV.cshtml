@@ -1,0 +1,53 @@
+﻿
+<section>
+    <div class="container-fluid py-5">
+        <h1>File Upload</h1>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <input type="file" name="file" id="fileInput">
+            <button type="submit">Upload</button>
+        </form>
+
+        <div id="result"></div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        const uploadForm = document.getElementById('uploadForm');
+        const fileInput = document.getElementById('fileInput');
+        const resultDiv = document.getElementById('result');
+
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const file = fileInput.files[0];
+            if (!file) {
+                resultDiv.textContent = 'Please select a file.';
+                resultDiv.style.color = 'red';
+                return;
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (response.ok) {
+                    const text = await response.text();
+                    resultDiv.textContent = text;
+                    resultDiv.style.color = 'green';
+                } else {
+                    resultDiv.textContent = 'Error uploading file.';
+                    resultDiv.style.color = 'red';
+                }
+            } catch (error) {
+                resultDiv.textContent = 'An error occurred: ' + error.message;
+                resultDiv.style.color = 'red';
+            }
+        });
+    </script>
+}

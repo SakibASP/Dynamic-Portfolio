@@ -1,0 +1,54 @@
+﻿@model Portfolio.Models.EXPERIENCE
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section>
+    <div class="container-fluid p-5">
+        <h1>Create</h1>
+
+        <h4>EXPERIENCE</h4>
+        <hr />
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="DESIGNATION" class="control-label"></label>
+                        <input asp-for="DESIGNATION" class="form-control" />
+                        <span asp-validation-for="DESIGNATION" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="FROM_DATE" class="control-label"></label>
+                        <input asp-for="FROM_DATE" class="form-control" />
+                        <span asp-validation-for="FROM_DATE" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="TO_DATE" class="control-label"></label>
+                        <input asp-for="TO_DATE" class="form-control" />
+                        <span asp-validation-for="TO_DATE" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="INSTITUTE" class="control-label"></label>
+                        <input asp-for="INSTITUTE" class="form-control" />
+                        <span asp-validation-for="INSTITUTE" class="text-danger"></span>
+                    </div>
+                   
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div>
+            <a asp-action="Index">Back to List</a>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

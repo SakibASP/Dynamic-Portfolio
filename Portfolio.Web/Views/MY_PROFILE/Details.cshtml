@@ -1,0 +1,99 @@
+﻿@model Portfolio.Models.MY_PROFILE
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section>
+    <h1>Details</h1>
+
+    <div>
+        <h4>MY_PROFILE</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.MY_NAME)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.MY_NAME)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.DESIGNATION)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.DESIGNATION)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.AGE)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.AGE)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.MY_WEBSITE)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.MY_WEBSITE)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.DEGREE)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.DEGREE)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.PHONE)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.PHONE)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.EMAIL)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.EMAIL)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.CURRENT_CITY)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CURRENT_CITY)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.HOMETOWN)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.HOMETOWN)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.PROFILE_IMAGE)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.PROFILE_IMAGE)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.DES_1)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.DES_1)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.DES_2)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.DES_2)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.DES_3)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.DES_3)
+            </dd>
+        </dl>
+    </div>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model?.AUTO_ID">Edit</a> |
+        <a asp-action="Index">Back to List</a>
+    </div>
+</section>

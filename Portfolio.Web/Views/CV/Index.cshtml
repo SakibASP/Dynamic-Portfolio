@@ -1,0 +1,51 @@
+﻿@model List<Portfolio.ViewModels.FileInfoViewModel>
+
+<br />
+
+<section>
+    <div class="container-fluid py-5">
+        @if (@TempData["State"] != null)
+        {
+            if (!string.IsNullOrEmpty(@TempData["State"].ToString()))
+            {
+                <div class="container">
+                    <p style="color: red">@TempData["State"]</p>
+                </div>
+            }
+
+        }
+        
+        <div style="display: flex;">
+            <a asp-action="ClearCVFolder" style="margin: 5px;" class="btn btn-danger">Clear</a>
+            <a asp-action="UploadCV" style="margin: 5px;" class="btn btn-primary">Upload</a>
+        </div>
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Modified Date</th>
+                    <th>Type</th>
+                    <th>Size (MB)</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var file in Model)
+                {
+                    <tr>
+                        <td>@file.Name</td>
+                        <td>@file.ModifiedDate</td>
+                        <td>@file.Type</td>
+                        <td>@file.Size</td>
+                        <td>
+                            <a asp-action="DownloadCV" asp-route-filePath="@file.FilePath" class="btn btn-success">Download</a>
+                            <a asp-action="RemoveCV" asp-route-filePath="@file.FilePath" class="btn btn-danger">Remove</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</section>
+
