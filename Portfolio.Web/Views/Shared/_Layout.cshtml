@@ -10,7 +10,6 @@
     <meta content="" name="keywords">
 
     <!-- Favicons -->
-
     <link href="~/assets/img/favicon.png" rel="icon">
     <link href="~/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
@@ -28,17 +27,10 @@
     <link href="~/assets/vendor/boxicons/css/boxicons.css" rel="stylesheet" />
     <!-- Template Main CSS File   -->
     <link href="~/assets/css/style.css" rel="stylesheet" />
-
     <!-- Datatable CDN for style -->
     <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
 
-    <!-- =======================================================
-    * Template Name: Kelly - v4.9.1
-    * Template URL: https://bootstrapmade.com/kelly-free-bootstrap-cv-resume-html-template/
-    * Author: BootstrapMade.com
-    * License: https://bootstrapmade.com/license/
-    ======================================================== -->
-
+    <link href="~/css/site.css" rel="stylesheet" />
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-D8P8SMRTS1"></script>
     <script>
@@ -65,9 +57,8 @@
                     <li class="nav-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
                     <li class="nav-item"><a asp-action="About" asp-controller="MY_PROFILE">About</a></li>
                     <li class="nav-item"><a asp-action="Resume" asp-controller="MY_PROFILE">Resume</a></li>
-                    <li class="nav-item"><a asp-action="Projects" asp-controller="MY_PROFILE">My Works</a></li>
+                    <li class="nav-item"><a asp-action="Projects" asp-controller="MY_PROFILE">Projects</a></li>
                     <li class="nav-item"><a asp-action="Contact" asp-controller="MY_PROFILE">Contact</a></li>
-                    <li class="nav-item"><a asp-action="CV_Viewer" asp-controller="CV">C.V</a></li>
                     @if (User.Identity!.IsAuthenticated)
                     {
                         <li class="nav-item dropdown">
@@ -149,7 +140,7 @@
                 <!-- You can delete the links only if you purchased the pro version. -->
                 <!-- Licensing information: https://bootstrapmade.com/license/ -->
                 <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/kelly-free-bootstrap-cv-resume-html-template/ -->
-                <strong>Built with .NET 8</strong>
+                <strong>Powered by .NET</strong>
             </div>
 
             @if (User.Identity.IsAuthenticated)
@@ -171,8 +162,7 @@
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    @* <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> *@
     <!-- Vendor JS Files -->
     <script src="~/assets/vendor/purecounter/purecounter_vanilla.js"></script>
     <script src="~/assets/vendor/aos/aos.js"></script>
@@ -184,6 +174,7 @@
 
     <!-- Template Main JS File -->
     <script src="~/assets/js/main.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
     <!-- Datatable CDN for Javascript -->
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)

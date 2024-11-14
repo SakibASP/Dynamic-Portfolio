@@ -9,6 +9,11 @@
     .error{
         color: red;
     }
+
+    .info {
+        background-color: #e9e8e6 !important;
+        padding: 10%;
+    }
 </style>
 
 <main id="main">
@@ -26,11 +31,11 @@
             </div>
 
             <div>
-                <iframe style="border:0; width: 100%; height: 270px;" width="600" height="450" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d117658.97207999983!2d89.53250170000001!3d22.8453019!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ff9071cb47152f%3A0xf04b212290718952!2sKhulna!5e0!3m2!1sen!2sbd!4v1669381041337!5m2!1sen!2sbd" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <iframe style="border : 1px solid #e9e8e6;border-radius: 15px; width: 100%; height: 270px;" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d117658.97207999983!2d89.53250170000001!3d22.8453019!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ff9071cb47152f%3A0xf04b212290718952!2sKhulna!5e0!3m2!1sen!2sbd!4v1669381041337!5m2!1sen!2sbd" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 @*<iframe style="border:0; width: 100%; height: 270px;" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d116843.64263619613!2d90.39927429562331!3d23.77005501986503!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b8b087026b81%3A0x8fa563bbdd5904c2!2sDhaka!5e0!3m2!1sen!2sbd!4v1671794598613!5m2!1sen!2sbd" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>*@
             </div>
 
-            <div class="row mt-5">
+            <div class="row">
 
                 @if(mY_PROFILEs != null)
                 {
@@ -60,28 +65,40 @@
                     </div>
                 }
 
-                <div class="col-lg-8 mt-5 mt-lg-0">
-                    <div class="container">
+                <div class="col-lg-8">
+                    <div class="container" style="padding: 5%;">
                         <div class="row">
-                            <div class="col-md-4 form-group">
-                                <input type="text" name="name" class="form-control" id="name" placeholder="Your Name">
+                            <div class="col-md-4">
+                                <div class="input-container">
+                                    <input type="text" class="input-box" name="name" id="name" required>
+                                    <label for="name">Name</label>
+                                </div>
                                 <div class="error" id="nameError"></div>
                             </div>
-                            <div class="col-md-4 form-group mt-3 mt-md-0">
-                                <input type="email" class="form-control" name="email" id="email" placeholder="Your Email">
+                            <div class="col-md-4">
+                                <div class="input-container">
+                                    <input type="email" class="input-box" name="email" id="email" required>
+                                    <label for="email">Email</label>
+                                </div>
                                 <div class="error" id="emailError"></div>
                             </div>
-                            <div class="col-md-4 form-group mt-3 mt-md-0">
-                                <input type="text" class="form-control" name="phone" id="phone" placeholder="Phone No.">
+                            <div class="col-md-4">
+                                <div class="input-container">
+                                    <input type="text" class="input-box" name="phone" id="phone" required>
+                                    <label for="phone">Phone</label>
+                                </div>
                                 <div class="error" id="phoneError"></div>
                             </div>
                         </div>
-                        <div class="form-group mt-3">
-                            <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject">
+                        <div class="input-container">
+                            <input type="text" class="input-box" name="subject" id="subject" required>
+                            <label for="subject">Subject</label>
                             <div class="error" id="subjectError"></div>
                         </div>
-                        <div class="form-group mt-3">
-                            <textarea class="form-control" name="message" id="message" rows="5" placeholder="Message"></textarea>
+                        <div class="form-group">
+                            <div class="input-container">
+                                <textarea class="form-control" spellcheck="true" name="message" id="message" rows="5" placeholder="Message"></textarea>
+                            </div>
                             <div class="error" id="messageError"></div>
                         </div>
                         <br />

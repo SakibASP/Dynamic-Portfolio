@@ -5,33 +5,31 @@ using Portfolio.Utils;
 
 namespace Portfolio.Web.Common
 {
-    public class SendEmail(EmailSettings emailSettings) : IEmailSender
+    public class SendEmail : IEmailSender
     {
-        private readonly EmailSettings _emailSettings = emailSettings;
 
-        public Task SendEmailAsync(string email, string subject, string htmlMessage)
+        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            using (var smtpClient = new SmtpClient())
+            using var smtpClient = new SmtpClient();
+            try
             {
-                try
+                smtpClient.EnableSsl = EmailSettings.UseSsl;
+                smtpClient.Host = EmailSettings.ServerName;
+                smtpClient.Port = EmailSettings.ServerPort;
+                smtpClient.UseDefaultCredentials = false;
+                smtpClient.Credentials = new NetworkCredential(EmailSettings.Username, EmailSettings.Password);
+
+                MailMessage mailMessage = new(EmailSettings.MailFromAddress, email)
                 {
-                    smtpClient.EnableSsl = _emailSettings.UseSsl;
-                    smtpClient.Host = _emailSettings.ServerName;
-                    smtpClient.Port = _emailSettings.ServerPort;
-                    smtpClient.UseDefaultCredentials = false;
-                    smtpClient.Credentials = new NetworkCredential(_emailSettings.Username, _emailSettings.Password);
-                    MailMessage mailMessage = new(_emailSettings.MailFromAddress, //From
-                                                email, //To
-                                                subject, //Subject
-                                                htmlMessage // Body
-                                                );
-                    smtpClient.Send(mailMessage);
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-                return Task.CompletedTask;
+                    Subject = subject,
+                    Body = htmlMessage,
+                    IsBodyHtml = true
+                };
+                await smtpClient.SendMailAsync(mailMessage);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 

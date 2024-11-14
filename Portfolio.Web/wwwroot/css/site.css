@@ -1,22 +1,62 @@
-html {
-  font-size: 14px;
+
+.myContainer {
+    background-color: #e9e8e6;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+/* Apply background color only to text, email, password, and number input types */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"] {
+    background-color: #e9e8e6 !important;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+
+textarea {
+    background-color: #e9e8e6 !important;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+.input-container {
+    position: relative;
+    margin: 10px 0;
 }
 
-body {
-  margin-bottom: 60px;
+.input-box {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.input-box:focus {
+    outline: none;
+    border-color: #333;
+    background-color: #e9e8e6 !important;
+}
+
+.input-box:focus + label,
+.input-box:valid + label {
+    top: -10px;
+    left: 10px;
+    font-size: 12px;
+    color: #333;
+}
+
+.input-box::placeholder {
+    color: transparent;
+}
+
+.input-box:focus::placeholder {
+    color: transparent;
+}
+
+.input-container label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    background-color: #e9e8e6 !important;
+    padding: 0 5px;
 }

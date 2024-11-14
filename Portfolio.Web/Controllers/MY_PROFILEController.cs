@@ -1,19 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using Portfolio.Models;
 using Portfolio.Web.Common;
-using Portfolio.Web.Data;
-using Portfolio.Models;
 using Portfolio.Utils;
+using Portfolio.Interfaces;
+using System.Text;
+using Serilog;
 
 namespace Portfolio.Web.Controllers
 {
-    public class MY_PROFILEController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment) : BaseController
+    public class MY_PROFILEController(IWebHostEnvironment webHostEnvironment, IProfileRepo profile,SendEmail sendEmail) : BaseController
     {
-        private readonly ApplicationDbContext _context = context;
+        private readonly IProfileRepo _profile = profile;
+        private readonly SendEmail _sendEmail = sendEmail;
         private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
 
         // GET: MY_PROFILE
@@ -21,38 +20,36 @@ namespace Portfolio.Web.Controllers
         public async Task<IActionResult> Index()
         {
             ViewData["rootPath"] = _webHostEnvironment.WebRootPath;
-            return _context.MY_PROFILE != null ? 
-                          View(await _context.MY_PROFILE.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.MY_PROFILE'  is null.");
+            return View(await _profile.GetProflie());
         }
 
         public async Task<IActionResult> About()
         {
             ViewData["rootPath"] = _webHostEnvironment.WebRootPath;
-            ViewData["SKILLS"] = await _context.MY_SKILLS.AsNoTracking().ToListAsync();
-            ViewData["PROFILES"] = await _context.MY_PROFILE.AsNoTracking().FirstOrDefaultAsync();
+            ViewData["SKILLS"] = await _profile.GetSkills();
+            ViewData["PROFILES"] = await _profile.GetSingleProflie();
             return View();
         }
 
         public async Task<IActionResult> Resume()
         {
-            ViewData["PROFILES"] = await _context.MY_PROFILE.AsNoTracking().FirstOrDefaultAsync();
-            ViewData["EDUCATIONS"] = await _context.EDUCATION.AsNoTracking().ToListAsync(); 
-            ViewData["EXPERIENCEs"] = await _context.EXPERIENCE.AsNoTracking().ToListAsync();
-            ViewData["DESCRIPTIONs"] = await _context.DESCRIPTION.Include(x=>x.DESCRIPTION_TYPE_).AsNoTracking().ToListAsync();
+            ViewData["PROFILES"] = await _profile.GetSingleProflie();
+            ViewData["EDUCATIONS"] = await _profile.GetEducations();
+            ViewData["EXPERIENCEs"] = await _profile.GetExperiences();
+            ViewData["DESCRIPTIONs"] = await _profile.GetDescriptions();
             return View();
         }
 
         public async Task<IActionResult> Projects()
         {
-            ViewData["PROFILES"] = await _context.MY_PROFILE.AsNoTracking().FirstOrDefaultAsync();
-            ViewData["PROJECTS"] = await _context.PROJECTS.AsNoTracking().ToListAsync();
+            ViewData["PROFILES"] = await _profile.GetSingleProflie();
+            ViewData["PROJECTS"] = await _profile.GetProjects();
             return View();
         }
 
         public async Task<IActionResult> Contact()
         {
-            ViewData["PROFILES"] = await _context.MY_PROFILE.AsNoTracking().FirstOrDefaultAsync();
+            ViewData["PROFILES"] = await _profile.GetSingleProflie();
             return View();
         }
 
@@ -66,46 +63,29 @@ namespace Portfolio.Web.Controllers
                 {
                     try
                     {
-                        EmailSettings email = new();
-                        SendEmail sendEmail = new(email);
-                        const string subject = "Welcome";
-                        const string htmlMessage = "Thanks for contacting with me. I will response as soon as possible";
-                        await sendEmail.SendEmailAsync(objContact.EMAIL, subject, htmlMessage);
+                        const string subject = "Thank You for Reaching Out!";
+                        string htmlMessage = $@"<h5>Hello {objContact.NAME},</h5>
+                            <p>Thank you for reaching out! I’ve received your message and will get back to you as soon as possible.</p>
+                            <p>Warm regards,<br><strong>Md. Sakibur Rahman</strong></p>";
+                        await _sendEmail.SendEmailAsync(objContact.EMAIL, subject, htmlMessage);
                     }
-                    catch
+                    catch(Exception ex) 
                     {
+                        Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... ");
                         return Json(data: new { message = "Not a valid email", status = false });
                     }
                 }
 
-                objContact.CREATED_DATE = BdCurrentTime;
-                _context.CONTACTS.Add(objContact);
-                await _context.SaveChangesAsync();
-                //HttpContext.Session.Remove(Constant.myContact);
+                var saveParameter = GenerateParameter.SingleModel(objContact, string.Empty, BdCurrentTime);
+                await _profile.AddContactInfoAsync(saveParameter);
                 return Json(data: new { message = "Message Sent Successfully", status = true });
             }
-            catch
+            catch(Exception ex)
             {
+                Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... ");
                 return Json(data: new { message = "Something went wrong", status = false });
             }
         }
-        //// GET: MY_PROFILE/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null || _context.MY_PROFILE == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var mY_PROFILE = await _context.MY_PROFILE
-        //        .FirstOrDefaultAsync(m => m.AUTO_ID == id);
-        //    if (mY_PROFILE == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(mY_PROFILE);
-        //}
 
         [Authorize]
         //GET: MY_PROFILE/Create
@@ -113,10 +93,6 @@ namespace Portfolio.Web.Controllers
         {
             return View();
         }
-
-        //POST: MY_PROFILE/Create
-        //To protect from overposting attacks, enable the specific properties you want to bind to.
-        //For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 
         [HttpPost]
         [Authorize]
@@ -146,13 +122,10 @@ namespace Portfolio.Web.Controllers
                         //saving the file
                         await Utility.SaveFileAsync(uploadPath, files);
                         mY_PROFILE.PROFILE_IMAGE = uploadPath;
-
-                        _context.Add(mY_PROFILE);
-                        await _context.SaveChangesAsync();
-
                     }
-                    _context.Add(mY_PROFILE);
-                    await _context.SaveChangesAsync();
+
+                    var saveRequest = GenerateParameter.SingleModel(mY_PROFILE, string.Empty, BdCurrentTime);
+                    await _profile.AddProfileAsync(saveRequest);
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -167,12 +140,7 @@ namespace Portfolio.Web.Controllers
         [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.MY_PROFILE == null)
-            {
-                return NotFound();
-            }
-
-            var mY_PROFILE = await _context.MY_PROFILE.FindAsync(id);
+            var mY_PROFILE = await _profile.GetSingleProflieById(id);
             if (mY_PROFILE == null)
             {
                 return NotFound();
@@ -199,7 +167,7 @@ namespace Portfolio.Web.Controllers
                 try
                 {
                     var files = Request.Form.Files.FirstOrDefault();
-                    if (files != null)
+                    if (files is not null)
                     {
                         const string rootFolder = @"Images\About";
                         string? directoryPath = Path.Combine(_webHostEnvironment.WebRootPath, rootFolder);
@@ -218,74 +186,19 @@ namespace Portfolio.Web.Controllers
                             System.IO.File.Delete(mY_PROFILE.PROFILE_IMAGE);
                         //saving the file
                         await Utility.SaveFileAsync(uploadPath, files);
-                        mY_PROFILE.PROFILE_IMAGE = uploadPath;
+                        mY_PROFILE!.PROFILE_IMAGE = uploadPath;
                     }
 
-                    _context.Update(mY_PROFILE);
-                    await _context.SaveChangesAsync();
-
-                    //HttpContext.Session.Remove(Constant.myProfile);
+                    var saveRequest = GenerateParameter.SingleModel(mY_PROFILE, string.Empty, BdCurrentTime);
+                    await _profile.UpdateProfileAsync(saveRequest);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch
                 {
-                    if (!MY_PROFILEExists(mY_PROFILE.AUTO_ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    // Something went wrong
                 }
                 return RedirectToAction(nameof(Index));
             }
             return View(mY_PROFILE);
-        }
-
-        // GET: MY_PROFILE/Delete/5
-        //[Authorize]
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null || _context.MY_PROFILE == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var mY_PROFILE = await _context.MY_PROFILE
-        //        .FirstOrDefaultAsync(m => m.AUTO_ID == id);
-        //    if (mY_PROFILE == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(mY_PROFILE);
-        //}
-
-        //// POST: MY_PROFILE/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[Authorize]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    if (_context.MY_PROFILE == null)
-        //    {
-        //        return Problem("Entity set 'ApplicationDbContext.MY_PROFILE'  is null.");
-        //    }
-        //    var mY_PROFILE = await _context.MY_PROFILE.FindAsync(id);
-        //    if (mY_PROFILE != null)
-        //    {
-        //        _context.MY_PROFILE.Remove(mY_PROFILE);
-        //    }
-            
-        //    await _context.SaveChangesAsync();
-
-        //    //HttpContext.Session.Remove(Constant.myProfile);
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        private bool MY_PROFILEExists(int id)
-        {
-          return (_context.MY_PROFILE?.Any(e => e.AUTO_ID == id)).GetValueOrDefault();
         }
     }
 }

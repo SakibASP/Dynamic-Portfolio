@@ -1,12 +1,12 @@
 ﻿namespace Portfolio.Utils
 {
-    public class EmailSettings
+    public static class EmailSettings
     {
-        public string MailFromAddress = "sakibur.rahman.cse@gmail.com";
-        public bool UseSsl = true;
-        public string Username = "";
-        public string Password = "";
-        public string ServerName = "smtp.gmail.com";
-        public int ServerPort = 587;
+        public static string MailFromAddress = "sakibur.rahman.cse@gmail.com";
+        public static bool UseSsl = true;
+        public static string Username = MailFromAddress;
+        public static string Password = "kerksdaxnunmcotc";
+        public static string ServerName = "smtp.gmail.com";
+        public static int ServerPort = 587;
     }
 }

@@ -1,74 +1,69 @@
 ﻿
-$("#myButton").click(function () {
-    $(".error").empty(null);
-    validation_check();
-    if (validation_check()) {
+const $Name = $("#name");
+const $Email = $("#email");
+const $Message = $("#message");
+const $Subject = $("#subject");
+const $Phone = $("#phone");
+const $NameError = $("#nameError");
+const $EmailError = $("#emailError");
+const $MessageError = $("#messageError");
+const $SubjectError = $("#subjectError");
+const $PhoneError = $("#phoneError");
+const $Button = $("#myButton");
+const $Error = $(".error");
+
+$Button.on("click", function () {
+    $Error.empty(null);
+    if (IsValid()) {
         SendMessage();
     }
 });
 
 
-function validation_check() {
+function IsValid() {
     var isValid = true;
-    var Name = $("#name").val();
-    var Email = $("#email").val();
-    var Message = $("#message").val();
-    var Subject = $("#subject").val();
-    var Phone = $("#phone").val();
 
-    var NameError = $("#nameError");
-    var EmailError = $("#emailError");
-    var MessageError = $("#messageError");
-    var SubjectError = $("#subjectError");
-    var PhoneError = $("#phoneError");
-
-    if (Name === "") {
-        NameError.text("Please enter your name");
-        $("#name").focus();
+    if ($Name.val() === "") {
+        $NameError.text("Please enter your name");
+        $Name.trigger("focus");
         isValid = false;
     }
-    else if (Email === "") {
-        EmailError.text("Please enter your a valid email");
-        $("#email").focus();
+    else if ($Email.val() === "") {
+        $EmailError.text("Please enter your a valid email");
+        $Email.trigger("focus");
         isValid = false;
     }
-    else if (Phone === "") {
-        PhoneError.text("Please enter your phone No.");
-        $("#phone").focus();
+    else if ($Phone.val() === "") {
+        $PhoneError.text("Please enter your phone No.");
+        $Phone.trigger("focus");
         isValid = false;
     }
-    else if (Subject === "") {
-        SubjectError.text("Please enter subject");
-        $("#subject").focus();
+    else if ($Subject.val() === "") {
+        $SubjectError.text("Please enter subject");
+        $Subject.trigger("focus");
         isValid = false;
     }
-    else if (Message === "") {
-        MessageError.text("Message is required");
-        $("#message").focus();
+    else if ($Message.val() === "") {
+        $MessageError.text("Message is required");
+        $Message.trigger("focus");
         isValid = false;
     }
     else {
-        $("#myButton").css("background-color", "blue");
-        $("#myButton").css("color", "white");
+        $Button.css("background-color", "blue");
+        $Button.css("color", "white");
         isValid = true;
     }
     return isValid;
 }
 
 async function SendMessage() {
-    var objContact = {};
+    let objContact = {};
 
-    var Name = $("#name").val();
-    var Email = $("#email").val();
-    var Message = $("#message").val();
-    var Subject = $("#subject").val();
-    var Phone = $("#phone").val();
-
-    objContact.NAME = Name;
-    objContact.SUBJECT = Subject;
-    objContact.MESSAGE = Message;
-    objContact.EMAIL = Email;
-    objContact.PHONE = Phone;
+    objContact.NAME = $Name.val();
+    objContact.SUBJECT = $Subject.val();
+    objContact.MESSAGE = $Message.val();
+    objContact.EMAIL = $Email.val();
+    objContact.PHONE = $Phone.val();
 
     try {
         const response = await $.ajax({
@@ -80,13 +75,13 @@ async function SendMessage() {
 
         if (response.status === true) {
             alert(response.message);
-            $("#myButton").css("background-color", "green");
-            $("#myButton").css("color", "white");
+            $Button.css("background-color", "green");
+            $Button.css("color", "white");
         } else {
             alert(response.message);
         }
     } catch (error) {
-        alert("Error occurred: " + error.status);
+        console.log("Error occurred: ", error);
     }
 }
 

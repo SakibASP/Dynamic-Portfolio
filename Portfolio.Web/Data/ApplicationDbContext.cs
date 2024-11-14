@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Portfolio.Models;
-using Portfolio.Models;
 
 namespace Portfolio.Web.Data
 {
@@ -26,15 +25,25 @@ namespace Portfolio.Web.Data
                 optionsBuilder.UseSqlServer(connectionString);
             }
         }
-        public virtual DbSet<RequestCounts> RequestCounts { get; set; }
-        public virtual DbSet<Visitors> Visitors { get; set; }
-        public virtual DbSet<MY_PROFILE> MY_PROFILE { get; set; }
-        public virtual DbSet<MY_SKILLS> MY_SKILLS { get; set; }
-        public virtual DbSet<EDUCATION> EDUCATION { get; set; }
-        public virtual DbSet<EXPERIENCE> EXPERIENCE { get; set; }
-        public virtual DbSet<PROJECTS> PROJECTS { get; set; }
-        public virtual DbSet<CONTACTS> CONTACTS { get; set; }
-        public virtual DbSet<PROFILE_COVER> PROFILE_COVER { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<DESCRIPTION>()
+                       .Navigation(m => m.DESCRIPTION_TYPE_)
+                       .AutoInclude();
+        }
+
+        public virtual DbSet<RequestCounts> RequestCounts { get; set; } = default!;
+        public virtual DbSet<Visitors> Visitors { get; set; } = default!;
+        public virtual DbSet<MY_PROFILE> MY_PROFILE { get; set; } = default!;
+        public virtual DbSet<MY_SKILLS> MY_SKILLS { get; set; } = default!;
+        public virtual DbSet<EDUCATION> EDUCATION { get; set; } = default!;
+        public virtual DbSet<EXPERIENCE> EXPERIENCE { get; set; } = default!;
+        public virtual DbSet<PROJECTS> PROJECTS { get; set; } = default!;
+        public virtual DbSet<CONTACTS> CONTACTS { get; set; } = default!;
+        public virtual DbSet<PROFILE_COVER> PROFILE_COVER { get; set; } = default!; 
         public virtual DbSet<DESCRIPTION> DESCRIPTION { get; set; } = default!;
         public virtual DbSet<DESCRIPTION_TYPE> DESCRIPTION_TYPE { get; set; } = default!;
     }
