@@ -77,9 +77,9 @@
                     <div class="col-lg-6" style="margin:auto">
                         <h1>@ViewBag.Name</h1>
                         <h2>@ViewBag.Bio</h2>
-                        <div style="display: flex;">
+                        <div style="display: flex; margin: 5px">
                             <a asp-action="About" asp-controller="MY_PROFILE" class="btn-about">About Me</a>
-                            <a style="margin-left: 5px;" asp-action="DownloadCV" asp-controller="CV" asp-route-filePath="@ViewBag.FilePath" class="btn-cv">About Me</a>
+                            <a style="margin-left: 5px;" asp-action="DownloadCV" asp-controller="CV" asp-route-filePath="@ViewBag.FilePath" class="btn-cv">Download CV</a>
                         </div>
                     </div>
 
@@ -109,7 +109,10 @@
                 <h1 class="mobText" id="welcomeMobile"></h1>
                 <h6 id="messageMobile"></h6>
                 <br /> <br />
-                <a href="@Url.Action("About","MY_PROFILE")" style="width:50%; margin-left:10px;" class="btn btn-info">About Me</a>
+                <div style="display: flex; margin: 5px">
+                    <a style="width:50%; margin-right:10px; color: white;" class="btn btn-info" asp-action="About" asp-controller="MY_PROFILE">About Me</a>
+                    <a style="width:50%; margin-left:10px;" class="btn btn-primary" asp-action="DownloadCV" asp-controller="CV" asp-route-filePath="@ViewBag.FilePath">Download CV</a>
+                </div>
             </div>
         </div>
     }
@@ -125,7 +128,10 @@
                 <h1 id="mobText">@ViewBag.Name</h1>
                 <h6>@ViewBag.Bio</h6>
                 <br /> <br />
-                <a href="@Url.Action("About","MY_PROFILE")" style="width:50%; margin-left:10px;" class="btn btn-info">About Me</a>
+                <div style="display: flex; margin: 5px">
+                    <a style="width:50%; margin-right:10px;" asp-action="About" asp-controller="MY_PROFILE" class="btn-about">About Me</a>
+                    <a style="width:50%; margin-left:10px;" asp-action="DownloadCV" asp-controller="CV" asp-route-filePath="@ViewBag.FilePath" class="btn-cv">Download CV</a>
+                </div>
             </div>
         </div>
     }

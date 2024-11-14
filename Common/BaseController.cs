@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using SAKIB_PORTFOLIO.Data;
 using SAKIB_PORTFOLIO.Models;
 using System.Security.Claims;
@@ -48,7 +47,7 @@ namespace SAKIB_PORTFOLIO.Common
                         {
                             LastUpdated = BdCurrentTime,
                         };
-                        _context.RequestCounts.Add(requestCounts);
+                        await _context.RequestCounts.AddAsync(requestCounts);
                     }
                     else
                     {
@@ -77,20 +76,18 @@ namespace SAKIB_PORTFOLIO.Common
                         if (existingVisitor is null)
                         {
                             Visitors visitor = GetVisitorsDeviceInfo(userAgent);
-                            // Create a service collection
-                            var services = new ServiceCollection();
-
-                            // Add HttpClientFactory to the service collection
-                            services.AddHttpClient();
-
-                            // Build the service provider
-                            var serviceProvider = services.BuildServiceProvider();
-
-                            // Use the service provider to create an instance of HttpClientFactory
-                            var _httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
+                            
+                            //// Create a service collection
+                            //var services = new ServiceCollection();
+                            //// Add HttpClientFactory to the service collection
+                            //services.AddHttpClient();
+                            //// Build the service provider
+                            //var serviceProvider = services.BuildServiceProvider();
+                            //// Use the service provider to create an instance of HttpClientFactory
+                            //var _httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
 
                             // Make request to ip-api.com API
-                            var client = _httpClientFactory.CreateClient();
+                            using var client = new HttpClient(); //_httpClientFactory.CreateClient();
 
                             Dictionary<string, dynamic> dictVisitor = [];
 
@@ -130,7 +127,7 @@ namespace SAKIB_PORTFOLIO.Common
                             visitor.UserAgent = userAgent;
                             visitor.VisitTime = BdCurrentTime;
 
-                            _context.Visitors.Add(visitor);
+                            await _context.Visitors.AddAsync(visitor);
                         }
 
                         await _context.SaveChangesAsync();

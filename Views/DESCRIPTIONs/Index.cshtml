@@ -19,18 +19,6 @@
                         @Html.DisplayNameFor(model => model.DESCRIPTION_TEXT)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.CREATED_BY)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.CREATED_DATE)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.MODIFIED_BY)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.MODIFIED_DATE)
-                    </th>
-                    <th>
                         @Html.DisplayNameFor(model => model.TYPE_ID)
                     </th>
                     <th>
@@ -48,18 +36,6 @@
                     <tr>
                         <td>
                             @Html.DisplayFor(modelItem => item.DESCRIPTION_TEXT)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CREATED_BY)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CREATED_DATE)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.MODIFIED_BY)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.MODIFIED_DATE)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.DESCRIPTION_TYPE_!.TYPE)
@@ -82,3 +58,9 @@
 
     </div>
 </section>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

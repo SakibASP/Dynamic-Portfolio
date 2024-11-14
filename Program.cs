@@ -50,39 +50,39 @@ else
     app.UseHsts();
 }
 
-// Filter access from different bot browsers
-app.Use(async (context, next) =>
-{
-    string userAgent = context.Request.Headers.UserAgent.ToString();
-    if (userAgent.Contains("Mediatoolkitbot"))
-    {
-        context.Response.StatusCode = StatusCodes.Status403Forbidden;
-        await context.Response.WriteAsync("Access Forbidden for Mediatoolkitbot");
-        return;
-    }
-    //this a facebook bot
-    else if (userAgent.Contains("WhatsApp"))
-    {
-        context.Response.StatusCode = StatusCodes.Status403Forbidden;
-        await context.Response.WriteAsync("Sakib has restricted WhatsApp bot/spider for the site. Please use an external browser.");
-        return;
-    }
+//// Filter access from different bot browsers
+//app.Use(async (context, next) =>
+//{
+//    string userAgent = context.Request.Headers.UserAgent.ToString();
+//    if (userAgent.Contains("Mediatoolkitbot"))
+//    {
+//        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+//        await context.Response.WriteAsync("Access Forbidden for Mediatoolkitbot");
+//        return;
+//    }
+//    //this a facebook bot
+//    else if (userAgent.Contains("WhatsApp"))
+//    {
+//        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+//        await context.Response.WriteAsync("Sakib has restricted WhatsApp bot/spider for the site. Please use an external browser.");
+//        return;
+//    }
 
-    var uaParser = Parser.GetDefault();
-    ClientInfo clientInfo = uaParser.Parse(userAgent);
-    if (clientInfo != null)
-    {
-        if (clientInfo.UserAgent.Family.Contains("bot", StringComparison.CurrentCultureIgnoreCase) || clientInfo.Device.Family.Contains("spider",StringComparison.CurrentCultureIgnoreCase))
-        {
-            context.Response.StatusCode = StatusCodes.Status403Forbidden;
-            await context.Response.WriteAsync("Sakib has restricted Bots and spiders for the site.");
-            return;
-        }
-    }
+//    var uaParser = Parser.GetDefault();
+//    ClientInfo clientInfo = uaParser.Parse(userAgent);
+//    if (clientInfo != null)
+//    {
+//        if (clientInfo.UserAgent.Family.Contains("bot", StringComparison.CurrentCultureIgnoreCase) || clientInfo.Device.Family.Contains("spider",StringComparison.CurrentCultureIgnoreCase))
+//        {
+//            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+//            await context.Response.WriteAsync("Sakib has restricted Bots and spiders for the site.");
+//            return;
+//        }
+//    }
     
 
-    await next();
-});
+//    await next();
+//});
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
