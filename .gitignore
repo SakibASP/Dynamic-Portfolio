@@ -12,3 +12,7 @@
 /Portfolio.ViewModels/bin/Debug/net8.0
 /Portfolio.ViewModels/obj
 /Portfolio.Utils/EmailSettings.cs
+/Portfolio.Interfaces/bin/Release/net8.0
+/Portfolio.Models/bin/Release/net8.0
+/Portfolio.Utils/bin/Release/net8.0
+/Portfolio.ViewModels/bin/Release/net8.0
