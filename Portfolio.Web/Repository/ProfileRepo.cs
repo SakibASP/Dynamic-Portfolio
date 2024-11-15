@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Portfolio.Interfaces;
 using Portfolio.Models;
 using Portfolio.Utils;
+using Portfolio.ViewModels;
 using Portfolio.Web.Data;
 
 namespace Portfolio.Web.Repository
@@ -47,6 +49,12 @@ namespace Portfolio.Web.Repository
             ArgumentNullException.ThrowIfNull(saveRequest.Item);
             _context.MY_PROFILE.Update(saveRequest.Item);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<IList<VisitorsViewModel>> GetVisitors(SqlParameter[] parameters)
+        {
+            var visitors = await _context.Database.SqlQueryRaw<VisitorsViewModel>(Constant.udspGetVisitors, parameters).ToListAsync();
+            return visitors;
         }
     }
 }

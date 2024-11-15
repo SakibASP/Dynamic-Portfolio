@@ -4,8 +4,10 @@ using Portfolio.Models;
 using Portfolio.Web.Common;
 using Portfolio.Utils;
 using Portfolio.Interfaces;
-using System.Text;
 using Serilog;
+using Microsoft.Data.SqlClient;
+using System.Data;
+using X.PagedList;
 
 namespace Portfolio.Web.Controllers
 {
@@ -51,6 +53,43 @@ namespace Portfolio.Web.Controllers
         {
             ViewData["PROFILES"] = await _profile.GetSingleProflie();
             return View();
+        }
+
+        public async Task<IActionResult> Visitors(string searchString, int? page, DateTime? startDate, DateTime? endDate)
+        {
+            ViewBag.SearchString = searchString;
+            ViewData["StartDate"] = startDate?.ToString("yyyy-MM-dd"); //"yyyy-MM-dd"
+            ViewData["EndDate"] = endDate?.ToString("yyyy-MM-dd");
+            var IsAuthenticated = User.Identity?.IsAuthenticated;
+            ViewData["IsAuthenticated"] = IsAuthenticated ?? false;
+            int pageSize = 10;
+            int pageNumber = page ?? 1;
+            SqlParameter param1 = new("@PageNumber", SqlDbType.Int)
+            {
+                Value = (object)pageNumber ?? DBNull.Value
+            };
+            SqlParameter param2 = new("@PageSize", SqlDbType.Int)
+            {
+                Value = (object)pageSize ?? DBNull.Value
+            };
+            SqlParameter param3 = new("@StartDate", SqlDbType.DateTime)
+            {
+                Value = (object)startDate! ?? DBNull.Value
+            };
+            SqlParameter param4 = new("@EndDate", SqlDbType.DateTime)
+            {
+                Value = (object)endDate! ?? DBNull.Value
+            };
+            SqlParameter param5 = new("@SearchString", SqlDbType.NVarChar)
+            {
+                Value = (object)searchString! ?? DBNull.Value
+            };
+
+            var @params = new[] { param1, param2, param3, param4, param5 };
+            var visitors = await _profile.GetVisitors(@params) ?? [];
+            var totalRows = visitors.FirstOrDefault()?.TotalRows ?? 0;
+            ViewData["TotalRecords"] = totalRows;
+            return View(await visitors.ToPagedListAsync(pageNumber, pageSize, totalRows));
         }
 
         [HttpPost]

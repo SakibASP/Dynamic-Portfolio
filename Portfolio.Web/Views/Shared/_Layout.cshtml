@@ -15,7 +15,7 @@
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-    
+
     <link href="~/css/home/layoutcontent.css" rel="stylesheet" />
     <!-- Vendor CSS Files -->
     <link href="~/assets/vendor/aos/aos.css" rel="stylesheet">
@@ -35,7 +35,7 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-D8P8SMRTS1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+        function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
 
         gtag('config', 'G-D8P8SMRTS1');
@@ -48,9 +48,9 @@
     <header id="header" class="fixed-top">
         <div class="container-fluid d-flex justify-content-between align-items-center">
 
-            <h1 class="circle"><a id="myH" asp-action="Index" asp-controller="Home">Sakib</a></h1>
+            @* <h1 class="circle"><a id="myH" asp-action="Index" asp-controller="Home">Sakib</a></h1> *@
             <!-- Uncomment below if you prefer to use an image logo -->
-            <!-- <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
+            <a asp-action="Index" asp-controller="Home" class="logo"><img src="~/logo/mylogo.png" class="img-fluid" /></a>
 
             <nav id="navbar" class="navbar order-last order-lg-0">
                 <ul>
@@ -59,6 +59,7 @@
                     <li class="nav-item"><a asp-action="Resume" asp-controller="MY_PROFILE">Resume</a></li>
                     <li class="nav-item"><a asp-action="Projects" asp-controller="MY_PROFILE">Projects</a></li>
                     <li class="nav-item"><a asp-action="Contact" asp-controller="MY_PROFILE">Contact</a></li>
+                    <li class="nav-item"><a asp-action="Visitors" asp-controller="MY_PROFILE">Visitors</a></li>
                     @if (User.Identity!.IsAuthenticated)
                     {
                         <li class="nav-item dropdown">
@@ -117,10 +118,11 @@
             </nav><!-- .navbar -->
 
             <div class="header-social-links">
+                <a href="https://github.com/SakibASP" class="github" target="_blank"><i class="bi bi-github"></i></a>
+                <a href="https://www.linkedin.com/in/md-sakibur-rahman-070853196/" class="linkedin" target="_blank"><i class="bi bi-linkedin"></i></a>
                 <a href="https://twitter.com/Sakibur78738178" class="twitter" target="_blank"><i class="bi bi-twitter"></i></a>
                 <a href="https://www.facebook.com/sakibur.rahman.rocky" class="facebook" target="_blank"><i class="bi bi-facebook"></i></a>
                 <a href="https://www.instagram.com/sakibur_rocky/" class="instagram" target="_blank"><i class="bi bi-instagram"></i></a>
-                <a href="https://www.linkedin.com/in/md-sakibur-rahman-070853196/" class="linkedin" target="_blank"><i class="bi bi-linkedin"></i></i></a>
             </div>
 
         </div>
@@ -156,8 +158,8 @@
             {
                 <a asp-area="Identity" asp-page="/Account/Login">Login</a>
             }
-            
-            
+
+
         </div>
     </footer><!-- End  Footer -->
 

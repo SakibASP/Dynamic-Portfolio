@@ -24,22 +24,22 @@ function IsValid() {
     var isValid = true;
 
     if ($Name.val() === "") {
-        $NameError.text("Please enter your name");
+        $NameError.text("Name is required");
         $Name.trigger("focus");
         isValid = false;
     }
     else if ($Email.val() === "") {
-        $EmailError.text("Please enter your a valid email");
+        $EmailError.text("Email is required");
         $Email.trigger("focus");
         isValid = false;
     }
     else if ($Phone.val() === "") {
-        $PhoneError.text("Please enter your phone No.");
+        $PhoneError.text("Phone is required");
         $Phone.trigger("focus");
         isValid = false;
     }
     else if ($Subject.val() === "") {
-        $SubjectError.text("Please enter subject");
+        $SubjectError.text("Please enter subject of your email");
         $Subject.trigger("focus");
         isValid = false;
     }

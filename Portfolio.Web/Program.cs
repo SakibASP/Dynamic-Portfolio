@@ -5,6 +5,7 @@ using Portfolio.Web.ServiceExtention;
 using Serilog.Events;
 using Serilog;
 using UAParser;
+using Portfolio.Utils;
 
 //Creating Serilog configuration
 Log.Logger = new LoggerConfiguration()
@@ -63,59 +64,57 @@ try
     // Filter access from different bot browsers
     app.Use(async (context, next) =>
     {
-        TimeZoneInfo bdTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Bangladesh Standard Time");
-        DateTime BdCurrentTime  = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.Local, bdTimeZone);
+        var bdTimeZone = TimeZoneInfo.FindSystemTimeZoneById(Constant.bangladeshTimezone);
+        var BdCurrentTime = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.Local, bdTimeZone);
+        var ipAddress = context.Connection.RemoteIpAddress?.ToString();
+        var userAgent = context.Request.Headers.UserAgent.ToString();
+        var uaParser = Parser.GetDefault();
+        var clientInfo = uaParser.Parse(userAgent);
 
-        string userAgent = context.Request.Headers.UserAgent.ToString();
+        //Restricting different bot from visiting the site
         if (userAgent.Contains("Mediatoolkitbot"))
         {
-            Log.Information($"Visit by Mediatoolkitbot at {BdCurrentTime}");
-            context.Response.StatusCode = StatusCodes.Status403Forbidden;
-            await context.Response.WriteAsync("Access Forbidden for Mediatoolkitbot");
-            return;
+            Log.Information($"Visit by Mediatoolkitbot at {BdCurrentTime} , ip {ipAddress} url {context.Request.Path}");
+            //context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            //await context.Response.WriteAsync("Access Forbidden for Mediatoolkitbot");
+            //return;
         }
         //this a facebook bot
         else if (userAgent.Contains("WhatsApp"))
         {
-            Log.Information($"Visit From WhatsApp at {BdCurrentTime}");
-            context.Response.StatusCode = StatusCodes.Status403Forbidden;
-            await context.Response.WriteAsync("Sakib has restricted WhatsApp bot/spider for the site. Please use an external browser.");
-            return;
+            Log.Information($"Visit From WhatsApp at {BdCurrentTime}, ip {ipAddress} url {context.Request.Path}");
+            //context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            //await context.Response.WriteAsync("Sakib has restricted WhatsApp bot/spider for the site. Please use an external browser.");
+            //return;
         }
-
-        var uaParser = Parser.GetDefault();
-        ClientInfo? clientInfo = uaParser.Parse(userAgent);
         if (clientInfo != null)
         {
             if (clientInfo.UserAgent.Family.Contains("bot", StringComparison.CurrentCultureIgnoreCase))
             {
-                Log.Information($"Visit by Bot at {BdCurrentTime}. Details : {clientInfo.UserAgent.Family}");
-                context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                await context.Response.WriteAsync("Sakib has restricted Bots for the site.");
-                return;
+                Log.Information($"Visit by Bot at {BdCurrentTime}. name {clientInfo.UserAgent.Family}, ip {ipAddress}  url {context.Request.Path}");
+                //context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                //await context.Response.WriteAsync("Sakib has restricted Bots for the site.");
+                //return;
             }
-            if(clientInfo.Device.Family.Contains("spider", StringComparison.CurrentCultureIgnoreCase))
+            if (clientInfo.Device.Family.Contains("spider", StringComparison.CurrentCultureIgnoreCase))
             {
-                Log.Information($"Visit by Spider at {BdCurrentTime}. Details : {clientInfo.Device.Family}");
-                context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                await context.Response.WriteAsync("Sakib has restricted Spiders for the site.");
-                return;
+                Log.Information($"Visit by Spider at {BdCurrentTime}. name {clientInfo.Device.Family} ip {ipAddress}  url {context.Request.Path}");
+                //context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                //await context.Response.WriteAsync("Sakib has restricted Spiders for the site.");
+                //return;
             }
         }
 
         // Restrict access to Identity/Register page
         if (context.Request.Path.StartsWithSegments("/Identity/Account/Register"))
         {
-            var ipAddress = context.Connection.RemoteIpAddress?.ToString();
-            Log.Information($"Access attempt to Register page at {BdCurrentTime}. IP : {ipAddress}");
+            Log.Information($"Access attempt to Register page at {BdCurrentTime} ip {ipAddress}");
             context.Response.StatusCode = StatusCodes.Status403Forbidden;
             await context.Response.WriteAsync("Access to registration is denied.");
             return;
         }
         await next();
     });
-
-
 
     app.UseMiddleware<RequestCounterMiddleware>();
 
@@ -130,14 +129,12 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
 
-
     app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Home}/{action=Index}/{id?}");
     app.MapRazorPages();
 
     app.Run();
-
 }
 catch (Exception ex)
 {

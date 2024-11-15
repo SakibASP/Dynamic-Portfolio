@@ -2,6 +2,7 @@
 {
     public class Constant
     {
+        //Sessions
         public const string myProfile = "myProfile";
         public const string myProfileCover = "myProfileCover";
         public const string myContact = "myContact";
@@ -11,10 +12,18 @@
         public const string myProject = "myProject";
         public const string portfolionSession = "_Customized-Dynamic-Portfolio-By-Sakib";
 
+        //constant values
+        public const string bangladeshTimezone = "Bangladesh Standard Time";
+
+        //TempMessages
         public const string Success = "Success";
         public const string SuccessMessage = "Successfully done!";
         public const string SuccessRmvMsg = "Successfully removed!";
         public const string Error = "Error";
         public const string ErrorMessage = "Failed! Something has gone wrong!";
+
+        //stored procedures
+        public const string udspGetVisitors = "EXEC dbo.udspGetVisitors @PageNumber = @PageNumber,@PageSize=@PageSize,@StartDate=@StartDate,@EndDate = @EndDate,@SearchString = @SearchString";
+
     }
 }

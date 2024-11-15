@@ -40,7 +40,7 @@
                                 <ul>
                                     @if (mY_PROFILEs.DATE_OF_BIRTH.HasValue)
                                     {
-                                        <li><i class="bi bi-rounded-right"></i> <strong>@Html.LabelFor(x=>mY_PROFILEs.DATE_OF_BIRTH) :</strong>&nbsp;  @mY_PROFILEs.DATE_OF_BIRTH.Value.ToShortDateString()</li>
+                                        <li><i class="bi bi-rounded-right"></i> <strong>@Html.LabelFor(x => mY_PROFILEs.DATE_OF_BIRTH) :</strong>&nbsp;  <span id="DateOfBirth">@mY_PROFILEs.DATE_OF_BIRTH.Value.ToShortDateString()</span></li>
                                        
                                     }   
                                     <li><i class="bi bi-rounded-right"></i> <strong>@Html.LabelFor(x=>mY_PROFILEs.MY_WEBSITE) :</strong>&nbsp; @mY_PROFILEs.MY_WEBSITE</li>
@@ -50,7 +50,7 @@
                             </div>
                             <div class="col-lg-6">
                                 <ul>
-                                    <li><i class="bi bi-rounded-right"></i> <strong>@Html.LabelFor(x=>mY_PROFILEs.AGE) :</strong> &nbsp; @mY_PROFILEs.AGE</li>
+                                    <li><i class="bi bi-rounded-right"></i> <strong>@Html.Label("AGE") :</strong> &nbsp; <span id="Age"></span></li>
                                     <li><i class="bi bi-rounded-right"></i> <strong>@Html.LabelFor(x=>mY_PROFILEs.DEGREE) :</strong>&nbsp; @mY_PROFILEs.DEGREE</li>
                                     <li><i class="bi bi-rounded-right"></i> <strong>@Html.LabelFor(x=>mY_PROFILEs.EMAIL) :</strong>&nbsp; @mY_PROFILEs.EMAIL</li>
                                     <li><i class="bi bi-rounded-right"></i> <strong>@Html.LabelFor(x=>mY_PROFILEs.HOMETOWN) :</strong>&nbsp; @mY_PROFILEs.HOMETOWN</li>
@@ -104,3 +104,25 @@
         <p>Sorry, No skills found</p>
     }
 </main><!-- End #main -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", event=>{
+    function calculateAge(birthdate) {
+        const birthDate = new Date(birthdate);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const month = today.getMonth() - birthDate.getMonth();
+
+        if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+
+        return age;
+    }
+
+    const birthdate = document.getElementById("DateOfBirth");
+    const age = calculateAge(birthdate.textContent);
+    document.getElementById("Age").textContent = age;
+})
+</script>

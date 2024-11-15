@@ -2,6 +2,7 @@
 using System.Net;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Portfolio.Utils;
+using Serilog;
 
 namespace Portfolio.Web.Common
 {
@@ -29,7 +30,7 @@ namespace Portfolio.Web.Common
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                Log.Error(ex, "I am from SendEmail");
             }
         }
 

@@ -1,5 +1,7 @@
-﻿using Portfolio.Models;
+﻿using Microsoft.Data.SqlClient;
+using Portfolio.Models;
 using Portfolio.Utils;
+using Portfolio.ViewModels;
 
 namespace Portfolio.Interfaces
 {
@@ -80,5 +82,12 @@ namespace Portfolio.Interfaces
         /// <param name="saveRequest"></param>
         /// <returns></returns>
         Task UpdateProfileAsync(SaveRequestModel<MY_PROFILE> saveRequest);
+
+        /// <summary>
+        /// Get Visitors from Database
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        Task<IList<VisitorsViewModel>> GetVisitors(SqlParameter[] parameters);
     }
 }

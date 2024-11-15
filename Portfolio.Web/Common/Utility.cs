@@ -42,7 +42,8 @@ namespace Portfolio.Web.Common
 
         public static string GetIpDetailsUrl(string? ipAddress)
         {
-            return $"http://ip-api.com/json/{ipAddress}?fields=city,country,zip,timezone,isp,org,as";
+            var _url = $"http://ip-api.com/json/{ipAddress}?fields=city,country,zip,timezone,isp,org,as";
+            return _url;
         }
     }
 }

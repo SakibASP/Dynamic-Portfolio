@@ -7,6 +7,7 @@
 input[type="text"],
 input[type="email"],
 input[type="password"],
+input[type="date"],
 input[type="number"] {
     background-color: #e9e8e6 !important;
 }
@@ -59,4 +60,28 @@ textarea {
     transition: all 0.3s ease;
     background-color: #e9e8e6 !important;
     padding: 0 5px;
+}
+
+.flex-button {
+    cursor: pointer;
+    display: inline-flex;
+    flex-direction: row;
+    gap: 10px;
+    font-size: 1rem;
+}
+
+/* Toggle Filter form container */
+#filterFormContainer {
+    margin-top: 10px;
+    display: none; /* Start hidden */
+    transform: translateX(-100%); /* Start off-screen to the left */
+    opacity: 0; /* Start invisible */
+    transition: transform 0.4s ease, opacity 0.4s ease; /* Smooth transition for slide and fade */
+    padding-bottom: 15px;
+}
+
+#filterFormContainer.show {
+    display: block; /* Show when class 'show' is added */
+    transform: translateX(0); /* Slide into place */
+    opacity: 1; /* Make visible */
 }

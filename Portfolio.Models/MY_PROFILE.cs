@@ -22,8 +22,6 @@ namespace Portfolio.Models
 
         [DisplayName("Designation")]
         public string? DESIGNATION { get; set;}
-        [DisplayName("Age")]
-        public int AGE { get; set;}
 
         [DisplayName("Website")]
         public string? MY_WEBSITE { get; set; }
