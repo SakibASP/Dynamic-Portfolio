@@ -74,7 +74,7 @@ try
         //Restricting different bot from visiting the site
         if (userAgent.Contains("Mediatoolkitbot"))
         {
-            Log.Information($"Visit by Mediatoolkitbot at {BdCurrentTime} , ip {ipAddress} url {context.Request.Path}");
+            Log.Information($"Visit by Mediatoolkitbot at [{BdCurrentTime}] , ip [{ipAddress}] url [{context.Request.Path}]");
             //context.Response.StatusCode = StatusCodes.Status403Forbidden;
             //await context.Response.WriteAsync("Access Forbidden for Mediatoolkitbot");
             //return;
@@ -82,7 +82,7 @@ try
         //this a facebook bot
         else if (userAgent.Contains("WhatsApp"))
         {
-            Log.Information($"Visit From WhatsApp at {BdCurrentTime}, ip {ipAddress} url {context.Request.Path}");
+            Log.Information($"Visit From WhatsApp at [{BdCurrentTime}], ip [{ipAddress}] url [{context.Request.Path}]");
             //context.Response.StatusCode = StatusCodes.Status403Forbidden;
             //await context.Response.WriteAsync("Sakib has restricted WhatsApp bot/spider for the site. Please use an external browser.");
             //return;
@@ -91,14 +91,14 @@ try
         {
             if (clientInfo.UserAgent.Family.Contains("bot", StringComparison.CurrentCultureIgnoreCase))
             {
-                Log.Information($"Visit by Bot at {BdCurrentTime}. name {clientInfo.UserAgent.Family}, ip {ipAddress}  url {context.Request.Path}");
+                Log.Information($"Visit by Bot at [{BdCurrentTime}]. name [{clientInfo.UserAgent.Family}], ip [{ipAddress}] url [{context.Request.Path}]");
                 //context.Response.StatusCode = StatusCodes.Status403Forbidden;
                 //await context.Response.WriteAsync("Sakib has restricted Bots for the site.");
                 //return;
             }
-            if (clientInfo.Device.Family.Contains("spider", StringComparison.CurrentCultureIgnoreCase))
+            else if (clientInfo.Device.Family.Contains("spider", StringComparison.CurrentCultureIgnoreCase))
             {
-                Log.Information($"Visit by Spider at {BdCurrentTime}. name {clientInfo.Device.Family} ip {ipAddress}  url {context.Request.Path}");
+                Log.Information($"Visit by Spider at [{BdCurrentTime}]. name [{clientInfo.Device.Family}] ip [{ipAddress}] url [{context.Request.Path}]");
                 //context.Response.StatusCode = StatusCodes.Status403Forbidden;
                 //await context.Response.WriteAsync("Sakib has restricted Spiders for the site.");
                 //return;
@@ -108,7 +108,7 @@ try
         // Restrict access to Identity/Register page
         if (context.Request.Path.StartsWithSegments("/Identity/Account/Register"))
         {
-            Log.Information($"Access attempt to Register page at {BdCurrentTime} ip {ipAddress}");
+            Log.Information($"Access attempt to Register page at [{BdCurrentTime}] ip [{ipAddress}]");
             context.Response.StatusCode = StatusCodes.Status403Forbidden;
             await context.Response.WriteAsync("Access to registration is denied.");
             return;

@@ -173,7 +173,9 @@ namespace Portfolio.Web.Controllers
             }
             catch (Exception ex)
             {
-                TempData[Constant.Error] = $"Error : {ex.Message}";
+                TempData[Constant.Error] = Constant.ErrorMessage;
+                Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
+
             }
 
             return RedirectToAction(returnActionName);

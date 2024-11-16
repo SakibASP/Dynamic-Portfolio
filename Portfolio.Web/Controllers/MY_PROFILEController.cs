@@ -168,9 +168,11 @@ namespace Portfolio.Web.Controllers
                     return RedirectToAction(nameof(Index));
                 }
             }
-            catch
+            catch(Exception ex)
             {
-                //DO SOMTHING
+                TempData[Constant.Error] = Constant.ErrorMessage;
+                Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
+
             }
             return View(mY_PROFILE);
         }

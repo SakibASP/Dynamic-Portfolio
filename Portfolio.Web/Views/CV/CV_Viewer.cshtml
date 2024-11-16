@@ -22,7 +22,7 @@
 <section>
     <div class="container-fluid py-5">
         <div class="text-center">
-            <a asp-action="DownloadCV" asp-controller="CV" asp-route-filePath="@ViewBag.FilePath" class="btn btn-info">Download</a>
+            <a asp-action="DownloadCV" asp-controller="CV" asp-route-filePath="@ViewBag.FilePath" class="btn btn-success"><i class="bi bi-download"></i> Download</a>
         </div>
         <div class="cv-container">
             <iframe src="@Url.Action("ShowCV", "CV",new{ filePath = @ViewBag.FilePath })" width="1000" height="600"></iframe>

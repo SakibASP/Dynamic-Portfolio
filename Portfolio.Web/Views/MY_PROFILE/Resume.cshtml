@@ -15,11 +15,11 @@
     <section id="resume" class="resume">
         
         <div class="container" data-aos="fade-up">
-            <div>
-                <a class="btn btn-info" asp-action="CV_Viewer" asp-controller="CV" target="_blank">View Pdf</a>
+            <div style="text-align: right;">
+                <a class="btn btn-dark" asp-action="CV_Viewer" asp-controller="CV" target="_blank"><i class="bi bi-file-pdf"></i> Pdf</a>
             </div>
             <div class="section-title">
-                <h2>Resume</h2>
+                <h2 id="changing-heading">Resume</h2>
                 @if(mY_PROFILEs != null){
                     <p>@mY_PROFILEs.DES_1</p>
                 }
