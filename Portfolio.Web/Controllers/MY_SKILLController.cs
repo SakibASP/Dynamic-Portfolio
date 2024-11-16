@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using Portfolio.Models;
 using Portfolio.Web.Common;
 using Portfolio.Web.Data;
-using Portfolio.Models;
 
 namespace Portfolio.Web.Controllers
 {
@@ -51,7 +49,7 @@ namespace Portfolio.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AUTO_ID,SKILL_NAME,SKILL_PERCENTAGE")] MY_SKILLS mY_SKILLS)
+        public async Task<IActionResult> Create(MY_SKILLS mY_SKILLS)
         {
             if (ModelState.IsValid)
             {
@@ -84,7 +82,7 @@ namespace Portfolio.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AUTO_ID,SKILL_NAME,SKILL_PERCENTAGE")] MY_SKILLS mY_SKILLS)
+        public async Task<IActionResult> Edit(int id, MY_SKILLS mY_SKILLS)
         {
             if (id != mY_SKILLS.AUTO_ID)
             {
