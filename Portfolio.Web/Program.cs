@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using Portfolio.Web.Data;
 using Portfolio.Web.Middlewares;
 using Portfolio.Web.ServiceExtention;
 using Serilog.Events;
@@ -36,13 +34,7 @@ try
     var builder = WebApplication.CreateBuilder(args);
 
     // Add services to the container.
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlServer(connectionString));
-    builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-    //Registering different service lifetime
-    builder.Services.AddConfigurations();
+    builder.Services.AddConfigurations(builder.Configuration);
     builder.Services.AddAllTransient();
     builder.Services.AddAllScoped();
     builder.Services.AddAllSingleton();

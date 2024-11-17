@@ -38,6 +38,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Portfolio.Interfaces\Portfolio.Interfaces.csproj" />
     <ProjectReference Include="..\Portfolio.Models\Portfolio.Models.csproj" />
+    <ProjectReference Include="..\Portfolio.Repositories\Portfolio.Repositories.csproj" />
     <ProjectReference Include="..\Portfolio.Utils\Portfolio.Utils.csproj" />
     <ProjectReference Include="..\Portfolio.ViewModels\Portfolio.ViewModels.csproj" />
   </ItemGroup>

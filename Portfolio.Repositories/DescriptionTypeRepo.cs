@@ -2,13 +2,12 @@
 using Portfolio.Interfaces;
 using Portfolio.Models;
 using Portfolio.Utils;
-using Portfolio.Web.Data;
 
-namespace Portfolio.Web.Repository
+namespace Portfolio.Repositories
 {
-    public class DescriptionTypeRepo(ApplicationDbContext context) : IDescriptionTypeRepo
+    public class DescriptionTypeRepo(PortfolioDbContext context) : IDescriptionTypeRepo
     {
-        private readonly ApplicationDbContext _context = context;
+        private readonly PortfolioDbContext _context = context;
         public async Task AddDescriptionTypeAsync(SaveRequestModel<DESCRIPTION_TYPE> saveRequestModel)
         {
             ArgumentNullException.ThrowIfNull(saveRequestModel.Item);

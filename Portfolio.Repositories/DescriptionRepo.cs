@@ -2,13 +2,12 @@
 using Portfolio.Interfaces;
 using Portfolio.Models;
 using Portfolio.Utils;
-using Portfolio.Web.Data;
 
-namespace Portfolio.Web.Repository
+namespace Portfolio.Repositories
 {
-    public class DescriptionRepo(ApplicationDbContext context) : IDescriptionRepo
+    public class DescriptionRepo(PortfolioDbContext context) : IDescriptionRepo
     {
-        private readonly ApplicationDbContext _context = context;
+        private readonly PortfolioDbContext _context = context;
 
         public async Task AddDescriptionAsync(SaveRequestModel<DESCRIPTION> saveRequestModel)
         {

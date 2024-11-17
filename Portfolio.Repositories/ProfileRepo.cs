@@ -4,13 +4,12 @@ using Portfolio.Interfaces;
 using Portfolio.Models;
 using Portfolio.Utils;
 using Portfolio.ViewModels;
-using Portfolio.Web.Data;
 
-namespace Portfolio.Web.Repository
+namespace Portfolio.Repositories
 {
-    public class ProfileRepo(ApplicationDbContext context) : IProfileRepo
+    public class ProfileRepo(PortfolioDbContext context) : IProfileRepo
     {
-        private readonly ApplicationDbContext _context = context;
+        private readonly PortfolioDbContext _context = context;
         public async Task<IList<CONTACTS>> GetContactsAsync() => await _context.CONTACTS.ToListAsync();
 
         public async Task<IList<DESCRIPTION>> GetDescriptionsAsync() => await _context.DESCRIPTION.ToListAsync();

@@ -1,6 +1,6 @@
 ﻿using Portfolio.Interfaces;
+using Portfolio.Repositories;
 using Portfolio.Web.Common;
-using Portfolio.Web.Repository;
 
 namespace Portfolio.Web.ServiceExtention
 {
@@ -12,6 +12,7 @@ namespace Portfolio.Web.ServiceExtention
             serviceCollection.AddScoped<IProfileRepo, ProfileRepo>();
             serviceCollection.AddScoped<IDescriptionTypeRepo, DescriptionTypeRepo>();
             serviceCollection.AddScoped<IDescriptionRepo, DescriptionRepo>();
+            serviceCollection.AddScoped<ISkillsRepo, SkillsRepo>();
 
             return serviceCollection;
         }
