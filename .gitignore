@@ -16,3 +16,5 @@
 /Portfolio.Models/bin/Release/net8.0
 /Portfolio.Utils/bin/Release/net8.0
 /Portfolio.ViewModels/bin/Release/net8.0
+/Portfolio.Repositories/bin/Debug/net8.0
+/Portfolio.Repositories/obj
