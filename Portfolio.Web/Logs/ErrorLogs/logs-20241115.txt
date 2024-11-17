@@ -1,4 +1,0 @@
-2024-11-15 03:16:33.240 +06:00 [ERR] I am from MY_PROFILE Contact... 
-System.Exception: The specified string is not in the form required for an e-mail address.
-   at Portfolio.Web.Common.SendEmail.SendEmailAsync(String email, String subject, String htmlMessage) in D:\Sakib Git\Dynamic-Portfolio\Portfolio.Web\Common\SendEmail.cs:line 36
-   at Portfolio.Web.Controllers.MY_PROFILEController.Contact(CONTACTS objContact) in D:\Sakib Git\Dynamic-Portfolio\Portfolio.Web\Controllers\MY_PROFILEController.cs:line 70

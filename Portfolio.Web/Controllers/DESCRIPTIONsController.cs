@@ -1,21 +1,26 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+using Portfolio.Interfaces;
 using Portfolio.Models;
+using Portfolio.Utils;
 using Portfolio.Web.Common;
-using Portfolio.Web.Data;
+using Serilog;
 
 namespace Portfolio.Web.Controllers
 {
-    public class DESCRIPTIONsController(ApplicationDbContext context) : BaseController
+    [Authorize]
+    public class DESCRIPTIONsController(IDescriptionRepo description, IProfileRepo profile, IDescriptionTypeRepo type) : BaseController
     {
-        private readonly ApplicationDbContext _context = context;
+        private readonly IDescriptionRepo _description = description;
+        private readonly IProfileRepo _profile = profile;
+        private readonly IDescriptionTypeRepo _type = type;
 
         // GET: DESCRIPTIONs
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.DESCRIPTION.Include(d => d.DESCRIPTION_TYPE_).Include(p=>p.PROJECT_);
-            return View(await applicationDbContext.OrderBy(x=>x.PROJECT_ID).ThenBy(x=>x.SORT_ORDER).ToListAsync());
+            var descriptions = await _description.GetAllDescriptionsAsync();
+            return View(descriptions);
         }
 
         // GET: DESCRIPTIONs/Details/5
@@ -26,9 +31,7 @@ namespace Portfolio.Web.Controllers
                 return NotFound();
             }
 
-            var dESCRIPTION = await _context.DESCRIPTION
-                .Include(d => d.DESCRIPTION_TYPE_)
-                .FirstOrDefaultAsync(m => m.AUTO_ID == id);
+            var dESCRIPTION = await _description.GetDescriptionByIdAsync(id);
             if (dESCRIPTION == null)
             {
                 return NotFound();
@@ -38,11 +41,11 @@ namespace Portfolio.Web.Controllers
         }
 
         // GET: DESCRIPTIONs/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["TYPE_ID"] = new SelectList(_context.DESCRIPTION_TYPE, "AUTO_ID", "TYPE");
-            ViewData["PROJECT_ID"] = new SelectList(_context.PROJECTS, "AUTO_ID", "PROJECT_NAME");
-            ViewData["EXPERIENCE_ID"] = new SelectList(_context.EXPERIENCE, "AUTO_ID", "INSTITUTE");
+            ViewData["TYPE_ID"] = new SelectList(await _type.GetAllDescriptionTypesAsync(), "AUTO_ID", "TYPE");
+            ViewData["PROJECT_ID"] = new SelectList(await _profile.GetProjectsAsync(), "AUTO_ID", "PROJECT_NAME");
+            ViewData["EXPERIENCE_ID"] = new SelectList(await _profile.GetExperiencesAsync(), "AUTO_ID", "INSTITUTE");
             return View();
         }
 
@@ -53,17 +56,21 @@ namespace Portfolio.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(DESCRIPTION dESCRIPTION)
         {
-            if (ModelState.IsValid)
+            try
             {
-                dESCRIPTION.CREATED_BY = User.Identity!.Name;
-                dESCRIPTION.CREATED_DATE = DateTime.Now;
-                _context.Add(dESCRIPTION);
-                await _context.SaveChangesAsync();
+                var saveParameter = GenerateParameter.SingleModel<DESCRIPTION>(dESCRIPTION, User.Identity!.Name, BdCurrentTime);
+                await _description.AddDescriptionAsync(saveParameter);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TYPE_ID"] = new SelectList(_context.DESCRIPTION_TYPE, "AUTO_ID", "TYPE", dESCRIPTION.TYPE_ID);
-            ViewData["PROJECT_ID"] = new SelectList(_context.PROJECTS, "AUTO_ID", "PROJECT_NAME", dESCRIPTION.PROJECT_ID);
-            ViewData["EXPERIENCE_ID"] = new SelectList(_context.EXPERIENCE, "AUTO_ID", "INSTITUTE", dESCRIPTION.EXPERIENCE_ID);
+            catch (Exception ex)
+            {
+                TempData[Constant.Error] = Constant.ErrorMessage;
+                Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
+            }
+
+            ViewData["TYPE_ID"] = new SelectList(await _type.GetAllDescriptionTypesAsync(), "AUTO_ID", "TYPE", dESCRIPTION.TYPE_ID);
+            ViewData["PROJECT_ID"] = new SelectList(await _profile.GetProjectsAsync(), "AUTO_ID", "PROJECT_NAME", dESCRIPTION.PROJECT_ID);
+            ViewData["EXPERIENCE_ID"] = new SelectList(await _profile.GetExperiencesAsync(), "AUTO_ID", "INSTITUTE", dESCRIPTION.EXPERIENCE_ID);
             return View(dESCRIPTION);
         }
 
@@ -75,14 +82,15 @@ namespace Portfolio.Web.Controllers
                 return NotFound();
             }
 
-            var dESCRIPTION = await _context.DESCRIPTION.FindAsync(id);
+            var dESCRIPTION = await _description.GetDescriptionByIdAsync(id);
             if (dESCRIPTION == null)
             {
                 return NotFound();
             }
-            ViewData["TYPE_ID"] = new SelectList(_context.DESCRIPTION_TYPE, "AUTO_ID", "TYPE", dESCRIPTION.TYPE_ID);
-            ViewData["PROJECT_ID"] = new SelectList(_context.PROJECTS, "AUTO_ID", "PROJECT_NAME", dESCRIPTION.PROJECT_ID);
-            ViewData["EXPERIENCE_ID"] = new SelectList(_context.EXPERIENCE, "AUTO_ID", "INSTITUTE", dESCRIPTION.EXPERIENCE_ID);
+
+            ViewData["TYPE_ID"] = new SelectList(await _type.GetAllDescriptionTypesAsync(), "AUTO_ID", "TYPE", dESCRIPTION.TYPE_ID);
+            ViewData["PROJECT_ID"] = new SelectList(await _profile.GetProjectsAsync(), "AUTO_ID", "PROJECT_NAME", dESCRIPTION.PROJECT_ID);
+            ViewData["EXPERIENCE_ID"] = new SelectList(await _profile.GetExperiencesAsync(), "AUTO_ID", "INSTITUTE", dESCRIPTION.EXPERIENCE_ID);
             return View(dESCRIPTION);
         }
 
@@ -98,31 +106,21 @@ namespace Portfolio.Web.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    dESCRIPTION.MODIFIED_BY = User.Identity!.Name;
-                    dESCRIPTION.MODIFIED_DATE = DateTime.Now;
-                    _context.Update(dESCRIPTION);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DESCRIPTIONExists(dESCRIPTION.AUTO_ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                var saveParameter = GenerateParameter.SingleModel<DESCRIPTION>(dESCRIPTION, User.Identity!.Name, BdCurrentTime);
+                await _description.UpdateDescriptionAsync(saveParameter);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TYPE_ID"] = new SelectList(_context.DESCRIPTION_TYPE, "AUTO_ID", "TYPE", dESCRIPTION.TYPE_ID);
-            ViewData["PROJECT_ID"] = new SelectList(_context.PROJECTS, "AUTO_ID", "PROJECT_NAME", dESCRIPTION.PROJECT_ID);
-            ViewData["EXPERIENCE_ID"] = new SelectList(_context.EXPERIENCE, "AUTO_ID", "INSTITUTE", dESCRIPTION.EXPERIENCE_ID);
+            catch (Exception ex)
+            {
+                TempData[Constant.Error] = Constant.ErrorMessage;
+                Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
+            }
+
+            ViewData["TYPE_ID"] = new SelectList(await _type.GetAllDescriptionTypesAsync(), "AUTO_ID", "TYPE", dESCRIPTION.TYPE_ID);
+            ViewData["PROJECT_ID"] = new SelectList(await _profile.GetProjectsAsync(), "AUTO_ID", "PROJECT_NAME", dESCRIPTION.PROJECT_ID);
+            ViewData["EXPERIENCE_ID"] = new SelectList(await _profile.GetExperiencesAsync(), "AUTO_ID", "INSTITUTE", dESCRIPTION.EXPERIENCE_ID);
             return View(dESCRIPTION);
         }
 
@@ -134,9 +132,7 @@ namespace Portfolio.Web.Controllers
                 return NotFound();
             }
 
-            var dESCRIPTION = await _context.DESCRIPTION
-                .Include(d => d.DESCRIPTION_TYPE_)
-                .FirstOrDefaultAsync(m => m.AUTO_ID == id);
+            var dESCRIPTION = await _description.GetDescriptionByIdAsync(id);
             if (dESCRIPTION == null)
             {
                 return NotFound();
@@ -150,19 +146,16 @@ namespace Portfolio.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var dESCRIPTION = await _context.DESCRIPTION.FindAsync(id);
-            if (dESCRIPTION != null)
+            try
             {
-                _context.DESCRIPTION.Remove(dESCRIPTION);
+                await _description.RemoveDescriptionAsync(id);
             }
-
-            await _context.SaveChangesAsync();
+            catch (Exception ex)
+            {
+                TempData[Constant.Error] = Constant.ErrorMessage;
+                Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
+            }
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool DESCRIPTIONExists(int id)
-        {
-            return _context.DESCRIPTION.Any(e => e.AUTO_ID == id);
         }
     }
 }

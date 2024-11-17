@@ -1,2 +1,0 @@
-2024-11-15 04:39:21.365 +06:00 [INF] Access attempt to Register page at 2024-11-15 4:39:21 AM
-2024-11-15 04:41:15.882 +06:00 [INF] Access attempt to Register page at 2024-11-15 4:41:15 AM

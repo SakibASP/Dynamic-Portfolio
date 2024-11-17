@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using Portfolio.Models;
 using Portfolio.Web.Common;
 using Portfolio.Web.Data;
-using Portfolio.Models;
 
 namespace Portfolio.Web.Controllers
 {
+    [Authorize]
     public class PROJECTSController(ApplicationDbContext context) : BaseController
     {
         private readonly ApplicationDbContext _context = context;

@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    var rootpath = (string)ViewBag.rootPath;
 }
 
 <section>
@@ -28,7 +29,11 @@
             @Html.DisplayNameFor(model => model.COVER_IMAGE)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.COVER_IMAGE)
+            @if (Model.COVER_IMAGE != null)
+            {
+                <img class="img-fluid" style="height:120px;width:120px;" src="@Url.Content(Model.COVER_IMAGE.Replace(rootpath,""))" />
+                @* <img class="img-fluid" style="height:120px;width:120px;" src="data:ImageData;base64,@System.Convert.ToBase64String(item.COVER_IMAGE)" /> *@
+            }
         </dd>
     </dl>
 </div>

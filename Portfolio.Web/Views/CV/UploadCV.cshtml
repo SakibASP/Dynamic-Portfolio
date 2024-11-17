@@ -1,7 +1,8 @@
 ﻿
 <section>
-    <div class="container-fluid py-5">
+    <div class="container-fluid p-5">
         <h1>File Upload</h1>
+        <div id="file-preview"></div>
         <form id="uploadForm" enctype="multipart/form-data">
             <input type="file" name="file" id="fileInput">
             <button type="submit" class="btn btn-success">Upload</button>
@@ -12,6 +13,7 @@
 </section>
 
 @section Scripts {
+    <script src="~/js/file-preview.js"></script>
     <script>
         const uploadForm = document.getElementById('uploadForm');
         const fileInput = document.getElementById('fileInput');

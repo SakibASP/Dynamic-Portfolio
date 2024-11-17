@@ -17,6 +17,10 @@ textarea {
     background-color: #e9e8e6 !important;
 }
 
+select {
+    background-color: #e9e8e6 !important;
+}
+
 .input-container {
     position: relative;
     margin: 10px 0;

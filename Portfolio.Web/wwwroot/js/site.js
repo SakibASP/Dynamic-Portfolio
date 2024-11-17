@@ -39,14 +39,14 @@ const toggleFilterButton = function () {
         filterToggleButton.addEventListener('click', function () {
             if (filterFormContainer.classList.contains('show')) {
                 filterFormContainer.classList.remove('show');
-                filterToggleIcon.classList.remove('fa-minus');
-                filterToggleIcon.classList.add('fa-plus');
+                filterToggleIcon.classList.remove('bi-minus');
+                filterToggleIcon.classList.add('bi-plus');
                 setTimeout(() => {
                     filterFormContainer.style.display = 'none';
                 }, 400);
             } else {
-                filterToggleIcon.classList.remove('fa-plus');
-                filterToggleIcon.classList.add('fa-minus');
+                filterToggleIcon.classList.remove('bi-plus');
+                filterToggleIcon.classList.add('bi-minus');
                 filterFormContainer.style.display = 'block';
                 setTimeout(() => {
                     filterFormContainer.classList.add('show');

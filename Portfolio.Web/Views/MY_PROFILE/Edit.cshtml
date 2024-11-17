@@ -99,9 +99,10 @@
 
                     <div class="form-group">
                         <label asp-for="PROFILE_IMAGE" class="control-label"></label>
-                        <input type="file" accept="image/*" asp-for="PROFILE_IMAGE" class="form-control-file" multiple="multiple" />
+                        <input type="file" id="fileInput" accept="image/*" asp-for="PROFILE_IMAGE" class="form-control-file" multiple="multiple" />
                         <span asp-validation-for="PROFILE_IMAGE" class="text-danger"></span>
                     </div>
+                    <div id="file-preview"></div>
                     <div class="form-group">
                         <input type="submit" value="Save" class="btn btn-primary" />
                     </div>
@@ -117,4 +118,5 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/file-preview.js"></script>
 }

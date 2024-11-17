@@ -4,70 +4,80 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<section>
+    <div class="container-fluid p-5">
+        <h1>Edit</h1>
 
-<h4>DESCRIPTION</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="AUTO_ID" />
-            <input type="hidden" asp-for="CREATED_BY" />
-            <input type="hidden" asp-for="CREATED_DATE" />
-            <div class="form-group">
-                <label asp-for="DESCRIPTION_TEXT" class="control-label"></label>
-                <input asp-for="DESCRIPTION_TEXT" class="form-control" />
-                <span asp-validation-for="DESCRIPTION_TEXT" class="text-danger"></span>
+        <h4>DESCRIPTION</h4>
+        <hr />
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="AUTO_ID" />
+                    <input type="hidden" asp-for="CREATED_BY" />
+                    <input type="hidden" asp-for="CREATED_DATE" />
+                    <div class="form-group">
+                        <label asp-for="DESCRIPTION_TEXT" class="control-label"></label>
+                        <input asp-for="DESCRIPTION_TEXT" class="form-control" />
+                        <span asp-validation-for="DESCRIPTION_TEXT" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="TYPE_ID" class="control-label"></label>
+                        <select asp-for="TYPE_ID" class="form-control" asp-items="ViewBag.TYPE_ID">
+                            <option>please select...</option>
+                        </select>
+                        <span asp-validation-for="TYPE_ID" class="text-danger"></span>
+                    </div>
+                    <div class="form-group" id="idProject">
+                        <label asp-for="PROJECT_ID" class="control-label"></label>
+                        <select asp-for="PROJECT_ID" class="form-control" asp-items="ViewBag.PROJECT_ID">
+                            <option>please select...</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="idExperience">
+                        <label asp-for="EXPERIENCE_ID" class="control-label"></label>
+                        <select asp-for="EXPERIENCE_ID" class="form-control" asp-items="ViewBag.EXPERIENCE_ID">
+                            <option>please select...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="SORT_ORDER" class="control-label"></label>
+                        <input asp-for="SORT_ORDER" class="form-control" />
+                        <span asp-validation-for="SORT_ORDER" class="text-danger"></span>
+                    </div>
+                    @*  <div class="form-group">
+                    <label asp-for="CREATED_BY" class="control-label"></label>
+                    <input asp-for="CREATED_BY" class="form-control" />
+                    <span asp-validation-for="CREATED_BY" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                    <label asp-for="CREATED_DATE" class="control-label"></label>
+                    <input asp-for="CREATED_DATE" class="form-control" />
+                    <span asp-validation-for="CREATED_DATE" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                    <label asp-for="MODIFIED_BY" class="control-label"></label>
+                    <input asp-for="MODIFIED_BY" class="form-control" />
+                    <span asp-validation-for="MODIFIED_BY" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                    <label asp-for="MODIFIED_DATE" class="control-label"></label>
+                    <input asp-for="MODIFIED_DATE" class="form-control" />
+                    <span asp-validation-for="MODIFIED_DATE" class="text-danger"></span>
+                    </div> *@
+                    <div class="form-group">
+                        <input type="submit" value="Save" class="btn btn-primary" />
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="TYPE_ID" class="control-label"></label>
-                <select asp-for="TYPE_ID" class="form-control" asp-items="ViewBag.TYPE_ID"></select>
-                <span asp-validation-for="TYPE_ID" class="text-danger"></span>
-            </div>
-            <div class="form-group" id="idProject">
-                <label asp-for="PROJECT_ID" class="control-label"></label>
-                <select asp-for="PROJECT_ID" class="form-control" asp-items="ViewBag.PROJECT_ID"></select>
-            </div>
-            <div class="form-group" id="idExperience">
-                <label asp-for="EXPERIENCE_ID" class="control-label"></label>
-                <select asp-for="EXPERIENCE_ID" class="form-control" asp-items="ViewBag.EXPERIENCE_ID"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="SORT_ORDER" class="control-label"></label>
-                <input asp-for="SORT_ORDER" class="form-control" />
-                <span asp-validation-for="SORT_ORDER" class="text-danger"></span>
-            </div>
-           @*  <div class="form-group">
-                <label asp-for="CREATED_BY" class="control-label"></label>
-                <input asp-for="CREATED_BY" class="form-control" />
-                <span asp-validation-for="CREATED_BY" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CREATED_DATE" class="control-label"></label>
-                <input asp-for="CREATED_DATE" class="form-control" />
-                <span asp-validation-for="CREATED_DATE" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MODIFIED_BY" class="control-label"></label>
-                <input asp-for="MODIFIED_BY" class="form-control" />
-                <span asp-validation-for="MODIFIED_BY" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MODIFIED_DATE" class="control-label"></label>
-                <input asp-for="MODIFIED_DATE" class="form-control" />
-                <span asp-validation-for="MODIFIED_DATE" class="text-danger"></span>
-            </div> *@
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
+
+        <div>
+            <a asp-action="Index">Back to List</a>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+</section>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

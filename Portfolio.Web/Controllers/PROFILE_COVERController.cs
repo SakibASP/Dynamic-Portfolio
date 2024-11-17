@@ -36,7 +36,7 @@ namespace Portfolio.Web.Controllers
             {
                 return NotFound();
             }
-
+            ViewData["rootPath"] = _webHostEnvironment.WebRootPath;
             return View(pROFILE_COVER);
         }
 

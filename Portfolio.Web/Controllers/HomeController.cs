@@ -2,11 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Portfolio.Web.Common;
 using Portfolio.Web.Data;
-using Portfolio.Models;
 using System.Diagnostics;
-using Microsoft.AspNetCore.Http.Extensions;
-using UAParser;
-using Microsoft.AspNetCore.Hosting;
 using Portfolio.Web.Models;
 
 namespace Portfolio.Web.Controllers

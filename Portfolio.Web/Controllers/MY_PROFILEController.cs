@@ -22,36 +22,36 @@ namespace Portfolio.Web.Controllers
         public async Task<IActionResult> Index()
         {
             ViewData["rootPath"] = _webHostEnvironment.WebRootPath;
-            return View(await _profile.GetProflie());
+            return View(await _profile.GetProflieAsync());
         }
 
         public async Task<IActionResult> About()
         {
             ViewData["rootPath"] = _webHostEnvironment.WebRootPath;
-            ViewData["SKILLS"] = await _profile.GetSkills();
-            ViewData["PROFILES"] = await _profile.GetSingleProflie();
+            ViewData["SKILLS"] = await _profile.GetSkillsAsync();
+            ViewData["PROFILES"] = await _profile.GetSingleProflieAsync();
             return View();
         }
 
         public async Task<IActionResult> Resume()
         {
-            ViewData["PROFILES"] = await _profile.GetSingleProflie();
-            ViewData["EDUCATIONS"] = await _profile.GetEducations();
-            ViewData["EXPERIENCEs"] = await _profile.GetExperiences();
-            ViewData["DESCRIPTIONs"] = await _profile.GetDescriptions();
+            ViewData["PROFILES"] = await _profile.GetSingleProflieAsync();
+            ViewData["EDUCATIONS"] = await _profile.GetEducationsAsync();
+            ViewData["EXPERIENCEs"] = await _profile.GetExperiencesAsync();
+            ViewData["DESCRIPTIONs"] = await _profile.GetDescriptionsAsync();
             return View();
         }
 
         public async Task<IActionResult> Projects()
         {
-            ViewData["PROFILES"] = await _profile.GetSingleProflie();
-            ViewData["PROJECTS"] = await _profile.GetProjects();
+            ViewData["PROFILES"] = await _profile.GetSingleProflieAsync();
+            ViewData["PROJECTS"] = await _profile.GetProjectsAsync();
             return View();
         }
 
         public async Task<IActionResult> Contact()
         {
-            ViewData["PROFILES"] = await _profile.GetSingleProflie();
+            ViewData["PROFILES"] = await _profile.GetSingleProflieAsync();
             return View();
         }
 
@@ -62,7 +62,7 @@ namespace Portfolio.Web.Controllers
             ViewData["EndDate"] = endDate?.ToString("yyyy-MM-dd");
             var IsAuthenticated = User.Identity?.IsAuthenticated;
             ViewData["IsAuthenticated"] = IsAuthenticated ?? false;
-            int pageSize = 10;
+            int pageSize = 1000;
             int pageNumber = page ?? 1;
             SqlParameter param1 = new("@PageNumber", SqlDbType.Int)
             {
@@ -86,7 +86,7 @@ namespace Portfolio.Web.Controllers
             };
 
             var @params = new[] { param1, param2, param3, param4, param5 };
-            var visitors = await _profile.GetVisitors(@params) ?? [];
+            var visitors = await _profile.GetVisitorsAsync(@params) ?? [];
             var totalRows = visitors.FirstOrDefault()?.TotalRows ?? 0;
             ViewData["TotalRecords"] = totalRows;
             return View(await visitors.ToPagedListAsync(pageNumber, pageSize, totalRows));
@@ -181,7 +181,7 @@ namespace Portfolio.Web.Controllers
         [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
-            var mY_PROFILE = await _profile.GetSingleProflieById(id);
+            var mY_PROFILE = await _profile.GetSingleProflieByIdAsync(id);
             if (mY_PROFILE == null)
             {
                 return NotFound();

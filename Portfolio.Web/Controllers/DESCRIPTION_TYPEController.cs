@@ -1,19 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Portfolio.Web.Common;
-using Portfolio.Web.Data;
 using Portfolio.Models;
+using Microsoft.AspNetCore.Authorization;
+using Portfolio.Interfaces;
+using Portfolio.Utils;
+using Serilog;
 
 namespace Portfolio.Web.Controllers
 {
-    public class DESCRIPTION_TYPEController(ApplicationDbContext context) : BaseController
+    [Authorize]
+    public class DESCRIPTION_TYPEController(IDescriptionTypeRepo type) : BaseController
     {
-        private readonly ApplicationDbContext _context = context;
-
+        private readonly IDescriptionTypeRepo _type = type;
         // GET: DESCRIPTION_TYPE
         public async Task<IActionResult> Index()
         {
-            return View(await _context.DESCRIPTION_TYPE.ToListAsync());
+            var _types = await _type.GetAllDescriptionTypesAsync();
+            return View(_types);
         }
 
         // GET: DESCRIPTION_TYPE/Details/5
@@ -24,8 +27,7 @@ namespace Portfolio.Web.Controllers
                 return NotFound();
             }
 
-            var dESCRIPTION_TYPE = await _context.DESCRIPTION_TYPE
-                .FirstOrDefaultAsync(m => m.AUTO_ID == id);
+            var dESCRIPTION_TYPE = await _type.GetDescriptionTypeByIdAsync(id);
             if (dESCRIPTION_TYPE == null)
             {
                 return NotFound();
@@ -45,13 +47,18 @@ namespace Portfolio.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AUTO_ID,TYPE")] DESCRIPTION_TYPE dESCRIPTION_TYPE)
+        public async Task<IActionResult> Create(DESCRIPTION_TYPE dESCRIPTION_TYPE)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(dESCRIPTION_TYPE);
-                await _context.SaveChangesAsync();
+                var saveParameter = GenerateParameter.SingleModel<DESCRIPTION_TYPE>(dESCRIPTION_TYPE, User.Identity?.Name, BdCurrentTime);
+                await _type.AddDescriptionTypeAsync(saveParameter);
                 return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData[Constant.Error] = Constant.ErrorMessage;
+                Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
             }
             return View(dESCRIPTION_TYPE);
         }
@@ -64,7 +71,7 @@ namespace Portfolio.Web.Controllers
                 return NotFound();
             }
 
-            var dESCRIPTION_TYPE = await _context.DESCRIPTION_TYPE.FindAsync(id);
+            var dESCRIPTION_TYPE = await _type.GetDescriptionTypeByIdAsync(id);
             if (dESCRIPTION_TYPE == null)
             {
                 return NotFound();
@@ -77,32 +84,23 @@ namespace Portfolio.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AUTO_ID,TYPE")] DESCRIPTION_TYPE dESCRIPTION_TYPE)
+        public async Task<IActionResult> Edit(int id,  DESCRIPTION_TYPE dESCRIPTION_TYPE)
         {
             if (id != dESCRIPTION_TYPE.AUTO_ID)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(dESCRIPTION_TYPE);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DESCRIPTION_TYPEExists(dESCRIPTION_TYPE.AUTO_ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                var saveParameter = GenerateParameter.SingleModel<DESCRIPTION_TYPE>(dESCRIPTION_TYPE, User.Identity?.Name, BdCurrentTime);
+                await _type.UpdateDescriptionTypeAsync(saveParameter);
                 return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData[Constant.Error] = Constant.ErrorMessage;
+                Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
             }
             return View(dESCRIPTION_TYPE);
         }
@@ -115,8 +113,7 @@ namespace Portfolio.Web.Controllers
                 return NotFound();
             }
 
-            var dESCRIPTION_TYPE = await _context.DESCRIPTION_TYPE
-                .FirstOrDefaultAsync(m => m.AUTO_ID == id);
+            var dESCRIPTION_TYPE = await _type.GetDescriptionTypeByIdAsync(id);
             if (dESCRIPTION_TYPE == null)
             {
                 return NotFound();
@@ -130,19 +127,16 @@ namespace Portfolio.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var dESCRIPTION_TYPE = await _context.DESCRIPTION_TYPE.FindAsync(id);
-            if (dESCRIPTION_TYPE != null)
+            try
             {
-                _context.DESCRIPTION_TYPE.Remove(dESCRIPTION_TYPE);
+                await _type.RemoveDescriptionTypeAsync(id);
             }
-
-            await _context.SaveChangesAsync();
+            catch (Exception ex)
+            {
+                TempData[Constant.Error] = Constant.ErrorMessage;
+                Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
+            }
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool DESCRIPTION_TYPEExists(int id)
-        {
-            return _context.DESCRIPTION_TYPE.Any(e => e.AUTO_ID == id);
         }
     }
 }

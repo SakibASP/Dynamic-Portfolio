@@ -3,7 +3,7 @@
 <br />
 
 <section>
-    <div class="container-fluid py-5">
+    <div class="container-fluid p-5">
         @if (@TempData["State"] != null)
         {
             if (!string.IsNullOrEmpty(@TempData["State"].ToString()))
@@ -19,7 +19,7 @@
             <a asp-action="ClearCVFolder" style="margin: 5px;" class="btn btn-danger">Clear</a>
             <a asp-action="UploadCV" style="margin: 5px;" class="btn btn-primary">Upload</a>
         </div>
-        <table class="table table-dark">
+        <table class="table">
             <thead>
                 <tr>
                     <th>Name</th>

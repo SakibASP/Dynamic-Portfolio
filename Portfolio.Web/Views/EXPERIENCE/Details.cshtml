@@ -5,40 +5,44 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<section>
+    <div class="container-fluid p-5">
+        <h1>Details</h1>
 
-<div>
-    <h4>EXPERIENCE</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DESIGNATION)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DESIGNATION)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FROM_DATE)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FROM_DATE)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TO_DATE)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TO_DATE)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.INSTITUTE)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.INSTITUTE)
-        </dd>
-       
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.AUTO_ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+        <div>
+            <h4>EXPERIENCE</h4>
+            <hr />
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.DESIGNATION)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.DESIGNATION)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.FROM_DATE)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.FROM_DATE)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.TO_DATE)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.TO_DATE)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.INSTITUTE)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.INSTITUTE)
+                </dd>
+
+            </dl>
+        </div>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model?.AUTO_ID">Edit</a> |
+            <a asp-action="Index">Back to List</a>
+        </div>
+    </div>
+</section>

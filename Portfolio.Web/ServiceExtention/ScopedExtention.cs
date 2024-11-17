@@ -10,6 +10,8 @@ namespace Portfolio.Web.ServiceExtention
         {
             serviceCollection.AddScoped<SendEmail>();
             serviceCollection.AddScoped<IProfileRepo, ProfileRepo>();
+            serviceCollection.AddScoped<IDescriptionTypeRepo, DescriptionTypeRepo>();
+            serviceCollection.AddScoped<IDescriptionRepo, DescriptionRepo>();
 
             return serviceCollection;
         }

@@ -11,56 +11,56 @@ namespace Portfolio.Interfaces
         /// Getting all profiles
         /// </summary>
         /// <returns></returns>
-        Task<IList<MY_PROFILE>> GetProflie();
+        Task<IList<MY_PROFILE>> GetProflieAsync();
 
         /// <summary>
         /// Get a single profile from the profile list
         /// </summary>
         /// <returns></returns>
-        Task<MY_PROFILE?> GetSingleProflie();
+        Task<MY_PROFILE?> GetSingleProflieAsync();
 
         /// <summary>
         ///  Get a single profile using it's single id
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<MY_PROFILE?> GetSingleProflieById(int? id);
+        Task<MY_PROFILE?> GetSingleProflieByIdAsync(int? id);
 
         /// <summary>
         /// Getting all skills
         /// </summary>
         /// <returns></returns>
-        Task<IList<MY_SKILLS>> GetSkills();
+        Task<IList<MY_SKILLS>> GetSkillsAsync();
 
         /// <summary>
         /// Getting all educations
         /// </summary>
         /// <returns></returns>
-        Task<IList<EDUCATION>> GetEducations();
+        Task<IList<EDUCATION>> GetEducationsAsync();
 
         /// <summary>
         /// Getting all experiences
         /// </summary>
         /// <returns></returns>
-        Task<IList<EXPERIENCE>> GetExperiences();
+        Task<IList<EXPERIENCE>> GetExperiencesAsync();
 
         /// <summary>
         /// Getting all descriptions
         /// </summary>
         /// <returns></returns>
-        Task<IList<DESCRIPTION>> GetDescriptions();
+        Task<IList<DESCRIPTION>> GetDescriptionsAsync();
 
         /// <summary>
         /// Getting all of my projects list
         /// </summary>
         /// <returns></returns>
-        Task<IList<PROJECTS>> GetProjects();
+        Task<IList<PROJECTS>> GetProjectsAsync();
 
         /// <summary>
         /// Getting all contacts
         /// </summary>
         /// <returns></returns>
-        Task<IList<CONTACTS>> GetContacts();
+        Task<IList<CONTACTS>> GetContactsAsync();
 
         /// <summary>
         /// Addning contact info while someone send me message
@@ -88,6 +88,6 @@ namespace Portfolio.Interfaces
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        Task<IList<VisitorsViewModel>> GetVisitors(SqlParameter[] parameters);
+        Task<IList<VisitorsViewModel>> GetVisitorsAsync(SqlParameter[] parameters);
     }
 }

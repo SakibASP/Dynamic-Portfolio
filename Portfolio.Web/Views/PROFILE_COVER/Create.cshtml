@@ -26,14 +26,10 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="COVER_IMAGE" class="control-label"></label>
-                        <input type="file" accept="image/*" asp-for="COVER_IMAGE" class="form-control-file" multiple="multiple" />
+                        <input type="file" id="fileInput" accept="image/*" asp-for="COVER_IMAGE" class="form-control-file" multiple="multiple" />
                         <span asp-validation-for="COVER_IMAGE" class="text-danger"></span>
                     </div>
-                    @*<div class="form-group">
-                        <label asp-for="MOBILE_COVER" class="control-label"></label>
-                        <input type="file" accept="image/*" asp-for="MOBILE_COVER" class="form-control-file" multiple="multiple" />
-                        <span asp-validation-for="MOBILE_COVER" class="text-danger"></span>
-                    </div>*@
+                    <div id="file-preview"></div>
                     <div class="form-group">
                         <input type="submit" value="Create" class="btn btn-primary" />
                     </div>
@@ -49,4 +45,5 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/file-preview.js"></script>
 }

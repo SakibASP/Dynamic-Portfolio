@@ -6,9 +6,8 @@
 }
 
 <section>
-    <div class="container-fluid py-5">
-        <h1>Index</h1>
-
+    <div class="container-fluid p-5">
+        <h3 class="text-center" id="changing-heading">Descriptions</h3>
         <p>
             <a class="btn btn-warning" asp-action="Create">Create New</a>
         </p>
@@ -24,6 +23,9 @@
                     <th>
                         @Html.DisplayNameFor(model => model.PROJECT_ID)
                     </th>  
+                    <th>
+                        @Html.DisplayNameFor(model => model.EXPERIENCE_ID)
+                    </th>
                     <th>
                         @Html.DisplayNameFor(model => model.SORT_ORDER)
                     </th>
@@ -42,6 +44,9 @@
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.PROJECT_!.PROJECT_NAME)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EXPERIENCE_!.DESIGNATION)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.SORT_ORDER)

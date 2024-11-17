@@ -33,6 +33,12 @@ namespace Portfolio.Web.Data
             modelBuilder.Entity<DESCRIPTION>()
                        .Navigation(m => m.DESCRIPTION_TYPE_)
                        .AutoInclude();
+            modelBuilder.Entity<DESCRIPTION>()
+                       .Navigation(m => m.PROJECT_)
+                       .AutoInclude();
+            modelBuilder.Entity<DESCRIPTION>()
+                       .Navigation(m => m.EXPERIENCE_)
+                       .AutoInclude();
         }
 
         public virtual DbSet<RequestCounts> RequestCounts { get; set; } = default!;
