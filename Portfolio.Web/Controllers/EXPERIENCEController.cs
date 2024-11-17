@@ -1,35 +1,34 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Portfolio.Interfaces;
 using Portfolio.Models;
+using Portfolio.Utils;
 using Portfolio.Web.Common;
-using Portfolio.Web.Data;
+using Serilog;
 
 namespace Portfolio.Web.Controllers
 {
     [Authorize]
-    public class EXPERIENCEController(ApplicationDbContext context) : BaseController
+    public class EXPERIENCEController(IExperienceRepo experience) : BaseController
     {
-        private readonly ApplicationDbContext _context = context;
+        private readonly IExperienceRepo _experience = experience;
 
         // GET: EXPERIENCE
         public async Task<IActionResult> Index()
         {
-              return _context.EXPERIENCE != null ? 
-                          View(await _context.EXPERIENCE.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.EXPERIENCE'  is null.");
+            var experiences = await _experience.GetAllExperiencesAsync();
+              return View(experiences);
         }
 
         // GET: EXPERIENCE/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.EXPERIENCE == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var eXPERIENCE = await _context.EXPERIENCE
-                .FirstOrDefaultAsync(m => m.AUTO_ID == id);
+            var eXPERIENCE = await _experience.GetExperienceByIdAsync(id);
             if (eXPERIENCE == null)
             {
                 return NotFound();
@@ -49,18 +48,18 @@ namespace Portfolio.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AUTO_ID,DESIGNATION,FROM_DATE,TO_DATE,INSTITUTE,DES_1,DES_2,DES_3,DES_4")] EXPERIENCE eXPERIENCE)
+        public async Task<IActionResult> Create(EXPERIENCE eXPERIENCE)
         {
-            if (ModelState.IsValid)
+            try
             {
-                if (String.IsNullOrEmpty(eXPERIENCE.TO_DATE))
-                    eXPERIENCE.TO_DATE = "Present";
-
-                _context.Add(eXPERIENCE);
-                await _context.SaveChangesAsync();
-                //HttpContext.Session.Remove(Constant.myExperience);
-
+                var saveParameter = GenerateParameter.SingleModel(eXPERIENCE, User.Identity!.Name, BdCurrentTime);
+                await _experience.AddExperienceAsync(saveParameter);
                 return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData[Constant.Error] = Constant.ErrorMessage;
+                Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
             }
             return View(eXPERIENCE);
         }
@@ -68,12 +67,12 @@ namespace Portfolio.Web.Controllers
         // GET: EXPERIENCE/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.EXPERIENCE == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var eXPERIENCE = await _context.EXPERIENCE.FindAsync(id);
+            var eXPERIENCE = await _experience.GetExperienceByIdAsync(id);
             if (eXPERIENCE == null)
             {
                 return NotFound();
@@ -86,36 +85,23 @@ namespace Portfolio.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AUTO_ID,DESIGNATION,FROM_DATE,TO_DATE,INSTITUTE,DES_1,DES_2,DES_3,DES_4")] EXPERIENCE eXPERIENCE)
+        public async Task<IActionResult> Edit(int id, EXPERIENCE eXPERIENCE)
         {
             if (id != eXPERIENCE.AUTO_ID)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    if (String.IsNullOrEmpty(eXPERIENCE.TO_DATE))
-                        eXPERIENCE.TO_DATE = "Present";
-
-                    _context.Update(eXPERIENCE);
-                    await _context.SaveChangesAsync();
-                    //HttpContext.Session.Remove(Constant.myExperience);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!EXPERIENCEExists(eXPERIENCE.AUTO_ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                var saveParameter = GenerateParameter.SingleModel(eXPERIENCE, User.Identity!.Name, BdCurrentTime);
+                await _experience.UpdateExperienceAsync(saveParameter);
                 return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData[Constant.Error] = Constant.ErrorMessage;
+                Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
             }
             return View(eXPERIENCE);
         }
@@ -123,13 +109,12 @@ namespace Portfolio.Web.Controllers
         // GET: EXPERIENCE/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.EXPERIENCE == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var eXPERIENCE = await _context.EXPERIENCE
-                .FirstOrDefaultAsync(m => m.AUTO_ID == id);
+            var eXPERIENCE = await _experience.GetExperienceByIdAsync(id);
             if (eXPERIENCE == null)
             {
                 return NotFound();
@@ -143,25 +128,18 @@ namespace Portfolio.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.EXPERIENCE == null)
+            try
             {
-                return Problem("Entity set 'ApplicationDbContext.EXPERIENCE'  is null.");
+                await _experience.RemoveExperienceAsync(id);
             }
-            var eXPERIENCE = await _context.EXPERIENCE.FindAsync(id);
-            if (eXPERIENCE != null)
+            catch (Exception ex)
             {
-                _context.EXPERIENCE.Remove(eXPERIENCE);
+                TempData[Constant.Error] = Constant.ErrorMessage;
+                Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
             }
-            
-            await _context.SaveChangesAsync();
-            //HttpContext.Session.Remove(Constant.myExperience);
 
             return RedirectToAction(nameof(Index));
         }
 
-        private bool EXPERIENCEExists(int id)
-        {
-          return (_context.EXPERIENCE?.Any(e => e.AUTO_ID == id)).GetValueOrDefault();
-        }
     }
 }

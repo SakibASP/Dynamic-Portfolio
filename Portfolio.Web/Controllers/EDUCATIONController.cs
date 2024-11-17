@@ -1,35 +1,35 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Portfolio.Interfaces;
 using Portfolio.Models;
+using Portfolio.Utils;
 using Portfolio.Web.Common;
-using Portfolio.Web.Data;
+using Serilog;
 
 namespace Portfolio.Web.Controllers
 {
     [Authorize]
-    public class EDUCATIONController(ApplicationDbContext context) : BaseController
+    public class EDUCATIONController(IEducationRepo education) : BaseController
     {
-        private readonly ApplicationDbContext _context = context;
+        private readonly IEducationRepo _education = education;
 
         // GET: EDUCATION
         public async Task<IActionResult> Index()
         {
-              return _context.EDUCATION != null ? 
-                          View(await _context.EDUCATION.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.EDUCATION'  is null.");
+            var educations = await _education.GetAllEducationsAsync();
+            return View(educations);
         }
 
         // GET: EDUCATION/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.EDUCATION == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var eDUCATION = await _context.EDUCATION
-                .FirstOrDefaultAsync(m => m.AUTO_ID == id);
+            var eDUCATION = await _education.GetEducationByIdAsync(id);
             if (eDUCATION == null)
             {
                 return NotFound();
@@ -49,18 +49,18 @@ namespace Portfolio.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AUTO_ID,COURSE,FROM_DATE,TO_DATE,INSTITUTE,DESCRIPTION")] EDUCATION eDUCATION)
+        public async Task<IActionResult> Create(EDUCATION eDUCATION)
         {
-            if (ModelState.IsValid)
+            try
             {
-                if (String.IsNullOrEmpty(eDUCATION.TO_DATE))
-                    eDUCATION.TO_DATE = "Present";
-
-                _context.Add(eDUCATION);
-                await _context.SaveChangesAsync();
-                //HttpContext.Session.Remove(Constant.myEducation);
-
+                var saveParameter = GenerateParameter.SingleModel(eDUCATION, User.Identity!.Name, BdCurrentTime);
+                await _education.AddEducationAsync(saveParameter);
                 return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData[Constant.Error] = Constant.ErrorMessage;
+                Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
             }
             return View(eDUCATION);
         }
@@ -68,12 +68,12 @@ namespace Portfolio.Web.Controllers
         // GET: EDUCATION/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.EDUCATION == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var eDUCATION = await _context.EDUCATION.FindAsync(id);
+            var eDUCATION = await _education.GetEducationByIdAsync(id);
             if (eDUCATION == null)
             {
                 return NotFound();
@@ -86,37 +86,23 @@ namespace Portfolio.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AUTO_ID,COURSE,FROM_DATE,TO_DATE,INSTITUTE,DESCRIPTION")] EDUCATION eDUCATION)
+        public async Task<IActionResult> Edit(int id, EDUCATION eDUCATION)
         {
             if (id != eDUCATION.AUTO_ID)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    if (String.IsNullOrEmpty(eDUCATION.TO_DATE))
-                        eDUCATION.TO_DATE = "Present";
-
-                    _context.Update(eDUCATION);
-                    await _context.SaveChangesAsync();
-                    //HttpContext.Session.Remove(Constant.myEducation);
-
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!EDUCATIONExists(eDUCATION.AUTO_ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                var saveParameter = GenerateParameter.SingleModel(eDUCATION, User.Identity!.Name, BdCurrentTime);
+                await _education.UpdateEducationAsync(saveParameter);
                 return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData[Constant.Error] = Constant.ErrorMessage;
+                Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
             }
             return View(eDUCATION);
         }
@@ -124,13 +110,12 @@ namespace Portfolio.Web.Controllers
         // GET: EDUCATION/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.EDUCATION == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var eDUCATION = await _context.EDUCATION
-                .FirstOrDefaultAsync(m => m.AUTO_ID == id);
+            var eDUCATION = await _education.GetEducationByIdAsync(id);
             if (eDUCATION == null)
             {
                 return NotFound();
@@ -144,25 +129,17 @@ namespace Portfolio.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.EDUCATION == null)
+            try
             {
-                return Problem("Entity set 'ApplicationDbContext.EDUCATION'  is null.");
+                await _education.RemoveEducationAsync(id);
             }
-            var eDUCATION = await _context.EDUCATION.FindAsync(id);
-            if (eDUCATION != null)
+            catch (Exception ex)
             {
-                _context.EDUCATION.Remove(eDUCATION);
+                TempData[Constant.Error] = Constant.ErrorMessage;
+                Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
             }
-            
-            await _context.SaveChangesAsync();
-            //HttpContext.Session.Remove(Constant.myEducation);
 
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool EDUCATIONExists(int id)
-        {
-          return (_context.EDUCATION?.Any(e => e.AUTO_ID == id)).GetValueOrDefault();
         }
     }
 }

@@ -1,12 +1,9 @@
 ﻿@using Portfolio.Models
-@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
 @{
     ViewData["Title"] = "Home Page";
     var Cover = (PROFILE_COVER)ViewBag.Cover;
     var rootpath = (string)ViewBag.rootPath;
-    // var userAgent = HttpContextAccessor.HttpContext.Request.Headers["User-Agent"].ToString();
-    // bool isChrome = userAgent.Contains("Chrome");
 }
 
 <link href="~/assets/scss/mousemove.css" rel="stylesheet" />
@@ -14,22 +11,6 @@
 
 <input type="hidden" id="coverName" value="@Cover.COVER_NAME" />
 <input type="hidden" id="coverDesc" value="@Cover.COVER_DESC" />
-
-@* @if (isFacebook)
-{
-    <section id="modalsection">
-        <div class="container-fluid py-5">
-            <div id="myModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closeModal()">&times;</span>
-                    <h1>Welcome to Sakib's Bio!</h1>
-                    <p>We recommend using <strong>External Browser</strong> for the best experience.</p>
-                    <button onclick="openBrowser()">Open Browser</button>
-                </div>
-            </div>
-        </div>
-    </section>
-} *@
 
 <!-- ======= Hero Section for Desktop View ======= -->
 <section id="hero" class="d-none d-sm-block align-items-center" style="overflow:hidden; padding: 20px;">
@@ -50,8 +31,6 @@
                             @if (Cover.COVER_IMAGE != null)
                             {
                                 <img class="width-complete rounded-circle img-fluid" src="@Url.Content(Cover.COVER_IMAGE.Replace(rootpath,""))" />
-                                @* <img class="width-complete rounded-circle img-fluid" src="data:ImageData;base64,@System.Convert.ToBase64String(Cover.COVER_IMAGE)" alt="Floating Image" /> *@
-                                @* <img style="margin-left:90px;" class="rounded-circle img-fluid" src="~/assets/img/about.jpg" alt=""> *@
                             }
                         </div>
                     </div>
@@ -71,7 +50,6 @@
                 {
                     <div class="col-lg-6">
                         <div class="container-fluid" style="height:fit-content; width:fit-content; margin:auto">
-                            @*<img style="margin-left:90px;" class="rounded-circle img-fluid" src="~/assets/img/about.jpg" alt="">*@
                             <img class="width-complete rounded-circle img-fluid" src="~/assets/img/about.jpg" alt="" />
                         </div>
                     </div>
@@ -141,5 +119,4 @@
 @section Scripts{
     <script src="~/assets/js/mousemove.js"></script>
     <script src="~/assets/js/typewriter.js"></script>
-    <script src="~/js/home/homeindexcontent.js"></script>
 }

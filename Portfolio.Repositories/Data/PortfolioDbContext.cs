@@ -2,11 +2,11 @@
 using Microsoft.Extensions.Configuration;
 using Portfolio.Models;
 
-namespace Portfolio.Repositories
+namespace Portfolio.Repositories.Data
 {
     public class PortfolioDbContext : DbContext
     {
-        public PortfolioDbContext() 
+        public PortfolioDbContext()
         {
 
         }
