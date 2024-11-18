@@ -1,12 +1,10 @@
-﻿using Microsoft.Extensions.Hosting;
-using Portfolio.Models;
-using System.Net;
+﻿using Portfolio.Models;
 
 namespace Portfolio.Web.Common
 {
     public static class Utility
     {
-        public static async Task<byte[]?> Getimage(byte[]? img, IFormFileCollection files)
+        public static async Task<byte[]?> GetImageBytes(byte[]? img, IFormFileCollection files)
         {
             PROJECTS project = new();
             MemoryStream ms = new();
@@ -42,8 +40,7 @@ namespace Portfolio.Web.Common
 
         public static string GetIpDetailsUrl(string? ipAddress)
         {
-            var _url = $"http://ip-api.com/json/{ipAddress}?fields=city,country,zip,timezone,isp,org,as";
-            return _url;
+            return $"http://ip-api.com/json/{ipAddress}?fields=city,country,zip,timezone,isp,org,as";
         }
     }
 }

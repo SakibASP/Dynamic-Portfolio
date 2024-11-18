@@ -1,27 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Portfolio.Web.Common;
-using Portfolio.Web.Data;
 using System.Diagnostics;
 using Portfolio.Web.Models;
-using Portfolio.Repositories.Data;
+using Portfolio.Interfaces;
 
 namespace Portfolio.Web.Controllers
 {
-    public class HomeController(PortfolioDbContext context, IWebHostEnvironment environment) : BaseController
+    public class HomeController(IHomeRepo home,IProfileCoverRepo cover, IWebHostEnvironment environment) : BaseController
     {
         private readonly IWebHostEnvironment _hostEnvironment = environment;
-        private readonly PortfolioDbContext _context = context;
+        private readonly IHomeRepo _home = home;
+        private readonly IProfileCoverRepo _cover = cover;
 
         public async Task<IActionResult> Index()
         {
             if (User.Identity!.IsAuthenticated)
             {
-                var myMessage = await _context.CONTACTS.Where(x => x.IsConfirmed == null || x.IsConfirmed == 0).ToListAsync();
-                ViewData["Message"] = myMessage == null ? "" : myMessage.Count.ToString();
+                var _messageCount = await _home.GetUnreadMessagesCountAsync();
+                ViewData["Message"] = _messageCount == null ? "" : _messageCount.ToString();
             }
 
-            var cover = await _context.PROFILE_COVER.FirstOrDefaultAsync();
+            var coverList = await _cover.GetAllProfileCoversAsync();
+            var cover = coverList.FirstOrDefault();
             var filePath = Utility.GetFilePathOfCV(_hostEnvironment);
 
             ViewBag.FilePath = filePath;

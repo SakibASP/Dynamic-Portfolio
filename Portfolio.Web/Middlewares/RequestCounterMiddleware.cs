@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Portfolio.Web.Data;
 using Portfolio.Models;
+using Portfolio.Repositories.Data;
+using Serilog;
 
 namespace Portfolio.Web.Middlewares
 {
@@ -11,7 +12,7 @@ namespace Portfolio.Web.Middlewares
 
         private readonly RequestDelegate _next = next;
 
-        public async Task Invoke(HttpContext context, ApplicationDbContext _context)
+        public async Task Invoke(HttpContext context, PortfolioDbContext _context)
         {
             DateTime currentDate = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.Local, bdTimeZone); // Get current date in UTC
 
@@ -48,9 +49,9 @@ namespace Portfolio.Web.Middlewares
 
                 await _next(context);
             }
-            catch 
+            catch(Exception ex) 
             {
-                // Exception part
+                Log.Error(ex, $"I am from RequestCounterMiddleware Invoke...");
             }
         }
     }

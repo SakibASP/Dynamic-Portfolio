@@ -1,42 +1,38 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Portfolio.Interfaces;
 using Portfolio.Models;
+using Portfolio.Utils;
 using Portfolio.Web.Common;
-using Portfolio.Web.Data;
+using Serilog;
 
 namespace Portfolio.Web.Controllers
 {
     [Authorize]
-    public class CONTACTSController(ApplicationDbContext context) : BaseController
+    public class CONTACTSController(IContactsRepo contact) : BaseController
     {
-        private readonly ApplicationDbContext _context = context;
+        private readonly IContactsRepo _contact = contact;
 
         // GET: CONTACTS
         public async Task<IActionResult> Index()
         {
-              return _context.CONTACTS != null ? 
-                          View(await _context.CONTACTS.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.CONTACTS'  is null.");
+              return View(await _contact.GetAllContactsAsync());
         }
         
         public async Task<IActionResult> PendingIndex()
         {
-              return _context.CONTACTS != null ? 
-                          View(await _context.CONTACTS.Where(x=>x.IsConfirmed == null).ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.CONTACTS'  is null.");
+              return View(await _contact.GetAllPendingContactsAsync());
         }
 
         // GET: CONTACTS/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.CONTACTS == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var cONTACTS = await _context.CONTACTS
-                .FirstOrDefaultAsync(m => m.AUTO_ID == id);
+            var cONTACTS = await _contact.GetContactByIdAsync(id);
 
             if (cONTACTS == null)
             {
@@ -45,13 +41,17 @@ namespace Portfolio.Web.Controllers
 
             if (cONTACTS.IsConfirmed != 1)
             {
-                cONTACTS.IsConfirmed = 1;
-                cONTACTS.MODIFIED_DATE = BdCurrentTime;
-                _context.CONTACTS.Update(cONTACTS);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    var saveParameter = GenerateParameter.SingleModel(cONTACTS, User.Identity?.Name, BdCurrentTime);
+                    await _contact.ConfirmContactAsync(saveParameter);
+                }
+                catch (Exception ex)
+                {
+                    TempData[Constant.Error] = Constant.ErrorMessage;
+                    Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
+                }
             }
-
-            //HttpContext.Session.Remove(Constant.myContact);
 
             return View(cONTACTS);
         }
@@ -59,12 +59,12 @@ namespace Portfolio.Web.Controllers
         // GET: CONTACTS/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.CONTACTS == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var cONTACTS = await _context.CONTACTS.FindAsync(id);
+            var cONTACTS = await _contact.GetContactByIdAsync(id);
             if (cONTACTS == null)
             {
                 return NotFound();
@@ -84,26 +84,16 @@ namespace Portfolio.Web.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(cONTACTS);
-                    await _context.SaveChangesAsync();
-                    //HttpContext.Session.Remove(Constant.myContact);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CONTACTSExists(cONTACTS.AUTO_ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                var saveParameter = GenerateParameter.SingleModel(cONTACTS, User.Identity?.Name, BdCurrentTime);
+                await _contact.UpdateContactAsync(saveParameter);
                 return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData[Constant.Error] = Constant.ErrorMessage;
+                Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
             }
             return View(cONTACTS);
         }
@@ -111,13 +101,12 @@ namespace Portfolio.Web.Controllers
         // GET: CONTACTS/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.CONTACTS == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var cONTACTS = await _context.CONTACTS
-                .FirstOrDefaultAsync(m => m.AUTO_ID == id);
+            var cONTACTS = await _contact.GetContactByIdAsync(id);
             if (cONTACTS == null)
             {
                 return NotFound();
@@ -131,23 +120,16 @@ namespace Portfolio.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.CONTACTS == null)
+            try
             {
-                return Problem("Entity set 'ApplicationDbContext.CONTACTS'  is null.");
+                await _contact.RemoveContactAsync(id);
             }
-            var cONTACTS = await _context.CONTACTS.FindAsync(id);
-            if (cONTACTS != null)
+            catch (Exception ex)
             {
-                _context.CONTACTS.Remove(cONTACTS);
+                TempData[Constant.Error] = Constant.ErrorMessage;
+                Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool CONTACTSExists(int id)
-        {
-          return (_context.CONTACTS?.Any(e => e.AUTO_ID == id)).GetValueOrDefault();
         }
     }
 }

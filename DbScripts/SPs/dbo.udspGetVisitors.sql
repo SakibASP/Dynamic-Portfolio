@@ -2,7 +2,7 @@
 /**
 
 EXEC dbo.udspGetVisitors 
-@PageNumber = 4,@PageSize=10
+@PageNumber = 1,@PageSize=10
 ,@StartDate='2024-01-01',@EndDate = '2025-01-01'
 ,@SearchString = 'Dhaka'
 
@@ -38,8 +38,12 @@ DECLARE @sql NVARCHAR(MAX) = '';
 IF (@StartDate IS NOT NULL AND @EndDate IS NOT NULL)
 	SET @sql = @sql+' (TRY_CAST(V.VisitTime AS DATE) BETWEEN '''+TRY_CAST(@StartDate AS nvarchar(256))+''' AND '''+TRY_CAST(@EndDate AS nvarchar(256))+''') AND';
 IF ISNULL(@SearchString,'') <> ''
-	SET @sql = @sql+' (UPPER(V.DeviceType) LIKE N''%'+UPPER(@SearchString)+'%'' OR UPPER(V.DeviceBrand) LIKE N''%'+UPPER(@SearchString)+'%'' OR UPPER(V.Country) LIKE N''%'+UPPER(@SearchString)+'%''
-					  OR UPPER(V.OperatingSystem) LIKE N''%'+UPPER(@SearchString)+'%'' OR UPPER(V.Browser) LIKE N''%'+UPPER(@SearchString)+'%'' OR UPPER(V.City) LIKE N''%'+UPPER(@SearchString)+'%'')
+	SET @sql = @sql+' (UPPER(V.DeviceType) LIKE N''%'+UPPER(@SearchString)+'%'' 
+					  OR UPPER(V.DeviceBrand) LIKE N''%'+UPPER(@SearchString)+'%'' 
+					  OR UPPER(V.Country) LIKE N''%'+UPPER(@SearchString)+'%''
+					  OR UPPER(V.OperatingSystem) LIKE N''%'+UPPER(@SearchString)+'%'' 
+					  OR UPPER(V.Browser) LIKE N''%'+UPPER(@SearchString)+'%'' 
+					  OR UPPER(V.City) LIKE N''%'+UPPER(@SearchString)+'%'')
 					  AND';
 
 --Removing last 'AND'
@@ -78,18 +82,21 @@ SELECT
 	VisitTime
 FROM dbo.Visitors V WITH(NOLOCK)
 '+CASE WHEN @sql!='' THEN ' WHERE '+ @sql ELSE '' END
++
+'ORDER BY V.VisitTime DESC
+ OFFSET (@PageNumber - 1) * @PageSize ROWS
+ FETCH NEXT @PageSize ROWS ONLY;
+';
 
-PRINT @query;
+--PRINT @query;
 exec sp_executesql @query,N'@PageNumber INT=1, @PageSize INT=10,@StartDate DATETIME = NULL,@EndDate DATETIME = NULL,@SearchString NVARCHAR(128)=NULL',
 @PageNumber=@PageNumber,@PageSize=@PageSize,@StartDate=@StartDate,@EndDate=@EndDate,@SearchString=@SearchString;
 
 DECLARE @RecordCount INT = 0;
-SET @RecordCount = (SELECT COUNT(*) FROM #tmpVisitor); 
+SET @RecordCount = (SELECT COUNT(*) FROM dbo.Visitors WITH(NOLOCK)); 
 
 SELECT *,@RecordCount AS TotalRows FROM #tmpVisitor A
 ORDER BY A.VisitTime DESC
-OFFSET (@PageNumber - 1) * @PageSize ROWS
-FETCH NEXT @PageSize ROWS ONLY;
 
 DROP TABLE IF EXISTS #tmpVisitor;
 

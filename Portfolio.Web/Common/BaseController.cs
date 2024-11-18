@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
-using Portfolio.Web.Data;
 using Portfolio.Models;
 using System.Security.Claims;
 using UAParser;
+using Portfolio.Repositories.Data;
+using Serilog;
 
 namespace Portfolio.Web.Common
 {
@@ -17,7 +18,7 @@ namespace Portfolio.Web.Common
 
         public override async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
         {
-            using ApplicationDbContext _context = new();
+            using PortfolioDbContext _context = new();
 
             if (filterContext.HttpContext.User.Identity!.IsAuthenticated)
             {
@@ -82,8 +83,7 @@ namespace Portfolio.Web.Common
             }
             catch (Exception ex)
             {
-                // Log exception here
-                Console.WriteLine(ex.ToString());
+                Log.Error(ex, $"I am from BaseController OnActionExecutionAsync...");
             }
             finally
             {

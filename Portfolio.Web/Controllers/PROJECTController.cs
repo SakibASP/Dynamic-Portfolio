@@ -1,40 +1,39 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Portfolio.Interfaces;
 using Portfolio.Models;
+using Portfolio.Utils;
 using Portfolio.Web.Common;
-using Portfolio.Web.Data;
+using Serilog;
 
 namespace Portfolio.Web.Controllers
 {
     [Authorize]
-    public class PROJECTSController(ApplicationDbContext context) : BaseController
+    public class PROJECTSController(IProjectRepo project) : BaseController
     {
-        private readonly ApplicationDbContext _context = context;
+        private readonly IProjectRepo _project = project;
 
         // GET: SERVICES
         public async Task<IActionResult> Index()
         {
-              return _context.PROJECTS != null ? 
-                          View(await _context.PROJECTS.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.PROJECTS'  is null.");
+            var projects = await _project.GetAllProjectsAsync();
+            return View(projects);
         }
 
         // GET: SERVICES/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.PROJECTS == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var PROJECTS = await _context.PROJECTS
-                .FirstOrDefaultAsync(m => m.AUTO_ID == id);
+            var PROJECTS = await _project.GetProjectByIdAsync(id);
             if (PROJECTS == null)
             {
                 return NotFound();
             }
-            ViewData["DESCRIPTIONs"] = await _context.DESCRIPTION.Where(x => x.PROJECT_ID == id).OrderBy(x=>x.SORT_ORDER).AsNoTracking().ToListAsync();
+            ViewData["DESCRIPTIONs"] = await _project.GetDescriptionByProjectIdAsync(id);
 
             return View(PROJECTS);
         }
@@ -54,18 +53,23 @@ namespace Portfolio.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PROJECTS pROJECTS)
         {
-            if (ModelState.IsValid)
+            try
             {
                 var imgFile = Request.Form.Files.FirstOrDefault();
                 if (imgFile != null)
                 {
-                    pROJECTS.LOGO = await Utility.Getimage(pROJECTS.LOGO, Request.Form.Files);
+                    pROJECTS.LOGO = await Utility.GetImageBytes(pROJECTS.LOGO, Request.Form.Files);
                 }
 
-                _context.Add(pROJECTS);
-                await _context.SaveChangesAsync();
+                var saveParameter = GenerateParameter.SingleModel(pROJECTS, User.Identity?.Name, BdCurrentTime);
+                await _project.AddProjectAsync(saveParameter);
 
                 return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData[Constant.Error] = Constant.ErrorMessage;
+                Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
             }
             return View(pROJECTS);
         }
@@ -74,12 +78,12 @@ namespace Portfolio.Web.Controllers
         [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.PROJECTS == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var PROJECTS = await _context.PROJECTS.FindAsync(id);
+            var PROJECTS = await _project.GetProjectByIdAsync(id);
             if (PROJECTS == null)
             {
                 return NotFound();
@@ -99,33 +103,22 @@ namespace Portfolio.Web.Controllers
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            try
             {
-                try
+                var imgFile = Request.Form.Files.FirstOrDefault();
+                if (imgFile != null)
                 {
-                    var imgFile = Request.Form.Files.FirstOrDefault();
-                    if (imgFile != null)
-                    {
-                        pROJECTS.LOGO = await Utility.Getimage(pROJECTS.LOGO, Request.Form.Files);
-                    }
-
-                    _context.Update(pROJECTS);
-                    await _context.SaveChangesAsync();
-
+                    pROJECTS.LOGO = await Utility.GetImageBytes(pROJECTS.LOGO, Request.Form.Files);
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PROJECTSExists(pROJECTS.AUTO_ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
+                var saveParameter = GenerateParameter.SingleModel(pROJECTS, User.Identity?.Name, BdCurrentTime);
+                await _project.UpdateProjectAsync(saveParameter);
                 return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData[Constant.Error] = Constant.ErrorMessage;
+                Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
             }
             return View(pROJECTS);
         }
@@ -134,13 +127,12 @@ namespace Portfolio.Web.Controllers
         [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.PROJECTS == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var PROJECTS = await _context.PROJECTS
-                .FirstOrDefaultAsync(m => m.AUTO_ID == id);
+            var PROJECTS = await _project.GetProjectByIdAsync(id);
             if (PROJECTS == null)
             {
                 return NotFound();
@@ -155,24 +147,17 @@ namespace Portfolio.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.PROJECTS == null)
+            try
             {
-                return Problem("Entity set 'ApplicationDbContext.PROJECTS'  is null.");
+                await _project.RemoveProjectAsync(id);
             }
-            var PROJECTS = await _context.PROJECTS.FindAsync(id);
-            if (PROJECTS != null)
+            catch (Exception ex)
             {
-                _context.PROJECTS.Remove(PROJECTS);
+                TempData[Constant.Error] = Constant.ErrorMessage;
+                Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
             }
-            
-            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool PROJECTSExists(int id)
-        {
-          return (_context.PROJECTS?.Any(e => e.AUTO_ID == id)).GetValueOrDefault();
         }
     }
 }

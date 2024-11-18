@@ -31,10 +31,10 @@ namespace Portfolio.Repositories
 
         public async Task RemoveExperienceAsync(int? id)
         {
-            var experience = await _context.EDUCATION.FindAsync(id);
+            var experience = await _context.EXPERIENCE.FindAsync(id);
             if (experience is not null)
             {
-                _context.EDUCATION.Remove(experience);
+                _context.EXPERIENCE.Remove(experience);
                 await _context.SaveChangesAsync();
             }
         }

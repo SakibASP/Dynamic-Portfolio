@@ -12,8 +12,12 @@ namespace Portfolio.Web.ServiceExtention
             serviceCollection.AddScoped<IProfileRepo, ProfileRepo>();
             serviceCollection.AddScoped<IDescriptionTypeRepo, DescriptionTypeRepo>();
             serviceCollection.AddScoped<IDescriptionRepo, DescriptionRepo>();
+            serviceCollection.AddScoped<IContactsRepo, ContactsRepo>();
             serviceCollection.AddScoped<ISkillsRepo, SkillsRepo>();
             serviceCollection.AddScoped<IEducationRepo, EducationRepo>();
+            serviceCollection.AddScoped<IProjectRepo, ProjectRepo>();
+            serviceCollection.AddScoped<IProfileCoverRepo, ProfileCoverRepo>();
+            serviceCollection.AddScoped<IHomeRepo, HomeRepo>();
 
             return serviceCollection;
         }
