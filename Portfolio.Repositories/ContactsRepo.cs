@@ -8,7 +8,7 @@ namespace Portfolio.Repositories
 {
     public class ContactsRepo(PortfolioDbContext context) : IContactsRepo
     {
-        private PortfolioDbContext _context = context;
+        private readonly PortfolioDbContext _context = context;
         public async Task ConfirmContactAsync(SaveRequestModel<CONTACTS> saveRequestModel)
         {
             ArgumentNullException.ThrowIfNull(saveRequestModel.Item);
