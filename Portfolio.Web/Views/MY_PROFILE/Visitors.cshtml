@@ -8,9 +8,31 @@
 }
 <link href="~/css/pagedlist.css" rel="stylesheet" />
 
+<style>
+    thead {
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        color: #fff;
+        background-color: #000;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        overflow: hidden; /* Ensure the radius is applied correctly */
+    }
+
+    .tbody-transparent{
+        color: black !important;
+        background-color: transparent !important;
+        border: 1px solid white;
+        font-family: 'Times New Roman', Times, serif;
+    }
+
+    .dataTables_filter {
+        margin-bottom: 10px; /* Adjust the value as needed */
+    }
+</style>
+
 <section>
     <div class="container-fluid p-5">
-        <div style="margin-bottom: 5px">
+        <div style="margin-bottom: 10px">
             <h4 style="color: orangered; text-align: center;" id="changing-heading">@ViewBag.TotalRecords visitors</h4>
             <button id="filterToggleButton" class="btn btn-outline-info"><i id="filterToggleIcon" class="bi bi-plus"></i>Filter</button>
             <div id="filterFormContainer">
@@ -38,8 +60,8 @@
             </div>
         </div>
         <div class="table-responsive">
-            <table class="table table-striped table-hover">
-                <thead class="thead-dark">
+            <table class="table">
+                <thead>
                     <tr>
                         @if (IsAuthenticated)
                         {
@@ -66,7 +88,7 @@
                             {
                                 <td>@item.IPAddress</td>
                             }
-                            <td>@item.VisitTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                            <td>@item.VisitTime</td>
                             <td>@item.OperatingSystem</td>
                             <td>@item.OperatingSystemVersion</td>
                             <td>@item.Browser</td>
@@ -90,3 +112,30 @@
     </div>
 </section>
 
+@section Scripts{
+    <script>
+        $(function() {
+            $('.table').DataTable({
+                order: [[1, 'desc']], // Second column has index 1
+                columnDefs: [
+                    {
+                        targets: 1, // Second column
+                        render: function (data) {
+                            // Check if the data is valid and parse it
+                            const parsedDate = new Date(data);
+                            if (!isNaN(parsedDate)) {
+                                // If valid, return the ISO string for consistent sorting
+                                return parsedDate.toISOString();
+                            }
+                            // Return original data if invalid
+                            return data;
+                        }
+                    }
+                ],
+                createdRow: function (row, data, dataIndex) {
+                    $(row).addClass('tbody-transparent'); // Apply your class to each row
+                }
+            });
+        })
+    </script>
+}

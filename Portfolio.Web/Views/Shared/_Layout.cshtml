@@ -119,11 +119,22 @@
             </nav><!-- .navbar -->
 
             <div class="header-social-links">
-                <a href="https://github.com/SakibASP" class="github" target="_blank"><i class="bi bi-github"></i></a>
-                <a href="https://www.linkedin.com/in/md-sakibur-rahman-070853196/" class="linkedin" target="_blank"><i class="bi bi-linkedin"></i></a>
-                <a href="https://twitter.com/Sakibur78738178" class="twitter" target="_blank"><i class="bi bi-twitter"></i></a>
-                <a href="https://www.facebook.com/sakibur.rahman.rocky" class="facebook" target="_blank"><i class="bi bi-facebook"></i></a>
-                <a href="https://www.instagram.com/sakibur_rocky/" class="instagram" target="_blank"><i class="bi bi-instagram"></i></a>
+                @{
+                    var githubLink = @"https://github.com/SakibASP";
+                    var linkedinLink = @"https://www.linkedin.com/in/md-sakibur-rahman-070853196/";
+                    var youtubeLink = @"https://www.youtube.com/@SakibCoding";
+                    var facebookLink = @"https://www.facebook.com/sakibur.cse";
+                    var instagramLink = @"https://www.instagram.com/sakibur_rocky/";
+                    var tiktokLink = @"https://www.tiktok.com/@sakibur_rocky";
+                    var twitterLink = @"https://twitter.com/Sakibur78738178";
+                }
+                <a href="@githubLink" class="github" target="_blank"><i class="bi bi-github"></i></a>
+                <a href="@linkedinLink" class="linkedin" target="_blank"><i class="bi bi-linkedin"></i></a>
+                <a href="@youtubeLink" class="youtube" target="_blank"><i class="bi bi-youtube"></i></a>
+                <a href="@facebookLink" class="facebook" target="_blank"><i class="bi bi-facebook"></i></a>
+                <a href="@instagramLink" class="instagram" target="_blank"><i class="bi bi-instagram"></i></a>
+                <a href="@tiktokLink" class="twitter" target="_blank"><i class="bi bi-tiktok"></i></a>
+                <a href="@twitterLink" class="twitter" target="_blank"><i class="bi bi-twitter"></i></a>
             </div>
 
         </div>
@@ -139,10 +150,10 @@
     <footer id="footer">
         <div class="container">
             <div class="copyright">
-                &copy; Copyright <strong><span>Sakib</span></strong>
+                <small>&copy; @DateTime.Now.Year - <strong><span>Md. Sakibur Rahman</span></strong></small> 
             </div>
-            <div class="credits">
-                <strong>Powered by .NET</strong>
+            <div>
+                <small>Powered by <strong style="color: purple">.NET</strong></small> || <small><a href="https://github.com/SakibASP/Dynamic-Portfolio">Source Code</a></small>
             </div>
 
             @if (User.Identity.IsAuthenticated)
