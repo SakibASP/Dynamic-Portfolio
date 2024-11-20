@@ -5,7 +5,6 @@ using Portfolio.Web.Common;
 
 namespace Portfolio.Web.Controllers
 {
-    [Authorize]
     public class CVController(IWebHostEnvironment hostEnvironment) : BaseController
     {
         private readonly IWebHostEnvironment _hostEnvironment = hostEnvironment;

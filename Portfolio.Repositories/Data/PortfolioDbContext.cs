@@ -19,7 +19,8 @@ namespace Portfolio.Repositories.Data
             if (!optionsBuilder.IsConfigured)
             {
                 // Get the current directory of the other project (relative to the current project)
-                var appsettingsPath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())!.FullName, "Portfolio.Web");
+                const string webProjPath = "webroot"; // for local "Portfolio.Web";
+                var appsettingsPath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())!.FullName, webProjPath);
 
                 IConfigurationRoot configuration = new ConfigurationBuilder()
                    .SetBasePath(appsettingsPath)
