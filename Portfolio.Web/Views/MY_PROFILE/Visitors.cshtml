@@ -116,10 +116,10 @@
     <script>
         $(function() {
             $('.table').DataTable({
-                order: [[1, 'desc']], // Second column has index 1
+                order: [[0, 'desc']], // Second column has index 1
                 columnDefs: [
                     {
-                        targets: 1, // Second column
+                        targets: 0, // Second column
                         render: function (data) {
                             // Check if the data is valid and parse it
                             const parsedDate = new Date(data);
