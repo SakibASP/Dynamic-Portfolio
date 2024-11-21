@@ -6,7 +6,7 @@ using Portfolio.Utils;
 
 namespace Portfolio.Repositories
 {
-    public class ExperienceRepo(PortfolioDbContext context) : IExperienceRepo
+    public class ExperienceRepo(PortfolioDbContext context) : IExperienceRepo, IDisposable
     {
         private readonly PortfolioDbContext _context = context;
         public async Task AddExperienceAsync(SaveRequestModel<EXPERIENCE> saveRequestModel)
@@ -47,6 +47,11 @@ namespace Portfolio.Repositories
 
             _context.Update(saveRequestModel.Item);
             await _context.SaveChangesAsync();
+        }
+
+        public async void Dispose()
+        {
+            await _context.DisposeAsync();
         }
     }
 }

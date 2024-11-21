@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
-using Portfolio.Models;
 
 namespace Portfolio.Models
 {

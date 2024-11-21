@@ -6,7 +6,7 @@ using Portfolio.Utils;
 
 namespace Portfolio.Repositories
 {
-    public class DescriptionRepo(PortfolioDbContext context) : IDescriptionRepo
+    public class DescriptionRepo(PortfolioDbContext context) : IDescriptionRepo, IDisposable
     {
         private readonly PortfolioDbContext _context = context;
 
@@ -50,6 +50,11 @@ namespace Portfolio.Repositories
             saveRequestModel.Item.MODIFIED_DATE = saveRequestModel.BdCurrentTime;
             _context.DESCRIPTION.Update(saveRequestModel.Item);
             await _context.SaveChangesAsync();
+        }
+
+        public async void Dispose()
+        {
+            await _context.DisposeAsync();
         }
     }
 }

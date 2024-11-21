@@ -1,0 +1,32 @@
+2024-11-21 10:35:48.998 +06:00 [ERR] I am from BaseController OnActionExecutionAsync...
+System.IO.DirectoryNotFoundException: D:\Sakib Git\Dynamic-Portfolio\webroot\
+   at Microsoft.Extensions.FileProviders.PhysicalFileProvider..ctor(String root, ExclusionFilters filters)
+   at Microsoft.Extensions.FileProviders.PhysicalFileProvider..ctor(String root)
+   at Microsoft.Extensions.Configuration.FileConfigurationExtensions.SetBasePath(IConfigurationBuilder builder, String basePath)
+   at Portfolio.Repositories.Data.PortfolioDbContext.OnConfiguring(DbContextOptionsBuilder optionsBuilder) in D:\Sakib Git\Dynamic-Portfolio\Portfolio.Repositories\Data\PortfolioDbContext.cs:line 26
+   at Microsoft.EntityFrameworkCore.DbContext.get_ContextServices()
+   at Microsoft.EntityFrameworkCore.DbContext.get_Model()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.get_EntityType()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.CheckState()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.get_EntityQueryable()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.System.Linq.IQueryable.get_Provider()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ExecuteAsync[TSource,TResult](MethodInfo operatorMethodInfo, IQueryable`1 source, Expression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ExecuteAsync[TSource,TResult](MethodInfo operatorMethodInfo, IQueryable`1 source, LambdaExpression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.FirstOrDefaultAsync[TSource](IQueryable`1 source, Expression`1 predicate, CancellationToken cancellationToken)
+   at Portfolio.Web.Common.BaseController.OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next) in D:\Sakib Git\Dynamic-Portfolio\Portfolio.Web\Common\BaseController.cs:line 37
+2024-11-21 10:35:59.681 +06:00 [ERR] I am from BaseController OnActionExecutionAsync...
+System.IO.DirectoryNotFoundException: D:\Sakib Git\Dynamic-Portfolio\webroot\
+   at Microsoft.Extensions.FileProviders.PhysicalFileProvider..ctor(String root, ExclusionFilters filters)
+   at Microsoft.Extensions.FileProviders.PhysicalFileProvider..ctor(String root)
+   at Microsoft.Extensions.Configuration.FileConfigurationExtensions.SetBasePath(IConfigurationBuilder builder, String basePath)
+   at Portfolio.Repositories.Data.PortfolioDbContext.OnConfiguring(DbContextOptionsBuilder optionsBuilder) in D:\Sakib Git\Dynamic-Portfolio\Portfolio.Repositories\Data\PortfolioDbContext.cs:line 26
+   at Microsoft.EntityFrameworkCore.DbContext.get_ContextServices()
+   at Microsoft.EntityFrameworkCore.DbContext.get_Model()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.get_EntityType()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.CheckState()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.get_EntityQueryable()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.System.Linq.IQueryable.get_Provider()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ExecuteAsync[TSource,TResult](MethodInfo operatorMethodInfo, IQueryable`1 source, Expression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ExecuteAsync[TSource,TResult](MethodInfo operatorMethodInfo, IQueryable`1 source, LambdaExpression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.FirstOrDefaultAsync[TSource](IQueryable`1 source, Expression`1 predicate, CancellationToken cancellationToken)
+   at Portfolio.Web.Common.BaseController.OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next) in D:\Sakib Git\Dynamic-Portfolio\Portfolio.Web\Common\BaseController.cs:line 37

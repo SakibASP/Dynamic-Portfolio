@@ -6,7 +6,7 @@ using Portfolio.Utils;
 
 namespace Portfolio.Repositories
 {
-    public class EducationRepo(PortfolioDbContext context) : IEducationRepo
+    public class EducationRepo(PortfolioDbContext context) : IEducationRepo, IDisposable
     {
         private readonly PortfolioDbContext _context = context;
         public async Task AddEducationAsync(SaveRequestModel<EDUCATION> saveRequestModel)
@@ -47,6 +47,10 @@ namespace Portfolio.Repositories
 
             _context.Update(saveRequestModel.Item);
             await _context.SaveChangesAsync();
+        }
+        public async void Dispose()
+        {
+            await _context.DisposeAsync();
         }
     }
 }

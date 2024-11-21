@@ -108,25 +108,36 @@ try
         await next();
     });
 
-    app.UseMiddleware<RequestCounterMiddleware>();
-
-    //Session should be used before mvc
-    app.UseSession();
-
+    // Redirect HTTP to HTTPS
     app.UseHttpsRedirection();
+
+    // Serve static files (e.g., images, CSS, JavaScript)
     app.UseStaticFiles();
 
+    // Enable session middleware before routing or MVC
+    app.UseSession();
+
+    // Add routing middleware
     app.UseRouting();
 
+    // Add custom middleware (e.g., request counting)
+    app.UseMiddleware<RequestCounterMiddleware>();
+
+    // Authentication should come before authorization
     app.UseAuthentication();
     app.UseAuthorization();
 
+    // Map controller routes for MVC
     app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Home}/{action=Index}/{id?}");
+
+    // Map Razor Pages if applicable
     app.MapRazorPages();
 
+    // Run the application
     app.Run();
+
 }
 catch (Exception ex)
 {

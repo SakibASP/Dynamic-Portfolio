@@ -6,7 +6,7 @@ using Portfolio.Utils;
 
 namespace Portfolio.Repositories
 {
-    public class ContactsRepo(PortfolioDbContext context) : IContactsRepo
+    public class ContactsRepo(PortfolioDbContext context) : IContactsRepo, IDisposable
     {
         private readonly PortfolioDbContext _context = context;
         public async Task ConfirmContactAsync(SaveRequestModel<CONTACTS> saveRequestModel)
@@ -48,6 +48,11 @@ namespace Portfolio.Repositories
             ArgumentNullException.ThrowIfNull(saveRequestModel.Item);
             _context.CONTACTS.Update(saveRequestModel.Item);
             await _context.SaveChangesAsync();
+        }
+
+        public async void Dispose()
+        {
+            await _context.DisposeAsync();
         }
     }
 }

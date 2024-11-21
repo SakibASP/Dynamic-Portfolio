@@ -6,7 +6,7 @@ using Portfolio.Utils;
 
 namespace Portfolio.Repositories
 {
-    public class ProfileCoverRepo(PortfolioDbContext context) : IProfileCoverRepo
+    public class ProfileCoverRepo(PortfolioDbContext context) : IProfileCoverRepo, IDisposable
     {
         private readonly PortfolioDbContext _context = context;
         public async Task AddProfileCoverAsync(SaveRequestModel<PROFILE_COVER> saveRequestModel)
@@ -41,6 +41,10 @@ namespace Portfolio.Repositories
             ArgumentNullException.ThrowIfNull(saveRequestModel.Item);
             _context.Update(saveRequestModel.Item);
             await _context.SaveChangesAsync();
+        }
+        public async void Dispose()
+        {
+            await _context.DisposeAsync();
         }
     }
 }

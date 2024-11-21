@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Portfolio.Models;
 using Portfolio.Repositories.Data;
+using Portfolio.Utils;
 using Serilog;
 
 namespace Portfolio.Web.Middlewares
@@ -8,7 +9,7 @@ namespace Portfolio.Web.Middlewares
     public class RequestCounterMiddleware(RequestDelegate next)
     {
         // Specify the time zone for Bangladesh
-        private static readonly TimeZoneInfo bdTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Bangladesh Standard Time");
+        private static readonly TimeZoneInfo bdTimeZone = TimeZoneInfo.FindSystemTimeZoneById(Constant.bangladeshTimezone);
 
         private readonly RequestDelegate _next = next;
 

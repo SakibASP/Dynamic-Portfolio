@@ -6,7 +6,7 @@ using Portfolio.Utils;
 
 namespace Portfolio.Repositories
 {
-    public class SkillsRepo(PortfolioDbContext context) : ISkillsRepo
+    public class SkillsRepo(PortfolioDbContext context) : ISkillsRepo, IDisposable
     {
         private readonly PortfolioDbContext _context = context;
         public async Task AddSkillAsync(SaveRequestModel<MY_SKILLS> saveRequestModel)
@@ -41,6 +41,11 @@ namespace Portfolio.Repositories
             ArgumentNullException.ThrowIfNull(saveRequestModel.Item);
             _context.MY_SKILLS.Update(saveRequestModel.Item);
             await _context.SaveChangesAsync();
+        }
+
+        public async void Dispose()
+        {
+            await _context.DisposeAsync();
         }
     }
 }

@@ -8,7 +8,7 @@ using Portfolio.ViewModels;
 
 namespace Portfolio.Repositories
 {
-    public class ProfileRepo(PortfolioDbContext context) : IProfileRepo
+    public class ProfileRepo(PortfolioDbContext context) : IProfileRepo, IDisposable
     {
         private readonly PortfolioDbContext _context = context;
         public async Task<IList<CONTACTS>> GetContactsAsync() => await _context.CONTACTS.ToListAsync();
@@ -55,6 +55,11 @@ namespace Portfolio.Repositories
         {
             var visitors = await _context.Database.SqlQueryRaw<VisitorsViewModel>(Constant.udspGetVisitors, parameters).ToListAsync();
             return visitors;
+        }
+
+        public async void Dispose()
+        {
+            await _context.DisposeAsync();
         }
     }
 }
