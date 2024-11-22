@@ -8,12 +8,12 @@ using Serilog;
 
 namespace Portfolio.Web.Controllers
 {
-    [Authorize]
     public class PROJECTSController(IProjectRepo project) : BaseController
     {
         private readonly IProjectRepo _project = project;
 
         // GET: SERVICES
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var projects = await _project.GetAllProjectsAsync();

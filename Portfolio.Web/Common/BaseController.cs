@@ -76,9 +76,8 @@ namespace Portfolio.Web.Common
                         visitor.VisitTime = BdCurrentTime;
 
                         await _context.Visitors.AddAsync(visitor);
+                        await _context.SaveChangesAsync();
                     }
-
-                    await _context.SaveChangesAsync();
                 }
             }
             catch (Exception ex)
