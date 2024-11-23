@@ -107,8 +107,6 @@
             }
         });
 
-
-
         async function processImage() {
             const imageInput = document.getElementById('imageInput').files[0];
             const imageDropArea = document.getElementById('imagePreview').src;
@@ -125,7 +123,7 @@
                 return;
             }
 
-            const response = await fetch('/api/ImageToText', {
+            const response = await fetch('/ImageProcessing/ProcessImage', {
                 method: 'POST',
                 body: formData
             });
