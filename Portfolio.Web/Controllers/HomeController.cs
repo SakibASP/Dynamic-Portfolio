@@ -3,9 +3,6 @@ using Portfolio.Web.Common;
 using System.Diagnostics;
 using Portfolio.Web.Models;
 using Portfolio.Interfaces;
-using Tesseract;
-using System.IO.Pipelines;
-using Serilog;
 
 namespace Portfolio.Web.Controllers
 {

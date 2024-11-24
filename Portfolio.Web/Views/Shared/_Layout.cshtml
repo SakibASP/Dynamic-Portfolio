@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Md. Sakibur Rahman</title>
+    <title>Md. Sakibur Rahman - @ViewData["Title"]</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -61,7 +61,6 @@
                     <li class="nav-item"><a asp-action="Projects" asp-controller="MY_PROFILE">Projects</a></li>
                     <li class="nav-item"><a asp-action="Contact" asp-controller="MY_PROFILE">Contact</a></li>
                     <li class="nav-item"><a asp-action="Visitors" asp-controller="MY_PROFILE">Visitors</a></li>
-                    <li class="nav-item"><a asp-action="ProcessImageIndex" asp-controller="ImageProcessing">Tools</a></li>
                     @if (User.Identity!.IsAuthenticated)
                     {
                         <li class="nav-item dropdown">

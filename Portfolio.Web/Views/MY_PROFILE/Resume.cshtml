@@ -4,6 +4,7 @@
 @addTagHelper*, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
+    ViewData["Title"] = "Resume";
     MY_PROFILE? mY_PROFILEs = ViewData["PROFILES"] as MY_PROFILE;
     List<EDUCATION>? eDUCATIONs = ViewData["EDUCATIONS"] as List<EDUCATION>;
     List<EXPERIENCE>? eXPERIENCEs = ViewData["EXPERIENCEs"] as List<EXPERIENCE>;
