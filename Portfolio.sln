@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portfolio.Web", "Portfolio.Web.csproj", "{B185AAB2-69FA-4087-A51C-513C52B817A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portfolio.Web", "Portfolio.Web\Portfolio.Web.csproj", "{B185AAB2-69FA-4087-A51C-513C52B817A1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portfolio.Models", "..\Portfolio.Models\Portfolio.Models.csproj", "{A73422E5-A0D9-4BEE-8CCD-3392D279A344}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portfolio.Models", "Portfolio.Models\Portfolio.Models.csproj", "{A73422E5-A0D9-4BEE-8CCD-3392D279A344}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portfolio.Utils", "..\Portfolio.Utils\Portfolio.Utils.csproj", "{3F11CB65-9704-4984-B2A0-97C981670186}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portfolio.Utils", "Portfolio.Utils\Portfolio.Utils.csproj", "{3F11CB65-9704-4984-B2A0-97C981670186}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portfolio.Interfaces", "..\Portfolio.Interfaces\Portfolio.Interfaces.csproj", "{2599014F-DAC2-4A79-9901-B7D6FE4BA3EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portfolio.Interfaces", "Portfolio.Interfaces\Portfolio.Interfaces.csproj", "{2599014F-DAC2-4A79-9901-B7D6FE4BA3EB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portfolio.ViewModels", "..\Portfolio.ViewModels\Portfolio.ViewModels.csproj", "{D2ACEAF8-73B5-4669-A738-D8746A8BE0E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portfolio.ViewModels", "Portfolio.ViewModels\Portfolio.ViewModels.csproj", "{D2ACEAF8-73B5-4669-A738-D8746A8BE0E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio.Repositories", "..\Portfolio.Repositories\Portfolio.Repositories.csproj", "{5A352F6C-E7CB-4568-88EF-E2BBEBDA047C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio.Repositories", "Portfolio.Repositories\Portfolio.Repositories.csproj", "{5A352F6C-E7CB-4568-88EF-E2BBEBDA047C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

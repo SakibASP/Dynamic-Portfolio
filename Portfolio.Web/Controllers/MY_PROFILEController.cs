@@ -60,37 +60,33 @@ namespace Portfolio.Web.Controllers
             ViewBag.SearchString = searchString;
             ViewData["StartDate"] = startDate?.ToString("yyyy-MM-dd"); //"yyyy-MM-dd"
             ViewData["EndDate"] = endDate?.ToString("yyyy-MM-dd");
-            var IsAuthenticated = User.Identity?.IsAuthenticated;
-            ViewData["IsAuthenticated"] = IsAuthenticated ?? false;
-            int pageSize = 1000;
+
+            var isAuthenticated = User.Identity?.IsAuthenticated ?? false;
+            ViewData["IsAuthenticated"] = isAuthenticated;
+
+            int pageSize = 100;
             int pageNumber = page ?? 1;
-            SqlParameter param1 = new("@PageNumber", SqlDbType.Int)
-            {
-                Value = (object)pageNumber ?? DBNull.Value
-            };
-            SqlParameter param2 = new("@PageSize", SqlDbType.Int)
-            {
-                Value = (object)pageSize ?? DBNull.Value
-            };
-            SqlParameter param3 = new("@StartDate", SqlDbType.DateTime)
-            {
-                Value = (object)startDate! ?? DBNull.Value
-            };
-            SqlParameter param4 = new("@EndDate", SqlDbType.DateTime)
-            {
-                Value = (object)endDate! ?? DBNull.Value
-            };
-            SqlParameter param5 = new("@SearchString", SqlDbType.NVarChar)
-            {
-                Value = (object)searchString! ?? DBNull.Value
-            };
+
+            SqlParameter param1 = new("@PageNumber", SqlDbType.Int) { Value = pageNumber };
+            SqlParameter param2 = new("@PageSize", SqlDbType.Int) { Value = pageSize };
+            SqlParameter param3 = new("@StartDate", SqlDbType.DateTime) { Value = (object)startDate ?? DBNull.Value };
+            SqlParameter param4 = new("@EndDate", SqlDbType.DateTime) { Value = (object)endDate ?? DBNull.Value };
+            SqlParameter param5 = new("@SearchString", SqlDbType.NVarChar) { Value = (object)searchString ?? DBNull.Value };
 
             var @params = new[] { param1, param2, param3, param4, param5 };
-            var visitors = await _profile.GetVisitorsAsync(@params) ?? [];
+
+            var visitors = await _profile.GetVisitorsAsync(@params);
+            if (visitors == null || !visitors.Any())
+            {
+                visitors = []; // Ensure the list is never null
+            }
+
             var totalRows = visitors.FirstOrDefault()?.TotalRows ?? 0;
             ViewData["TotalRecords"] = totalRows;
-            return View(await visitors.ToPagedListAsync(pageNumber, pageSize, totalRows));
+            var paginatedModel = await visitors.ToPagedListAsync(pageNumber, pageSize, totalRows);
+            return View(paginatedModel);
         }
+
 
         [HttpPost]
         public async Task<JsonResult> Contact(CONTACTS objContact)
