@@ -153,19 +153,23 @@
                 <small>&copy; @DateTime.Now.Year - <strong><span>Md. Sakibur Rahman</span></strong></small> 
             </div>
             <div>
-                <small>Powered by <strong style="color: white; background-color:rebeccapurple">.NET</strong></small> | <small><a href="https://github.com/SakibASP/Dynamic-Portfolio" target="_blank">Source Code</a></small>
+                <small>Powered by <strong style="color: white; background-color:rebeccapurple; padding:2px">.NET</strong></small>
             </div>
-
-            @if (User.Identity.IsAuthenticated)
-            {
-                <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
-                    <input type="submit" value="Logout" />
-                </form>
-            }
-            else
-            {
-                <a asp-area="Identity" asp-page="/Account/Login">Login</a>
-            }
+            <div>
+                <small><a href="https://github.com/SakibASP/Dynamic-Portfolio" target="_blank">Source Code</a></small>
+            </div>
+            <div>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                        <input type="submit" value="Logout" />
+                    </form>
+                }
+                else
+                {
+                    <a asp-area="Identity" asp-page="/Account/Login">Login</a>
+                }
+            </div>
 
 
         </div>
