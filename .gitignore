@@ -20,3 +20,8 @@
 /Portfolio.Repositories/obj
 /Portfolio.Repositories/bin/Release/net8.0
 /Portfolio.Web/Logs/ErrorLogs
+/Portfolio.Interfaces/bin/Debug/net9.0
+/Portfolio.Models/bin/Debug/net9.0
+/Portfolio.Repositories/bin/Debug/net9.0
+/Portfolio.Utils/bin/Debug/net9.0
+/Portfolio.ViewModels/bin/Debug/net9.0
