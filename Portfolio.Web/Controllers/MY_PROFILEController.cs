@@ -64,7 +64,7 @@ namespace Portfolio.Web.Controllers
             var isAuthenticated = User.Identity?.IsAuthenticated ?? false;
             ViewData["IsAuthenticated"] = isAuthenticated;
 
-            int pageSize = 100;
+            int pageSize = 1000;
             int pageNumber = page ?? 1;
 
             SqlParameter param1 = new("@PageNumber", SqlDbType.Int) { Value = pageNumber };

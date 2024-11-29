@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Portfolio.Interfaces;
 using Portfolio.Models;
 using Portfolio.Utils;
@@ -73,13 +72,10 @@ namespace Portfolio.Web.Controllers
                     //saving the file
                     await Utility.SaveFileAsync(uploadPath, files);
                     pROFILE_COVER.COVER_IMAGE = uploadPath;
-
-                    var saveParameter = GenerateParameter.SingleModel(pROFILE_COVER, User.Identity!.Name, BdCurrentTime);
-                    await _cover.AddProfileCoverAsync(saveParameter);
-                    return RedirectToAction(nameof(Index));
-
                 }
 
+                var saveParameter = GenerateParameter.SingleModel(pROFILE_COVER, User.Identity!.Name, BdCurrentTime);
+                await _cover.AddProfileCoverAsync(saveParameter);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -144,11 +140,11 @@ namespace Portfolio.Web.Controllers
                         //saving the file
                         await Utility.SaveFileAsync(uploadPath, files);
                         pROFILE_COVER.COVER_IMAGE = uploadPath;
-
-                        var saveParameter = GenerateParameter.SingleModel(pROFILE_COVER, User.Identity!.Name, BdCurrentTime);
-                        await _cover.UpdateProfileCoverAsync(saveParameter);
-                        return RedirectToAction(nameof(Index));
                     }
+
+                    var saveParameter = GenerateParameter.SingleModel(pROFILE_COVER, User.Identity!.Name, BdCurrentTime);
+                    await _cover.UpdateProfileCoverAsync(saveParameter);
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
                 {
