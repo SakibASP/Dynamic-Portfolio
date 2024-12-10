@@ -30,3 +30,4 @@
 /Portfolio.Repositories/bin/Release/net9.0
 /Portfolio.Utils/bin/Release/net9.0
 /Portfolio.ViewModels/bin/Release/net9.0
+/Portfolio.Utils/EncryptionHelper.cs
