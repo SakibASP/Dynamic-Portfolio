@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Portfolio.Models;
+using Portfolio.Utils;
 
 namespace Portfolio.Repositories.Data
 {
@@ -28,6 +29,7 @@ namespace Portfolio.Repositories.Data
                    .AddJsonFile("appsettings.json")
                    .Build();
                 var connectionString = configuration.GetConnectionString("DefaultConnection");
+                connectionString = EncryptionHelper.Decrypt(connectionString);
                 optionsBuilder.UseSqlServer(connectionString);
             }
         }

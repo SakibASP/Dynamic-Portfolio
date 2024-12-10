@@ -12,6 +12,7 @@ namespace Portfolio.Web.ServiceExtention
         {
             //getting the connection string
             var connectionString = configuration.GetConnectionString("DefaultConnection");
+            connectionString = EncryptionHelper.Decrypt(connectionString);
 
             //adding dbContext for crud operations
             serviceCollection.AddDbContext<PortfolioDbContext>(options =>
