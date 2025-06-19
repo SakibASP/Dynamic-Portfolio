@@ -6,7 +6,7 @@ using Portfolio.Utils;
 
 namespace Portfolio.Repositories
 {
-    public class DescriptionTypeRepo(PortfolioDbContext context) : IDescriptionTypeRepo, IDisposable
+    public class DescriptionTypeRepo(PortfolioDbContext context) : IDescriptionTypeRepo, IAsyncDisposable
     {
         private readonly PortfolioDbContext _context = context;
         public async Task AddDescriptionTypeAsync(SaveRequestModel<DESCRIPTION_TYPE> saveRequestModel)
@@ -43,9 +43,10 @@ namespace Portfolio.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async void Dispose()
+        public async ValueTask DisposeAsync()
         {
             await _context.DisposeAsync();
+            GC.SuppressFinalize(this);
         }
     }
 }

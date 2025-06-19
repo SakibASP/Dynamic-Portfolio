@@ -1,0 +1,8 @@
+2025-06-20 01:40:47.709 +06:00 [FTL] Application terminated unexpectedly
+System.FormatException: The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.
+   at System.Convert.FromBase64_ComputeResultLength(Char* inputPtr, Int32 inputLength)
+   at System.Convert.FromBase64CharPtr(Char* inputPtr, Int32 inputLength)
+   at System.Convert.FromBase64String(String s)
+   at Portfolio.Utils.EncryptionHelper.Decrypt(String encryptedText) in F:\Cloud Coding\GitHub\SakibASP\Dynamic-Portfolio\Portfolio.Utils\EncryptionHelper.cs:line 42
+   at Portfolio.Web.ServiceExtention.ConfigureExtention.AddConfigurations(IServiceCollection serviceCollection, IConfiguration configuration) in F:\Cloud Coding\GitHub\SakibASP\Dynamic-Portfolio\Portfolio.Web\ServiceExtention\ConfigureExtention.cs:line 15
+   at Program.<Main>$(String[] args) in F:\Cloud Coding\GitHub\SakibASP\Dynamic-Portfolio\Portfolio.Web\Program.cs:line 37

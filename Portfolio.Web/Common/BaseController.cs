@@ -34,7 +34,7 @@ namespace Portfolio.Web.Common
 
                 if (userInfo is not null)
                 {
-                    var existingVisitor = await _context.Visitors
+                    var existingVisitor = await _context.Visitors.AsNoTracking()
                         .FirstOrDefaultAsync(v => v.IPAddress == ipAddress && v.VisitTime.Date == BdCurrentTime.Date && v.OperatingSystem == userInfo.OperatingSystem && v.UserAgent == userAgent);
 
                     if (existingVisitor is null)

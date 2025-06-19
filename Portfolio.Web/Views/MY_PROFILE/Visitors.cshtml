@@ -9,32 +9,75 @@
 <link href="~/css/pagedlist.css" rel="stylesheet" />
 
 <style>
-    thead {
-        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    table.dataTable {
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08); /* softer and deeper */
+    }
+
+    /* Header styling */
+    table.dataTable thead {
+        background: linear-gradient(to right, #4e54c8, #8f94fb);
         color: #fff;
-        background-color: #000;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-        overflow: hidden; /* Ensure the radius is applied correctly */
+        font-weight: 600;
+        letter-spacing: 0.5px;
     }
 
-    .tbody-transparent{
-        color: black !important;
-        background-color: transparent !important;
-        border: 1px solid white;
-        font-family: 'Times New Roman', Times, serif;
+    table.dataTable thead th:first-child {
+        border-top-left-radius: 12px;
     }
 
+    table.dataTable thead th:last-child {
+        border-top-right-radius: 12px;
+    }
+
+    /* Zebra striping for body */
+    table.dataTable tbody tr:nth-child(even) {
+        background-color: #fbfbf9; /* a touch lighter */
+    }
+
+    table.dataTable tbody tr:nth-child(odd) {
+        background-color: #f2f1ef;
+    }
+
+    /* Text styling */
+    table.dataTable tbody td {
+        color: #3b3b3b;
+        font-weight: 500;
+        padding: 12px 10px;
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    /* Hover effect */
+    table.dataTable tbody tr:hover {
+        background-color: #dcd9d2;
+        transform: scale(1.003); /* subtle pop */
+        cursor: pointer;
+    }
+
+    /* Bottom-left and bottom-right rounded corners */
+    table.dataTable tbody tr:last-child td:first-child {
+        border-bottom-left-radius: 12px;
+    }
+
+    table.dataTable tbody tr:last-child td:last-child {
+        border-bottom-right-radius: 12px;
+    }
+
+    /* Filter spacing */
     .dataTables_filter {
-        margin-bottom: 10px; /* Adjust the value as needed */
+        margin-bottom: 10px;
     }
+
 </style>
 
 <section>
     <div class="container-fluid p-5">
         <div style="margin-bottom: 10px">
             <h4 style="color: orangered; text-align: center;" id="changing-heading">@ViewBag.TotalRecords visitors</h4>
-            <button id="filterToggleButton" class="btn btn-outline-info"><i id="filterToggleIcon" class="bi bi-plus"></i>Filter</button>
+            <button id="filterToggleButton" class="btn btn-outline-success btn-sm"><i id="filterToggleIcon" class="bi bi-plus"></i>Filter</button>
             <div id="filterFormContainer">
                 <form asp-action="Visitors">
                     <div class="flex-button">
@@ -63,42 +106,45 @@
             <table class="table">
                 <thead>
                     <tr>
-                        @if (IsAuthenticated)
-                        {
-                            <th>IP Address</th>
-                        }
                         <th>Visit Time</th>
                         <th>Operating System</th>
-                        <th>OS Version</th>
-                        <th>Browser</th>
-                        <th>Browser Version</th>
-                        <th>Device Type</th>
-                        <th>Device Brand</th>
-                        <th>Device Model</th>
                         <th>City</th>
                         <th>Country</th>
                         <th>Timezone</th>
+                        @if (IsAuthenticated)
+                        {
+                            <th>IP Address</th>
+                            <th>OS Version</th>
+                            <th>Browser</th>
+                            <th>Browser Version</th>
+                            <th>Device Type</th>
+                            <th>Device Brand</th>
+                            <th>Device Model</th>
+                            
+                        }
+                       
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model)
                     {
                         <tr>
-                            @if (IsAuthenticated)
-                            {
-                                <td>@item.IPAddress</td>
-                            }
                             <td>@item.VisitTime</td>
                             <td>@item.OperatingSystem</td>
-                            <td>@item.OperatingSystemVersion</td>
-                            <td>@item.Browser</td>
-                            <td>@item.BrowserVersion</td>
-                            <td>@item.DeviceType</td>
-                            <td>@item.DeviceBrand</td>
-                            <td>@item.DeviceModel</td>
                             <td>@item.City</td>
                             <td>@item.Country</td>
                             <td>@item.Timezone</td>
+                            @if (IsAuthenticated)
+                            {
+                                <td>@item.IPAddress</td>
+                                <td>@item.OperatingSystemVersion</td>
+                                <td>@item.Browser</td>
+                                <td>@item.BrowserVersion</td>
+                                <td>@item.DeviceType</td>
+                                <td>@item.DeviceBrand</td>
+                                <td>@item.DeviceModel</td>
+                            }
+                           
                         </tr>
                     }
                 </tbody>

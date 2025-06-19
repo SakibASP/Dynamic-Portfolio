@@ -19,5 +19,7 @@ namespace Portfolio.Models
         public string? TO_DATE { get; set; }
         [DisplayName("Institute")]
         public string? INSTITUTE { get; set; }
+        [DisplayName("Sort Order")]
+        public int? SORT_ORDER { get; set; }
     }
 }

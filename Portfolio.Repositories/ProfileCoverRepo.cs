@@ -6,7 +6,7 @@ using Portfolio.Utils;
 
 namespace Portfolio.Repositories
 {
-    public class ProfileCoverRepo(PortfolioDbContext context) : IProfileCoverRepo, IDisposable
+    public class ProfileCoverRepo(PortfolioDbContext context) : IProfileCoverRepo, IAsyncDisposable
     {
         private readonly PortfolioDbContext _context = context;
         public async Task AddProfileCoverAsync(SaveRequestModel<PROFILE_COVER> saveRequestModel)
@@ -18,7 +18,7 @@ namespace Portfolio.Repositories
 
         public  async Task<IList<PROFILE_COVER>> GetAllProfileCoversAsync()
         {
-            return await _context.PROFILE_COVER.ToListAsync();
+            return await _context.PROFILE_COVER.AsNoTracking().ToListAsync();
         }
 
         public async Task<PROFILE_COVER?> GetProfileCoverByIdAsync(int? id)
@@ -42,9 +42,10 @@ namespace Portfolio.Repositories
             _context.Update(saveRequestModel.Item);
             await _context.SaveChangesAsync();
         }
-        public async void Dispose()
+        public async ValueTask DisposeAsync()
         {
             await _context.DisposeAsync();
+            GC.SuppressFinalize(this);
         }
     }
 }

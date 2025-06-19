@@ -73,9 +73,9 @@ namespace Portfolio.Web.Controllers
             SqlParameter param4 = new("@EndDate", SqlDbType.DateTime) { Value = (object)endDate ?? DBNull.Value };
             SqlParameter param5 = new("@SearchString", SqlDbType.NVarChar) { Value = (object)searchString ?? DBNull.Value };
 
-            var @params = new[] { param1, param2, param3, param4, param5 };
+            var parameters = new[] { param1, param2, param3, param4, param5 };
 
-            var visitors = await _profile.GetVisitorsAsync(@params);
+            var visitors = await _profile.GetVisitorsAsync(parameters);
             if (visitors == null || !visitors.Any())
             {
                 visitors = []; // Ensure the list is never null

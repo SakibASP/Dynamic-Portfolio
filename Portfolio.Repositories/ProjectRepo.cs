@@ -6,7 +6,7 @@ using Portfolio.Utils;
 
 namespace Portfolio.Repositories
 {
-    public class ProjectRepo(PortfolioDbContext context) : IProjectRepo, IDisposable
+    public class ProjectRepo(PortfolioDbContext context) : IProjectRepo, IAsyncDisposable
     {
         private readonly PortfolioDbContext _context = context;
         public async Task AddProjectAsync(SaveRequestModel<PROJECTS> saveRequestModel)
@@ -18,7 +18,7 @@ namespace Portfolio.Repositories
 
         public async Task<IList<PROJECTS>> GetAllProjectsAsync()
         {
-            return await _context.PROJECTS.ToListAsync();
+            return await _context.PROJECTS.AsNoTracking().ToListAsync();
         }
 
         public async Task<IList<DESCRIPTION>> GetDescriptionByProjectIdAsync(int? id)
@@ -52,9 +52,10 @@ namespace Portfolio.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async void Dispose()
+        public async ValueTask DisposeAsync()
         {
             await _context.DisposeAsync();
+            GC.SuppressFinalize(this);
         }
     }
 }

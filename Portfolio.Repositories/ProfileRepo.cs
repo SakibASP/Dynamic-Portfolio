@@ -8,18 +8,18 @@ using Portfolio.ViewModels;
 
 namespace Portfolio.Repositories
 {
-    public class ProfileRepo(PortfolioDbContext context) : IProfileRepo, IDisposable
+    public class ProfileRepo(PortfolioDbContext context) : IProfileRepo, IAsyncDisposable
     {
         private readonly PortfolioDbContext _context = context;
-        public async Task<IList<CONTACTS>> GetContactsAsync() => await _context.CONTACTS.ToListAsync();
-        public async Task<IList<DESCRIPTION>> GetDescriptionsAsync() => await _context.DESCRIPTION.ToListAsync();
-        public async Task<IList<EDUCATION>> GetEducationsAsync() => await _context.EDUCATION.ToListAsync();
-        public async Task<IList<EXPERIENCE>> GetExperiencesAsync() => await _context.EXPERIENCE.ToListAsync();
-        public async Task<IList<MY_PROFILE>> GetProflieAsync() => await _context.MY_PROFILE.ToListAsync();
-        public async Task<IList<PROJECTS>> GetProjectsAsync() => await _context.PROJECTS.ToListAsync();
-        public async Task<MY_PROFILE?> GetSingleProflieAsync() => await _context.MY_PROFILE.FirstOrDefaultAsync();
-        public async Task<MY_PROFILE?> GetSingleProflieByIdAsync(int? id) => await _context.MY_PROFILE.FirstOrDefaultAsync(x=>x.AUTO_ID ==id);
-        public async Task<IList<MY_SKILLS>> GetSkillsAsync() => await _context.MY_SKILLS.ToListAsync();
+        public async Task<IList<CONTACTS>> GetContactsAsync() => await _context.CONTACTS.AsNoTracking().ToListAsync();
+        public async Task<IList<DESCRIPTION>> GetDescriptionsAsync() => await _context.DESCRIPTION.AsNoTracking().ToListAsync();
+        public async Task<IList<EDUCATION>> GetEducationsAsync() => await _context.EDUCATION.AsNoTracking().ToListAsync();
+        public async Task<IList<EXPERIENCE>> GetExperiencesAsync() => await _context.EXPERIENCE.OrderByDescending(x => x.SORT_ORDER).AsNoTracking().ToListAsync();
+        public async Task<IList<MY_PROFILE>> GetProflieAsync() => await _context.MY_PROFILE.AsNoTracking().ToListAsync();
+        public async Task<IList<PROJECTS>> GetProjectsAsync() => await _context.PROJECTS.AsNoTracking().ToListAsync();
+        public async Task<MY_PROFILE?> GetSingleProflieAsync() => await _context.MY_PROFILE.AsNoTracking().FirstOrDefaultAsync();
+        public async Task<MY_PROFILE?> GetSingleProflieByIdAsync(int? id) => await _context.MY_PROFILE.AsNoTracking().FirstOrDefaultAsync(x=>x.AUTO_ID ==id);
+        public async Task<IList<MY_SKILLS>> GetSkillsAsync() => await _context.MY_SKILLS.AsNoTracking().ToListAsync();
 
         public async Task AddContactInfoAsync(SaveRequestModel<CONTACTS> saveRequest)
         {
@@ -49,9 +49,10 @@ namespace Portfolio.Repositories
             return visitors;
         }
 
-        public async void Dispose()
+        public async ValueTask DisposeAsync()
         {
             await _context.DisposeAsync();
+            GC.SuppressFinalize(this);
         }
     }
 }

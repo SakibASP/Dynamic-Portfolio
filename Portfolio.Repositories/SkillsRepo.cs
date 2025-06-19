@@ -6,7 +6,7 @@ using Portfolio.Utils;
 
 namespace Portfolio.Repositories
 {
-    public class SkillsRepo(PortfolioDbContext context) : ISkillsRepo, IDisposable
+    public class SkillsRepo(PortfolioDbContext context) : ISkillsRepo, IAsyncDisposable
     {
         private readonly PortfolioDbContext _context = context;
         public async Task AddSkillAsync(SaveRequestModel<MY_SKILLS> saveRequestModel)
@@ -18,7 +18,7 @@ namespace Portfolio.Repositories
 
         public async Task<IList<MY_SKILLS>> GetAllSkillsAsync()
         {
-            return await _context.MY_SKILLS.ToListAsync();
+            return await _context.MY_SKILLS.AsNoTracking().ToListAsync();
         }
 
         public async Task<MY_SKILLS?> GetSkillByIdAsync(int? id)
@@ -43,9 +43,10 @@ namespace Portfolio.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async void Dispose()
+        public async ValueTask DisposeAsync()
         {
             await _context.DisposeAsync();
+            GC.SuppressFinalize(this);
         }
     }
 }

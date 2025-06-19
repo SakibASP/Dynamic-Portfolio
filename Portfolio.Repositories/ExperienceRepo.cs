@@ -6,7 +6,7 @@ using Portfolio.Utils;
 
 namespace Portfolio.Repositories
 {
-    public class ExperienceRepo(PortfolioDbContext context) : IExperienceRepo, IDisposable
+    public class ExperienceRepo(PortfolioDbContext context) : IExperienceRepo, IAsyncDisposable
     {
         private readonly PortfolioDbContext _context = context;
         public async Task AddExperienceAsync(SaveRequestModel<EXPERIENCE> saveRequestModel)
@@ -21,7 +21,7 @@ namespace Portfolio.Repositories
 
         public async Task<IList<EXPERIENCE>> GetAllExperiencesAsync()
         {
-            return await _context.EXPERIENCE.ToListAsync();
+            return await _context.EXPERIENCE.OrderByDescending(x => x.SORT_ORDER).AsNoTracking().ToListAsync();
         }
 
         public async Task<EXPERIENCE?> GetExperienceByIdAsync(int? id)
@@ -49,9 +49,10 @@ namespace Portfolio.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async void Dispose()
+        public async ValueTask DisposeAsync()
         {
             await _context.DisposeAsync();
+            GC.SuppressFinalize(this);
         }
     }
 }

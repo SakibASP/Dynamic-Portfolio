@@ -23,7 +23,7 @@
         public const string ErrorMessage = "Failed! Something has gone wrong!";
 
         //stored procedures
-        public const string udspGetVisitors = "EXEC dbo.udspGetVisitors @PageNumber = @PageNumber,@PageSize=@PageSize,@StartDate=@StartDate,@EndDate = @EndDate,@SearchString = @SearchString";
+        public const string udspGetVisitors = "EXEC dbo.udspGetVisitors @PageNumber,@PageSize,@StartDate,@EndDate,@SearchString";
 
     }
 }
