@@ -2,15 +2,15 @@
 
 @{
     ViewData["Title"] = "Home";
-    var Cover = (PROFILE_COVER)ViewBag.Cover;
+    var Cover = (PROFILE_COVER?)ViewBag.Cover;
     var rootpath = (string)ViewBag.rootPath;
 }
 
 <link href="~/assets/scss/mousemove.css" rel="stylesheet" />
 <link href="~/css/home/homeindexcontent.css" rel="stylesheet" />
 
-<input type="hidden" id="coverName" value="@Cover.COVER_NAME" />
-<input type="hidden" id="coverDesc" value="@Cover.COVER_DESC" />
+<input type="hidden" id="coverName" value="@Cover?.COVER_NAME" />
+<input type="hidden" id="coverDesc" value="@Cover?.COVER_DESC" />
 
 <!-- ======= Hero Section for Desktop View ======= -->
 <section id="hero" class="d-none d-sm-block align-items-center" style="overflow:hidden; padding: 20px;">
@@ -114,8 +114,8 @@
             </div>
         </div>
     }
-
 </section><!-- End Hero -->
+
 @section Scripts{
     <script src="~/assets/js/mousemove.js"></script>
     <script src="~/assets/js/typewriter.js"></script>

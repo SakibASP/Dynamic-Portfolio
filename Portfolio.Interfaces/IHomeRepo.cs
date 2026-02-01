@@ -1,13 +1,19 @@
-﻿using Portfolio.Models;
+﻿using Portfolio.ViewModels;
 
-namespace Portfolio.Interfaces
+namespace Portfolio.Interfaces;
+
+public interface IHomeRepo
 {
-    public interface IHomeRepo
-    {
-        /// <summary>
-        /// Get the messages count which are not confirmed yet
-        /// </summary>
-        /// <returns></returns>
-        Task<int?> GetUnreadMessagesCountAsync();
-    }
+    /// <summary>
+    /// Get the messages count which are not confirmed yet
+    /// </summary>
+    /// <returns></returns>
+    Task<int?> GetUnreadMessagesCountAsync();
+
+    /// <summary>
+    /// Saves visitor location information
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    Task<bool> SaveLocationAsync(LocationRequest request);
 }

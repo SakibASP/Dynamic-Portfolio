@@ -6,6 +6,7 @@
 window.addEventListener('load', function () {
     typeHeadingWriter();
     toggleFilterButton();
+    getLocation();
     //setInterval(changeHeadingColor, 5000); // 5000 milliseconds = 5 seconds
 });
 
