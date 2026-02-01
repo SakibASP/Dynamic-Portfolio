@@ -1,4 +1,4 @@
-﻿@using X.PagedList
+@using X.PagedList
 @using X.PagedList.Mvc.Core
 @model IPagedList<Portfolio.ViewModels.VisitorsViewModel>
 
@@ -9,179 +9,361 @@
 <link href="~/css/pagedlist.css" rel="stylesheet" />
 
 <style>
-    table.dataTable {
-        border-collapse: separate;
-        border-spacing: 0;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08); /* softer and deeper */
+    .visitors-section {
+        min-height: 100vh;
+        padding: 40px 20px;
     }
 
-    /* Header styling */
-    table.dataTable thead {
-        background: linear-gradient(to right, #4e54c8, #8f94fb);
+    .visitors-header {
+        text-align: center;
+        margin-bottom: 32px;
+    }
+
+    .visitors-header h4 {
+        font-size: 2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #4e54c8, #8f94fb);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 4px;
+    }
+
+    .visitors-header .subtitle {
+        color: #888;
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    /* Filter Panel */
+    .filter-panel {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        padding: 20px 24px;
+        margin-bottom: 32px;
+        border: 1px solid #eee;
+    }
+
+    .filter-toggle-btn {
+        background: linear-gradient(135deg, #4e54c8, #8f94fb);
         color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 8px 20px;
         font-weight: 600;
+        font-size: 0.85rem;
         letter-spacing: 0.5px;
-    }
-
-    table.dataTable thead th:first-child {
-        border-top-left-radius: 12px;
-    }
-
-    table.dataTable thead th:last-child {
-        border-top-right-radius: 12px;
-    }
-
-    /* Zebra striping for body */
-    table.dataTable tbody tr:nth-child(even) {
-        background-color: #fbfbf9; /* a touch lighter */
-    }
-
-    table.dataTable tbody tr:nth-child(odd) {
-        background-color: #f2f1ef;
-    }
-
-    /* Text styling */
-    table.dataTable tbody td {
-        color: #3b3b3b;
-        font-weight: 500;
-        padding: 12px 10px;
-        transition: background 0.3s ease, transform 0.2s ease;
-    }
-
-    /* Hover effect */
-    table.dataTable tbody tr:hover {
-        background-color: #dcd9d2;
-        transform: scale(1.003); /* subtle pop */
+        transition: all 0.3s ease;
         cursor: pointer;
     }
 
-    /* Bottom-left and bottom-right rounded corners */
-    table.dataTable tbody tr:last-child td:first-child {
-        border-bottom-left-radius: 12px;
+    .filter-toggle-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(78, 84, 200, 0.35);
     }
 
-    table.dataTable tbody tr:last-child td:last-child {
-        border-bottom-right-radius: 12px;
+    .filter-form .form-control {
+        border-radius: 10px;
+        border: 1.5px solid #e0e0e0;
+        padding: 10px 14px;
+        font-size: 0.9rem;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    /* Filter spacing */
-    .dataTables_filter {
-        margin-bottom: 10px;
+    .filter-form .form-control:focus {
+        border-color: #8f94fb;
+        box-shadow: 0 0 0 3px rgba(143, 148, 251, 0.15);
     }
 
+    .filter-form label {
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+    }
+
+    .btn-filter-submit {
+        background: linear-gradient(135deg, #4e54c8, #8f94fb);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 28px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-filter-submit:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(78, 84, 200, 0.35);
+        color: #fff;
+    }
+
+    /* Visitor Cards */
+    .visitor-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        border: 1px solid #f0eeee;
+        padding: 20px 24px;
+        margin-bottom: 16px;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .visitor-card::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: linear-gradient(to bottom, #4e54c8, #8f94fb);
+        border-radius: 4px 0 0 4px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .visitor-card:hover {
+        box-shadow: 0 8px 28px rgba(78, 84, 200, 0.12);
+        transform: translateY(-2px);
+    }
+
+    .visitor-card:hover::before {
+        opacity: 1;
+    }
+
+    .visitor-card .card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .visitor-card .location-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .visitor-card .country-badge {
+        background: linear-gradient(135deg, #4e54c8, #8f94fb);
+        color: #fff;
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+    }
+
+    .visitor-card .city-text {
+        color: #555;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    .visitor-card .visit-time {
+        color: #999;
+        font-size: 0.82rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .visitor-card .card-details {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px 24px;
+        align-items: center;
+    }
+
+    .visitor-card .detail-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #f6f5ff;
+        padding: 6px 14px;
+        border-radius: 10px;
+        font-size: 0.82rem;
+        color: #4e54c8;
+        font-weight: 500;
+        border: 1px solid #eeecfc;
+    }
+
+    .visitor-card .detail-chip i {
+        font-size: 0.9rem;
+        opacity: 0.7;
+    }
+
+    .visitor-card .detail-chip.ip-chip {
+        background: #fff7ed;
+        color: #c2690a;
+        border-color: #fde5c3;
+    }
+
+    .btn-go-location {
+        background: linear-gradient(135deg, #10b981, #34d399);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 6px 16px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-go-location:hover {
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+    }
+
+    /* Pagination */
+    .pagination-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 32px;
+        flex-wrap: wrap;
+    }
+
+    .pagination-wrapper .page-info {
+        color: #888;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    /* Entrance animation */
+    .visitor-card {
+        animation: fadeSlideUp 0.4s ease forwards;
+        opacity: 0;
+    }
+
+    @@keyframes fadeSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(12px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* stagger the animation */
+    .visitor-card:nth-child(1)  { animation-delay: 0.03s; }
+    .visitor-card:nth-child(2)  { animation-delay: 0.06s; }
+    .visitor-card:nth-child(3)  { animation-delay: 0.09s; }
+    .visitor-card:nth-child(4)  { animation-delay: 0.12s; }
+    .visitor-card:nth-child(5)  { animation-delay: 0.15s; }
+    .visitor-card:nth-child(6)  { animation-delay: 0.18s; }
+    .visitor-card:nth-child(7)  { animation-delay: 0.21s; }
+    .visitor-card:nth-child(8)  { animation-delay: 0.24s; }
+    .visitor-card:nth-child(9)  { animation-delay: 0.27s; }
+    .visitor-card:nth-child(10) { animation-delay: 0.30s; }
 </style>
 
-<section>
-    <div class="container-fluid p-5">
-        <div style="margin-bottom: 10px">
-            <h4 style="color: orangered; text-align: center;" id="changing-heading">@ViewBag.TotalRecords visitors</h4>
-            <button id="filterToggleButton" class="btn btn-outline-success btn-sm"><i id="filterToggleIcon" class="bi bi-plus"></i>Filter</button>
+<section class="visitors-section">
+    <div class="container" style="max-width: 900px;">
+
+        <!-- Header -->
+        <div class="visitors-header">
+            <h4>@ViewBag.TotalRecords Visitors</h4>
+            <span class="subtitle">explored this portfolio</span>
+        </div>
+
+        <!-- Filter Panel -->
+        <div class="filter-panel">
+            <button id="filterToggleButton" class="filter-toggle-btn">
+                <i id="filterToggleIcon" class="bi bi-funnel"></i> Filter
+            </button>
             <div id="filterFormContainer">
-                <form asp-action="Visitors">
-                    <div class="flex-button">
-                        <div class="form-group">
-                            <small class="form-text text-muted">From</small>
+                <form asp-action="Visitors" class="filter-form mt-3">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-sm-6 col-md-3">
+                            <label>From</label>
                             <input class="form-control" id="startDate" name="startDate" type="date" value="@ViewBag.StartDate" />
                         </div>
-                        <div class="form-group">
-                            <small class="form-text text-muted">To</small>
+                        <div class="col-sm-6 col-md-3">
+                            <label>To</label>
                             <input class="form-control" id="endDate" name="endDate" type="date" value="@ViewBag.EndDate" />
                         </div>
-                        <div class="form-group">
-                            <small class="form-text text-muted">Search</small>
-                            <input class="form-control" id="searchString" name="searchString" type="text" value="@ViewBag.SearchString" placeholder="Country/City/Device..." />
+                        <div class="col-sm-8 col-md-4">
+                            <label>Search</label>
+                            <input class="form-control" id="searchString" name="searchString" type="text" value="@ViewBag.SearchString" placeholder="Country, City, Device..." />
                         </div>
-
-                        <div class="form-group">
-                            <br />
-                            <input type="submit" style="float : right;" class="btn btn-outline-dark" value="View" />
+                        <div class="col-sm-4 col-md-2">
+                            <button type="submit" class="btn btn-filter-submit w-100">View</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Visit Time</th>
-                        <th>Operating System</th>
-                        <th>City</th>
-                        <th>Country</th>
-                        <th>OS</th>
-                        <th>Browser</th>
-                        <th>Device Brand</th>
-                        <th>Location</th>
-                        @if (IsAuthenticated)
-                        {
-                            <th>IP Address</th>
-                        }
-                       
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>@item.VisitTime</td>
-                            <td>@item.OperatingSystem</td>
-                            <td>@item.City</td>
-                            <td>@item.Country</td>
-                            <td>@item.OperatingSystem</td>
-                            <td>@item.Browser</td>
-                            <td>@item.DeviceBrand</td>
-                            <td>
-                                @if (!string.IsNullOrEmpty(item.Latitude) && !string.IsNullOrEmpty(item.Longitude))
-                                {
-                                    <a href="https://www.google.com/maps?q=@item.Latitude,@item.Longitude" target="_blank" class="btn btn-outline-primary btn-sm">
-                                        <i class="bi bi-geo-alt-fill"></i> Go
-                                    </a>
-                                }
-                            </td>
-                            @if (IsAuthenticated)
+
+        <!-- Visitor Cards -->
+        <div class="visitor-list">
+            @foreach (var item in Model)
+            {
+                <div class="visitor-card">
+                    <div class="card-top">
+                        <div class="location-info">
+                            @if (!string.IsNullOrEmpty(item.Country))
                             {
-                                <td>@item.IPAddress</td>
+                                <span class="country-badge">@item.Country</span>
                             }
-                           
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                            @if (!string.IsNullOrEmpty(item.City))
+                            {
+                                <span class="city-text">@item.City</span>
+                            }
+                        </div>
+                        <span class="visit-time">
+                            <i class="bi bi-clock"></i> @item.VisitTime.ToString("dd MMM yyyy, hh:mm tt")
+                        </span>
+                    </div>
+                    <div class="card-details">
+                        @if (!string.IsNullOrEmpty(item.OperatingSystem))
+                        {
+                            <span class="detail-chip"><i class="bi bi-laptop"></i> @item.OperatingSystem</span>
+                        }
+                        @if (!string.IsNullOrEmpty(item.Browser))
+                        {
+                            <span class="detail-chip"><i class="bi bi-globe2"></i> @item.Browser</span>
+                        }
+                        @if (!string.IsNullOrEmpty(item.DeviceBrand))
+                        {
+                            <span class="detail-chip"><i class="bi bi-phone"></i> @item.DeviceBrand</span>
+                        }
+                        @if (IsAuthenticated && !string.IsNullOrEmpty(item.IPAddress))
+                        {
+                            <span class="detail-chip ip-chip"><i class="bi bi-shield-lock"></i> @item.IPAddress</span>
+                        }
+                        @if (!string.IsNullOrEmpty(item.Latitude) && !string.IsNullOrEmpty(item.Longitude))
+                        {
+                            <a href="https://www.google.com/maps?q=@item.Latitude,@item.Longitude" target="_blank" class="btn-go-location">
+                                <i class="bi bi-geo-alt-fill"></i> Go
+                            </a>
+                        }
+                    </div>
+                </div>
+            }
         </div>
 
-        <div style="text-align: left">
-            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+        <!-- Pagination -->
+        <div class="pagination-wrapper">
+            <span class="page-info">Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</span>
             @Html.PagedListPager(Model, page => Url.Action("Visitors", new { page, searchString = ViewBag.SearchString, startDate = ViewBag.StartDate, endDate = ViewBag.EndDate }))
         </div>
     </div>
 </section>
-
-@section Scripts{
-    <script>
-        $(function() {
-            $('.table').DataTable({
-                order: [[0, 'desc']], // Second column has index 1
-                columnDefs: [
-                    {
-                        targets: 0, // Second column
-                        render: function (data) {
-                            // Check if the data is valid and parse it
-                            const parsedDate = new Date(data);
-                            if (!isNaN(parsedDate)) {
-                                // If valid, return the ISO string for consistent sorting
-                                return parsedDate.toISOString();
-                            }
-                            // Return original data if invalid
-                            return data;
-                        }
-                    }
-                ],
-                createdRow: function (row, data, dataIndex) {
-                    $(row).addClass('tbody-transparent'); // Apply your class to each row
-                }
-            });
-        })
-    </script>
-}

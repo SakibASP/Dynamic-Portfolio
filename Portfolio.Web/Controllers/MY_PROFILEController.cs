@@ -8,6 +8,7 @@ using Serilog;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using X.PagedList;
+using Portfolio.ViewModels;
 
 namespace Portfolio.Web.Controllers;
 
@@ -64,7 +65,7 @@ public class MY_PROFILEController(IWebHostEnvironment webHostEnvironment, IProfi
         var isAuthenticated = User.Identity?.IsAuthenticated ?? false;
         ViewData["IsAuthenticated"] = isAuthenticated;
 
-        int pageSize = 1000;
+        int pageSize = 20;
         int pageNumber = page ?? 1;
 
         SqlParameter param1 = new("@PageNumber", SqlDbType.Int) { Value = pageNumber };
@@ -83,7 +84,7 @@ public class MY_PROFILEController(IWebHostEnvironment webHostEnvironment, IProfi
 
         var totalRows = visitors.FirstOrDefault()?.TotalRows ?? 0;
         ViewData["TotalRecords"] = totalRows;
-        var paginatedModel = await visitors.ToPagedListAsync(pageNumber, pageSize, totalRows);
+        var paginatedModel = new StaticPagedList<VisitorsViewModel>(visitors, pageNumber, pageSize, totalRows);
         return View(paginatedModel);
     }
 
@@ -101,7 +102,7 @@ public class MY_PROFILEController(IWebHostEnvironment webHostEnvironment, IProfi
                     const string subject = "Thank You for Reaching Out!";
                     string htmlMessage = $@"<h5>Hello {objContact.NAME},</h5>
                             <p>Thank you for reaching out! I’ve received your message and will get back to you as soon as possible.</p>
-                            <p>Warm regards,<br><strong>Md. Sakibur Rahman</strong></p>";
+                            <p>Warm regards,<br><strong>Zarrif Zim</strong></p>";
                     await _sendEmail.SendEmailAsync(objContact.EMAIL, subject, htmlMessage);
                 }
                 catch(Exception ex) 
