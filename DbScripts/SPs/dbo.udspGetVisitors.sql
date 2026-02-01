@@ -1,58 +1,100 @@
 
 /**
+------------------------------------------
+Author	: Md. Sakibur Rahman
+Date	: 2022-03-01
+
+Run:
+
 
 EXEC dbo.udspGetVisitors 
-@PageNumber = 1,@PageSize=10
+ @PageNumber = 1,@PageSize=10
 ,@StartDate='2024-01-01',@EndDate = '2026-01-01'
 ,@SearchString = 'Dhaka'
 
 **/
 
-CREATE OR ALTER PROCEDURE [dbo].[udspGetVisitors]
+CREATE OR ALTER PROCEDURE dbo.udspGetVisitors
     @PageNumber INT = 1,
     @PageSize INT = 10,
-    @StartDate DATETIME = NULL,
-    @EndDate DATETIME = NULL,
-    @SearchString NVARCHAR(128) = NULL
+	@StartDate DATETIME = NULL,
+	@EndDate DATETIME = NULL,
+	@SearchString NVARCHAR(128)=NULL
 AS
-BEGIN
-    SET NOCOUNT ON;
 
-    ;WITH FilteredVisitors AS (
-        SELECT 
-            *,
-            TotalRows = COUNT(*) OVER ()
-        FROM dbo.Visitors V
-        WHERE 
-            (@StartDate IS NULL OR @EndDate IS NULL OR 
-                TRY_CONVERT(DATE, V.VisitTime) BETWEEN TRY_CONVERT(DATE, @StartDate) AND TRY_CONVERT(DATE, @EndDate))
-            AND (
-                @SearchString IS NULL OR @SearchString = '' OR 
-                UPPER(V.DeviceType) LIKE '%' + UPPER(@SearchString) + '%' OR
-                UPPER(V.DeviceBrand) LIKE '%' + UPPER(@SearchString) + '%' OR
-                UPPER(V.Country) LIKE '%' + UPPER(@SearchString) + '%' OR
-                UPPER(V.OperatingSystem) LIKE '%' + UPPER(@SearchString) + '%' OR
-                UPPER(V.Browser) LIKE '%' + UPPER(@SearchString) + '%' OR
-                UPPER(V.City) LIKE '%' + UPPER(@SearchString) + '%'
-            )
-    )
-    SELECT 
-        IPAddress,
-        OperatingSystem,
-        OperatingSystemVersion,
-        Browser,
-        BrowserVersion,
-        DeviceType,
-        DeviceBrand,
-        DeviceModel,
-        City,
-        Country,
-        Timezone,
-        VisitTime,
-        TotalRows
-    FROM FilteredVisitors
-    ORDER BY VisitTime DESC
-    OFFSET (@PageNumber - 1) * @PageSize ROWS
-    FETCH NEXT @PageSize ROWS ONLY;
+BEGIN
+
+DROP TABLE IF EXISTS #tmpVisitor;
+CREATE TABLE #tmpVisitor(
+	IPAddress [nvarchar](45) NULL,
+	OperatingSystem [nvarchar](100) NULL,
+	Browser [nvarchar](100) NULL,
+	DeviceBrand [nvarchar](100) NULL,
+	City [nvarchar](100) NULL,
+	Country [nvarchar](100) NULL,
+	VisitTime [Datetime2](7) NULL,
+	Latitude [nvarchar](20) NULL,
+	Longitude [nvarchar](20)
+)
+
+DECLARE @sql NVARCHAR(MAX) = '';
+IF (@StartDate IS NOT NULL AND @EndDate IS NOT NULL)
+	SET @sql = @sql+' (TRY_CAST(V.VisitTime AS DATE) BETWEEN '''+TRY_CAST(@StartDate AS nvarchar(256))+''' AND '''+TRY_CAST(@EndDate AS nvarchar(256))+''') AND';
+IF ISNULL(@SearchString,'') <> ''
+	SET @sql = @sql+' (UPPER(V.DeviceType) LIKE N''%'+UPPER(@SearchString)+'%'' 
+					  OR UPPER(V.DeviceBrand) LIKE N''%'+UPPER(@SearchString)+'%'' 
+					  OR UPPER(V.Country) LIKE N''%'+UPPER(@SearchString)+'%''
+					  OR UPPER(V.OperatingSystem) LIKE N''%'+UPPER(@SearchString)+'%'' 
+					  OR UPPER(V.Browser) LIKE N''%'+UPPER(@SearchString)+'%'' 
+					  OR UPPER(V.City) LIKE N''%'+UPPER(@SearchString)+'%'')
+					  AND';
+
+--Removing last 'AND'
+IF ISNULL(@sql,'') <> ''
+	SET @sql= (LEFT(@sql, LEN(@sql) -3));
+
+DECLARE @query AS NVARCHAR(MAX);
+SET @query=N'
+--FROM BRANCH AUDIT TABLE
+INSERT INTO #tmpVisitor(	
+	IPAddress,
+	OperatingSystem,
+	Browser,
+	DeviceBrand,
+	City,
+	Country,
+	VisitTime,
+	Latitude,
+	Longitude
+)
+SELECT
+	IPAddress,
+	OperatingSystem,
+	Browser,
+	DeviceBrand,
+	City,
+	Country,
+	VisitTime,
+	Latitude,
+	Longitude
+FROM dbo.Visitors V WITH(NOLOCK)
+'+CASE WHEN @sql!='' THEN ' WHERE '+ @sql ELSE '' END
++
+'ORDER BY V.VisitTime DESC
+ OFFSET (@PageNumber - 1) * @PageSize ROWS
+ FETCH NEXT @PageSize ROWS ONLY;
+';
+
+--PRINT @query;
+exec sp_executesql @query,N'@PageNumber INT=1, @PageSize INT=10,@StartDate DATETIME = NULL,@EndDate DATETIME = NULL,@SearchString NVARCHAR(128)=NULL',
+@PageNumber=@PageNumber,@PageSize=@PageSize,@StartDate=@StartDate,@EndDate=@EndDate,@SearchString=@SearchString;
+
+DECLARE @RecordCount INT = 0;
+SET @RecordCount = (SELECT COUNT(*) FROM dbo.Visitors WITH(NOLOCK)); 
+
+SELECT *,@RecordCount AS TotalRows FROM #tmpVisitor A
+ORDER BY A.VisitTime DESC
+
+DROP TABLE IF EXISTS #tmpVisitor;
 
 END

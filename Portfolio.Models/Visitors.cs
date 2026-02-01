@@ -25,7 +25,7 @@ public class Visitors
     public string? Isp { get; set; }
     public string? Org { get; set; }
     public string? As { get; set; }
-    public DateTime VisitTime { get; set; }
+    public DateTime VisitTime { get; set; } = DateTime.Now;
 
     public string? Latitude { get; set; }
     public string? Longitude { get; set; }

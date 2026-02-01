@@ -56,7 +56,52 @@ function IsValid() {
     return isValid;
 }
 
+function getLocation() {
+    return new Promise((resolve, reject) => {
+        if (!navigator.geolocation) {
+            reject("NOT_SUPPORTED");
+            return;
+        }
+        navigator.geolocation.getCurrentPosition(
+            (position) => resolve(position),
+            (error) => reject(error),
+            { enableHighAccuracy: true, timeout: 10000 }
+        );
+    });
+}
+
 async function SendMessage() {
+    let latitude = "";
+    let longitude = "";
+
+    try {
+        const position = await getLocation();
+        latitude = position.coords.latitude.toString();
+        longitude = position.coords.longitude.toString();
+    } catch (error) {
+        let msg = "Location access is required to send a message.";
+
+        if (error === "NOT_SUPPORTED") {
+            msg = "Your browser does not support geolocation. Please use a modern browser.";
+        } else if (error.code === error.PERMISSION_DENIED) {
+            msg = "You have denied location access. We need your location to process your message.";
+        } else if (error.code === error.POSITION_UNAVAILABLE) {
+            msg = "Your location information is unavailable at the moment. Please try again.";
+        } else if (error.code === error.TIMEOUT) {
+            msg = "Location request timed out. Please check your connection and try again.";
+        }
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Location Required',
+            text: msg,
+            confirmButtonText: 'OK'
+        }).then(() => {
+            window.location.href = '/';
+        });
+        return;
+    }
+
     let objContact = {};
 
     objContact.NAME = $Name.val();
@@ -64,6 +109,8 @@ async function SendMessage() {
     objContact.MESSAGE = $Message.val();
     objContact.EMAIL = $Email.val();
     objContact.PHONE = $Phone.val();
+    objContact.LATITUDE = latitude;
+    objContact.LONGITUTE = longitude;
 
     try {
         const response = await $.ajax({

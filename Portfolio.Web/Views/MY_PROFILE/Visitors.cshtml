@@ -110,17 +110,13 @@
                         <th>Operating System</th>
                         <th>City</th>
                         <th>Country</th>
-                        <th>Timezone</th>
+                        <th>OS</th>
+                        <th>Browser</th>
+                        <th>Device Brand</th>
+                        <th>Location</th>
                         @if (IsAuthenticated)
                         {
                             <th>IP Address</th>
-                            <th>OS Version</th>
-                            <th>Browser</th>
-                            <th>Browser Version</th>
-                            <th>Device Type</th>
-                            <th>Device Brand</th>
-                            <th>Device Model</th>
-                            
                         }
                        
                     </tr>
@@ -133,16 +129,20 @@
                             <td>@item.OperatingSystem</td>
                             <td>@item.City</td>
                             <td>@item.Country</td>
-                            <td>@item.Timezone</td>
+                            <td>@item.OperatingSystem</td>
+                            <td>@item.Browser</td>
+                            <td>@item.DeviceBrand</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.Latitude) && !string.IsNullOrEmpty(item.Longitude))
+                                {
+                                    <a href="https://www.google.com/maps?q=@item.Latitude,@item.Longitude" target="_blank" class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-geo-alt-fill"></i> Go
+                                    </a>
+                                }
+                            </td>
                             @if (IsAuthenticated)
                             {
                                 <td>@item.IPAddress</td>
-                                <td>@item.OperatingSystemVersion</td>
-                                <td>@item.Browser</td>
-                                <td>@item.BrowserVersion</td>
-                                <td>@item.DeviceType</td>
-                                <td>@item.DeviceBrand</td>
-                                <td>@item.DeviceModel</td>
                             }
                            
                         </tr>

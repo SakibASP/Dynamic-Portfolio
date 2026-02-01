@@ -24,5 +24,7 @@ namespace Portfolio.Models
         public string? PHONE { get; set; }
         public DateTime? CREATED_DATE { get; set; }
         public DateTime? MODIFIED_DATE { get; set; }
+        public string? LATITUDE { get; set; }
+        public string? LONGITUTE { get; set; }
     }
 }

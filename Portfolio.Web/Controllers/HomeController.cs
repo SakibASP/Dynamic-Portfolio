@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Portfolio.Interfaces;
 using Portfolio.ViewModels;
 using Portfolio.Web.Common;

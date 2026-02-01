@@ -4,49 +4,48 @@ using Portfolio.Models;
 using Portfolio.Repositories.Data;
 using Portfolio.Utils;
 
-namespace Portfolio.Repositories
+namespace Portfolio.Repositories;
+
+public class SkillsRepo(PortfolioDbContext context) : ISkillsRepo, IAsyncDisposable
 {
-    public class SkillsRepo(PortfolioDbContext context) : ISkillsRepo, IAsyncDisposable
+    private readonly PortfolioDbContext _context = context;
+    public async Task AddSkillAsync(SaveRequestModel<MY_SKILLS> saveRequestModel)
     {
-        private readonly PortfolioDbContext _context = context;
-        public async Task AddSkillAsync(SaveRequestModel<MY_SKILLS> saveRequestModel)
+        ArgumentNullException.ThrowIfNull(saveRequestModel.Item);
+        await _context.MY_SKILLS.AddAsync(saveRequestModel.Item);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<IList<MY_SKILLS>> GetAllSkillsAsync()
+    {
+        return await _context.MY_SKILLS.AsNoTracking().ToListAsync();
+    }
+
+    public async Task<MY_SKILLS?> GetSkillByIdAsync(int? id)
+    {
+        return await _context.MY_SKILLS.FirstOrDefaultAsync(x => x.AUTO_ID == id);
+    }
+
+    public async Task RemoveSkillAsync(int? id)
+    {
+        var skill = await _context.MY_SKILLS.FindAsync(id);
+        if (skill is not null)
         {
-            ArgumentNullException.ThrowIfNull(saveRequestModel.Item);
-            await _context.MY_SKILLS.AddAsync(saveRequestModel.Item);
+            _context.MY_SKILLS.Remove(skill);
             await _context.SaveChangesAsync();
         }
+    }
 
-        public async Task<IList<MY_SKILLS>> GetAllSkillsAsync()
-        {
-            return await _context.MY_SKILLS.AsNoTracking().ToListAsync();
-        }
+    public async Task UpdateSkillAsync(SaveRequestModel<MY_SKILLS> saveRequestModel)
+    {
+        ArgumentNullException.ThrowIfNull(saveRequestModel.Item);
+        _context.MY_SKILLS.Update(saveRequestModel.Item);
+        await _context.SaveChangesAsync();
+    }
 
-        public async Task<MY_SKILLS?> GetSkillByIdAsync(int? id)
-        {
-            return await _context.MY_SKILLS.FirstOrDefaultAsync(x => x.AUTO_ID == id);
-        }
-
-        public async Task RemoveSkillAsync(int? id)
-        {
-            var skill = await _context.MY_SKILLS.FindAsync(id);
-            if (skill is not null)
-            {
-                _context.MY_SKILLS.Remove(skill);
-                await _context.SaveChangesAsync();
-            }
-        }
-
-        public async Task UpdateSkillAsync(SaveRequestModel<MY_SKILLS> saveRequestModel)
-        {
-            ArgumentNullException.ThrowIfNull(saveRequestModel.Item);
-            _context.MY_SKILLS.Update(saveRequestModel.Item);
-            await _context.SaveChangesAsync();
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            await _context.DisposeAsync();
-            GC.SuppressFinalize(this);
-        }
+    public async ValueTask DisposeAsync()
+    {
+        await _context.DisposeAsync();
+        GC.SuppressFinalize(this);
     }
 }
