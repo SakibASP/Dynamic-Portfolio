@@ -31,3 +31,8 @@
 /Portfolio.Utils/bin/Release/net9.0
 /Portfolio.ViewModels/bin/Release/net9.0
 /Portfolio.Utils/EncryptionHelper.cs
+/Portfolio.Interfaces/bin/Debug/net10.0
+/Portfolio.Models/bin/Debug/net10.0
+/Portfolio.Repositories/bin/Debug/net10.0
+/Portfolio.Utils/bin/Debug/net10.0
+/Portfolio.ViewModels/bin/Debug/net10.0
