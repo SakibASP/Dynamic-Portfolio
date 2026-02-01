@@ -1,100 +1,69 @@
-
 /**
 ------------------------------------------
 Author	: Md. Sakibur Rahman
 Date	: 2022-03-01
-
+Optimized: 2025-02-01
 Run:
-
-
 EXEC dbo.udspGetVisitors 
- @PageNumber = 1,@PageSize=10
-,@StartDate='2024-01-01',@EndDate = '2026-01-01'
+ @PageNumber = 1, @PageSize = 10
+,@StartDate = '2024-01-01', @EndDate = '2026-01-01'
 ,@SearchString = 'Dhaka'
-
 **/
-
 CREATE OR ALTER PROCEDURE dbo.udspGetVisitors
     @PageNumber INT = 1,
     @PageSize INT = 10,
-	@StartDate DATETIME = NULL,
-	@EndDate DATETIME = NULL,
-	@SearchString NVARCHAR(128)=NULL
+    @StartDate DATETIME = NULL,
+    @EndDate DATETIME = NULL,
+    @SearchString NVARCHAR(128) = NULL
 AS
-
 BEGIN
+    SET NOCOUNT ON;
 
-DROP TABLE IF EXISTS #tmpVisitor;
-CREATE TABLE #tmpVisitor(
-	IPAddress [nvarchar](45) NULL,
-	OperatingSystem [nvarchar](100) NULL,
-	Browser [nvarchar](100) NULL,
-	DeviceBrand [nvarchar](100) NULL,
-	City [nvarchar](100) NULL,
-	Country [nvarchar](100) NULL,
-	VisitTime [Datetime2](7) NULL,
-	Latitude [nvarchar](20) NULL,
-	Longitude [nvarchar](20)
-)
+    -- Single query approach - eliminates temp table and dynamic SQL
+    DECLARE @Offset INT = (@PageNumber - 1) * @PageSize;
+    DECLARE @SearchPattern NVARCHAR(130) = CASE 
+        WHEN @SearchString IS NOT NULL 
+        THEN N'%' + UPPER(@SearchString) + N'%' 
+        ELSE NULL 
+    END;
 
-DECLARE @sql NVARCHAR(MAX) = '';
-IF (@StartDate IS NOT NULL AND @EndDate IS NOT NULL)
-	SET @sql = @sql+' (TRY_CAST(V.VisitTime AS DATE) BETWEEN '''+TRY_CAST(@StartDate AS nvarchar(256))+''' AND '''+TRY_CAST(@EndDate AS nvarchar(256))+''') AND';
-IF ISNULL(@SearchString,'') <> ''
-	SET @sql = @sql+' (UPPER(V.DeviceType) LIKE N''%'+UPPER(@SearchString)+'%'' 
-					  OR UPPER(V.DeviceBrand) LIKE N''%'+UPPER(@SearchString)+'%'' 
-					  OR UPPER(V.Country) LIKE N''%'+UPPER(@SearchString)+'%''
-					  OR UPPER(V.OperatingSystem) LIKE N''%'+UPPER(@SearchString)+'%'' 
-					  OR UPPER(V.Browser) LIKE N''%'+UPPER(@SearchString)+'%'' 
-					  OR UPPER(V.City) LIKE N''%'+UPPER(@SearchString)+'%'')
-					  AND';
-
---Removing last 'AND'
-IF ISNULL(@sql,'') <> ''
-	SET @sql= (LEFT(@sql, LEN(@sql) -3));
-
-DECLARE @query AS NVARCHAR(MAX);
-SET @query=N'
---FROM BRANCH AUDIT TABLE
-INSERT INTO #tmpVisitor(	
-	IPAddress,
-	OperatingSystem,
-	Browser,
-	DeviceBrand,
-	City,
-	Country,
-	VisitTime,
-	Latitude,
-	Longitude
-)
-SELECT
-	IPAddress,
-	OperatingSystem,
-	Browser,
-	DeviceBrand,
-	City,
-	Country,
-	VisitTime,
-	Latitude,
-	Longitude
-FROM dbo.Visitors V WITH(NOLOCK)
-'+CASE WHEN @sql!='' THEN ' WHERE '+ @sql ELSE '' END
-+
-'ORDER BY V.VisitTime DESC
- OFFSET (@PageNumber - 1) * @PageSize ROWS
- FETCH NEXT @PageSize ROWS ONLY;
-';
-
---PRINT @query;
-exec sp_executesql @query,N'@PageNumber INT=1, @PageSize INT=10,@StartDate DATETIME = NULL,@EndDate DATETIME = NULL,@SearchString NVARCHAR(128)=NULL',
-@PageNumber=@PageNumber,@PageSize=@PageSize,@StartDate=@StartDate,@EndDate=@EndDate,@SearchString=@SearchString;
-
-DECLARE @RecordCount INT = 0;
-SET @RecordCount = (SELECT COUNT(*) FROM dbo.Visitors WITH(NOLOCK)); 
-
-SELECT *,@RecordCount AS TotalRows FROM #tmpVisitor A
-ORDER BY A.VisitTime DESC
-
-DROP TABLE IF EXISTS #tmpVisitor;
-
+    ;WITH FilteredVisitors AS (
+        SELECT
+            V.IPAddress,
+            V.OperatingSystem,
+            V.Browser,
+            V.DeviceBrand,
+            V.City,
+            V.Country,
+            V.VisitTime,
+            V.Latitude,
+            V.Longitude,
+            COUNT(*) OVER() AS TotalRows
+        FROM dbo.viewVisitors V WITH(NOLOCK)
+        WHERE 
+            (@StartDate IS NULL OR @EndDate IS NULL OR TRY_CAST(V.VisitTime AS DATE) BETWEEN @StartDate AND @EndDate)
+            AND (@SearchPattern IS NULL OR (
+                UPPER(V.DeviceType) LIKE @SearchPattern
+                OR UPPER(V.DeviceBrand) LIKE @SearchPattern
+                OR UPPER(V.Country) LIKE @SearchPattern
+                OR UPPER(V.OperatingSystem) LIKE @SearchPattern
+                OR UPPER(V.Browser) LIKE @SearchPattern
+                OR UPPER(V.City) LIKE @SearchPattern
+            ))
+    )
+    SELECT 
+        IPAddress,
+        OperatingSystem,
+        Browser,
+        DeviceBrand,
+        City,
+        Country,
+        VisitTime,
+        Latitude,
+        Longitude,
+        TotalRows
+    FROM FilteredVisitors
+    ORDER BY VisitTime DESC
+    OFFSET @Offset ROWS
+    FETCH NEXT @PageSize ROWS ONLY;
 END
