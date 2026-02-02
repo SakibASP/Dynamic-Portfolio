@@ -26,8 +26,8 @@ public class HomeController(IHomeRepo home, IProfileCoverRepo cover, IWebHostEnv
         var filePath = Utility.GetFilePathOfCV(_hostEnvironment);
 
         ViewBag.FilePath = filePath;
-        ViewBag.Name = "Md. Sakibur Rahman";
-        ViewBag.Bio = "I am a professiona Software Developer from Khulna, Bangladesh";
+        ViewBag.Name = "Zarif Jim";
+        ViewBag.Bio = "I am a professional Business Analyst from Dhaka, Bangladesh";
         ViewBag.Cover = cover;
         ViewData["rootPath"] = _hostEnvironment.WebRootPath;
 
