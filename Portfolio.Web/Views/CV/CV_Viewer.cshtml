@@ -4,28 +4,29 @@
 }
 
 <style>
-    /* Center the container */
     .cv-container {
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh; /* Make the container full height of the viewport */
+        padding: 1.5rem 0;
     }
-
-    /* Set a max width for the iframe */
-    iframe {
-        max-width: 100%;
-        max-height: 100%;
+    .cv-container iframe {
+        width: 100%;
+        max-width: 1000px;
+        height: 80vh;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--bg);
     }
 </style>
 
 <section>
     <div class="container-fluid py-5">
-        <div class="text-center">
-            <a asp-action="DownloadCV" asp-controller="CV" asp-route-filePath="@ViewBag.FilePath" class="btn btn-success"><i class="bi bi-download"></i> Download</a>
+        <div class="text-center mb-3">
+            <a asp-action="DownloadCV" asp-controller="CV" asp-route-filePath="@ViewBag.FilePath" class="btn btn-primary"><i class="bi bi-download"></i> Download</a>
         </div>
         <div class="cv-container">
-            <iframe src="@Url.Action("ShowCV", "CV",new{ filePath = @ViewBag.FilePath })" width="1000" height="600"></iframe>
+            <iframe src="@Url.Action("ShowCV", "CV",new{ filePath = @ViewBag.FilePath })"></iframe>
         </div>
     </div>
 </section>

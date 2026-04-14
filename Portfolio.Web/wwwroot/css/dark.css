@@ -1604,6 +1604,127 @@ textarea.input-validation-error {
     box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.18) !important;
 }
 
+/* ---------- Hard overrides for the legacy beige palette ----------
+   site.css used to force #e9e8e6 on .myContainer and every input. Even
+   though site.css is now empty, keep these defensively in case the
+   template is reintroduced or a scaffolded view sets its own bg. */
+
+.myContainer,
+.myContainer > *:not(section):not(main):not(footer):not(header) { background: transparent !important; }
+
+main, #main, main > section, #main > section,
+section .container, section .container-fluid {
+    background: transparent !important;
+}
+
+/* File inputs — browser default is bright white */
+input[type="file"],
+.form-control-file {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    background: var(--bg) !important;
+    color: var(--muted) !important;
+    border: 1px dashed var(--border-hi) !important;
+    border-radius: var(--radius-sm) !important;
+    font-family: var(--font-sans) !important;
+    font-size: 0.8125rem !important;
+    cursor: pointer;
+    transition: border-color 0.15s var(--ease), background 0.15s var(--ease);
+}
+
+input[type="file"]:hover,
+.form-control-file:hover {
+    border-color: var(--accent) !important;
+    background: var(--surface) !important;
+}
+
+input[type="file"]::-webkit-file-upload-button,
+input[type="file"]::file-selector-button {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: none;
+    border-radius: var(--radius-xs);
+    padding: 0.35rem 0.75rem;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 0.75rem;
+    transition: background 0.15s var(--ease);
+}
+
+input[type="file"]::-webkit-file-upload-button:hover,
+input[type="file"]::file-selector-button:hover {
+    background: var(--accent-hi);
+}
+
+/* Images inside forms should not carry Bootstrap's .img-thumbnail white bg */
+.img-fluid,
+.img-thumbnail {
+    background: var(--bg) !important;
+    border-color: var(--border) !important;
+}
+
+/* iPortfolio contact.info forced #fff — belt-and-braces override */
+.contact .info,
+.contact .php-email-form { background: var(--surface) !important; color: var(--text) !important; }
+
+/* iPortfolio pointer colour dots (already hidden but just in case) */
+.pointer { display: none !important; }
+
+/* Legacy input-container floating-label widget (Login page + Home contact) */
+.input-container { position: relative; margin: 10px 0 !important; }
+.input-container .input-box,
+.input-container input.form-control {
+    width: 100%;
+    padding: 0.75rem 0.875rem !important;
+    background: var(--bg) !important;
+    border: 1px solid var(--border-hi) !important;
+    border-radius: var(--radius-sm) !important;
+    color: var(--text) !important;
+}
+.input-container .input-box:focus,
+.input-container input:focus { border-color: var(--accent) !important; background: var(--bg) !important; }
+.input-container label,
+.input-container .form-label {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.875rem;
+    background: var(--bg) !important;
+    padding: 0 0.375rem !important;
+    color: var(--muted) !important;
+    pointer-events: none;
+    transition: all 0.2s var(--ease);
+    font-size: 0.875rem;
+}
+.input-container .input-box:focus + label,
+.input-container .input-box:valid + label,
+.input-container input:focus + label,
+.input-container input:not(:placeholder-shown) + label {
+    top: -0.5rem;
+    left: 0.625rem;
+    font-size: 0.7rem;
+    color: var(--accent) !important;
+}
+
+/* Inline styled labels (e.g. MY_PROFILE/Edit has <style>label{font-weight:bold}</style>) */
+main section label[style*="bold"],
+main section form label { color: var(--muted) !important; font-weight: 500 !important; }
+
+/* CV Viewer iframe — kill browser default white */
+iframe { background: var(--bg) !important; color-scheme: dark; }
+
+/* Any stray container with direct #fff background */
+[style*="background:#fff"],
+[style*="background: #fff"],
+[style*="background-color:#fff"],
+[style*="background-color: #fff"],
+[style*="background:white"],
+[style*="background-color:white"] {
+    background: var(--surface) !important;
+}
+
 /* Sweet alert 2 dark theme nudge */
 .swal2-popup {
     background: var(--surface) !important;

@@ -22,7 +22,8 @@
       "Bash(rm -rf Portfolio.Utils/bin Portfolio.Utils/obj Portfolio.Utils/Portfolio.Utils.csproj)",
       "Bash(powershell -NoProfile -Command ':*)",
       "Bash(rm -rf Portfolio.Domain/bin Portfolio.Domain/obj Portfolio.Application/bin Portfolio.Application/obj Portfolio.Infrastructure/bin Portfolio.Infrastructure/obj Portfolio.Web/bin Portfolio.Web/obj)",
-      "Bash(dotnet restore:*)"
+      "Bash(dotnet restore:*)",
+      "Bash(grep -E \"^\\\\s*\\\\..*\\\\{\")"
     ]
   }
 }
