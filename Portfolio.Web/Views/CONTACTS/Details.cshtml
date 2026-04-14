@@ -1,59 +1,28 @@
 @model Portfolio.Domain.CONTACTS
 
-@{
-    ViewData["Title"] = "Details";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+@{ ViewData["Title"] = "Message"; }
 
 <section>
-    <div class="container-fluid p-5">
-        <h1>Details</h1>
-
-        <div>
-            <h4>CONTACTS</h4>
-            <hr />
-            <dl class="row">
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.IsConfirmed)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.IsConfirmed)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.NAME)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.NAME)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.SUBJECT)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.SUBJECT)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.MESSAGE)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.MESSAGE)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.EMAIL)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.EMAIL)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.PHONE)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.PHONE)
-                </dd>
-            </dl>
+    <div class="admin-page narrow">
+        <div class="admin-head">
+            <div>
+                <span class="eyebrow">Admin · Messages</span>
+                <h2>@Model.SUBJECT</h2>
+                <span class="sub">from @Model.NAME</span>
+            </div>
         </div>
-        <div>
-            @*<a asp-action="Edit" asp-route-id="@Model?.AUTO_ID">Edit</a> |*@
-            <a asp-action="Index">Back to List</a>
+
+        <div class="admin-details">
+            <div class="row"><div class="k">Status</div><div class="v">@(Model.IsConfirmed == 1 ? "Read" : "Unread")</div></div>
+            <div class="row"><div class="k">Name</div><div class="v">@Model.NAME</div></div>
+            <div class="row"><div class="k">Subject</div><div class="v">@Model.SUBJECT</div></div>
+            <div class="row"><div class="k">Message</div><div class="v" style="white-space:pre-wrap;">@Model.MESSAGE</div></div>
+            <div class="row"><div class="k">Email</div><div class="v">@Model.EMAIL</div></div>
+            <div class="row"><div class="k">Phone</div><div class="v">@Model.PHONE</div></div>
+        </div>
+
+        <div class="form-actions">
+            <a asp-action="Index" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
         </div>
     </div>
 </section>

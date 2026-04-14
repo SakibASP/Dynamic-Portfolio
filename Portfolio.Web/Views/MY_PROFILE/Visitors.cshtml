@@ -6,353 +6,247 @@
     ViewData["Title"] = "Visitors";
     var IsAuthenticated = (bool)ViewBag.IsAuthenticated;
 }
+
 <link href="~/css/pagedlist.css" rel="stylesheet" />
 
 <style>
-    .visitors-section {
-        min-height: 100vh;
-        padding: 40px 20px;
-    }
+    .visitors-wrap { max-width: 960px; margin: 0 auto; padding: 2rem 1rem; }
 
-    .visitors-header {
-        text-align: center;
-        margin-bottom: 32px;
+    .visitors-head { text-align: center; margin-bottom: 2rem; }
+    .visitors-head .count {
+        font-size: clamp(2rem, 4vw, 2.75rem);
+        font-weight: 600;
+        color: var(--text);
+        letter-spacing: -0.02em;
+        margin: 0;
     }
-
-    .visitors-header h4 {
-        font-size: 2rem;
-        font-weight: 700;
-        background: linear-gradient(135deg, #4e54c8, #8f94fb);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin-bottom: 4px;
-    }
-
-    .visitors-header .subtitle {
-        color: #888;
-        font-size: 0.9rem;
-        letter-spacing: 1px;
+    .visitors-head .count span { color: var(--accent); }
+    .visitors-head .sub {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
         text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--dim);
+        margin-top: 0.25rem;
     }
 
-    /* Filter Panel */
     .filter-panel {
-        background: #fff;
-        border-radius: 16px;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-        padding: 20px 24px;
-        margin-bottom: 32px;
-        border: 1px solid #eee;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
     }
 
-    .filter-toggle-btn {
-        background: linear-gradient(135deg, #4e54c8, #8f94fb);
-        color: #fff;
-        border: none;
-        border-radius: 10px;
-        padding: 8px 20px;
-        font-weight: 600;
-        font-size: 0.85rem;
-        letter-spacing: 0.5px;
-        transition: all 0.3s ease;
+    .filter-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        background: transparent;
+        border: 1px solid var(--border-hi);
+        color: var(--text);
+        border-radius: var(--radius-sm);
+        padding: 0.375rem 0.75rem;
+        font-size: 0.8125rem;
+        font-family: var(--font-mono);
         cursor: pointer;
+        transition: background 0.15s var(--ease);
     }
+    .filter-toggle:hover { background: var(--surface-hi); }
 
-    .filter-toggle-btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 14px rgba(78, 84, 200, 0.35);
-    }
-
-    .filter-form .form-control {
-        border-radius: 10px;
-        border: 1.5px solid #e0e0e0;
-        padding: 10px 14px;
-        font-size: 0.9rem;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .filter-form .form-control:focus {
-        border-color: #8f94fb;
-        box-shadow: 0 0 0 3px rgba(143, 148, 251, 0.15);
-    }
-
+    .filter-form { margin-top: 1rem; }
     .filter-form label {
-        font-size: 0.78rem;
-        font-weight: 600;
-        color: #888;
+        display: block;
+        font-family: var(--font-mono);
+        font-size: 0.6875rem;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: 4px;
+        letter-spacing: 0.1em;
+        color: var(--dim);
+        margin-bottom: 0.375rem;
     }
 
     .btn-filter-submit {
-        background: linear-gradient(135deg, #4e54c8, #8f94fb);
-        color: #fff;
-        border: none;
-        border-radius: 10px;
-        padding: 10px 28px;
+        width: 100%;
+        background: var(--accent);
+        color: var(--accent-ink);
+        border: 1px solid var(--accent);
+        border-radius: var(--radius-sm);
+        padding: 0.55rem 1rem;
         font-weight: 600;
-        transition: all 0.3s ease;
+        font-size: 0.8125rem;
+        cursor: pointer;
+        transition: background 0.15s var(--ease);
     }
+    .btn-filter-submit:hover { background: var(--accent-hi); color: var(--accent-ink); }
 
-    .btn-filter-submit:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 14px rgba(78, 84, 200, 0.35);
-        color: #fff;
-    }
+    .visitor-list { display: grid; gap: 0.625rem; }
 
-    /* Visitor Cards */
     .visitor-card {
-        background: #fff;
-        border-radius: 16px;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.05);
-        border: 1px solid #f0eeee;
-        padding: 20px 24px;
-        margin-bottom: 16px;
-        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         position: relative;
-        overflow: hidden;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1rem 1.25rem;
+        transition: border-color 0.15s var(--ease), background 0.15s var(--ease);
+        animation: vFadeUp 0.35s var(--ease) both;
     }
-
-    .visitor-card::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        width: 4px;
-        background: linear-gradient(to bottom, #4e54c8, #8f94fb);
-        border-radius: 4px 0 0 4px;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
     .visitor-card:hover {
-        box-shadow: 0 8px 28px rgba(78, 84, 200, 0.12);
-        transform: translateY(-2px);
+        border-color: var(--border-hi);
+        border-left-color: var(--accent);
+        background: var(--surface-hi);
     }
 
-    .visitor-card:hover::before {
-        opacity: 1;
-    }
-
-    .visitor-card .card-top {
+    .visitor-card .top {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 14px;
+        gap: 0.5rem;
         flex-wrap: wrap;
-        gap: 8px;
+        margin-bottom: 0.75rem;
     }
 
-    .visitor-card .location-info {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .visitor-card .country-badge {
-        background: linear-gradient(135deg, #4e54c8, #8f94fb);
-        color: #fff;
-        padding: 5px 14px;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        letter-spacing: 0.3px;
-    }
-
-    .visitor-card .city-text {
-        color: #555;
-        font-size: 0.95rem;
-        font-weight: 500;
-    }
-
-    .visitor-card .visit-time {
-        color: #999;
-        font-size: 0.82rem;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-
-    .visitor-card .card-details {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px 24px;
-        align-items: center;
-    }
-
-    .visitor-card .detail-chip {
+    .visitor-card .loc { display: flex; align-items: center; gap: 0.625rem; min-width: 0; }
+    .visitor-card .country {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        background: #f6f5ff;
-        padding: 6px 14px;
-        border-radius: 10px;
-        font-size: 0.82rem;
-        color: #4e54c8;
-        font-weight: 500;
-        border: 1px solid #eeecfc;
-    }
-
-    .visitor-card .detail-chip i {
-        font-size: 0.9rem;
-        opacity: 0.7;
-    }
-
-    .visitor-card .detail-chip.ip-chip {
-        background: #fff7ed;
-        color: #c2690a;
-        border-color: #fde5c3;
-    }
-
-    .btn-go-location {
-        background: linear-gradient(135deg, #10b981, #34d399);
-        color: #fff;
-        border: none;
-        border-radius: 10px;
-        padding: 6px 16px;
-        font-size: 0.8rem;
+        padding: 0.25rem 0.625rem;
+        background: rgba(190, 242, 100, 0.08);
+        border: 1px solid rgba(190, 242, 100, 0.25);
+        color: var(--accent);
+        font-size: 0.75rem;
         font-weight: 600;
+        border-radius: 999px;
+        letter-spacing: 0.02em;
+    }
+    .visitor-card .city { color: var(--text); font-size: 0.9375rem; font-weight: 500; }
+
+    .visitor-card .time {
+        font-family: var(--font-mono);
+        color: var(--dim);
+        font-size: 0.75rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+    }
+
+    .visitor-card .chips { display: flex; flex-wrap: wrap; gap: 0.375rem 0.5rem; align-items: center; }
+
+    .visitor-card .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        background: var(--bg-elev);
+        color: var(--muted);
+        border: 1px solid var(--border);
+        padding: 0.25rem 0.625rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+    }
+    .visitor-card .chip.ip { color: var(--accent); border-color: rgba(190, 242, 100, 0.2); background: rgba(190, 242, 100, 0.05); }
+    .visitor-card .chip i { opacity: 0.75; }
+
+    .visitor-card .go {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        background: transparent;
+        color: var(--text);
+        border: 1px solid var(--border-hi);
+        padding: 0.3rem 0.65rem;
+        border-radius: var(--radius-sm);
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
         text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        transition: all 0.3s ease;
+        transition: background 0.15s var(--ease), color 0.15s var(--ease), border-color 0.15s var(--ease);
     }
+    .visitor-card .go:hover { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 
-    .btn-go-location:hover {
-        color: #fff;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
-    }
-
-    /* Pagination */
-    .pagination-wrapper {
+    .pagination-wrap {
         display: flex;
-        align-items: center;
         justify-content: center;
-        gap: 12px;
-        margin-top: 32px;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 2rem;
         flex-wrap: wrap;
     }
-
-    .pagination-wrapper .page-info {
-        color: #888;
-        font-size: 0.85rem;
-        font-weight: 500;
+    .pagination-wrap .page-info {
+        font-family: var(--font-mono);
+        color: var(--dim);
+        font-size: 0.75rem;
     }
 
-    /* Entrance animation */
-    .visitor-card {
-        animation: fadeSlideUp 0.4s ease forwards;
-        opacity: 0;
+    @@keyframes vFadeUp {
+        from { opacity: 0; transform: translateY(6px); }
+        to   { opacity: 1; transform: translateY(0); }
     }
-
-    @@keyframes fadeSlideUp {
-        from {
-            opacity: 0;
-            transform: translateY(12px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* stagger the animation */
-    .visitor-card:nth-child(1)  { animation-delay: 0.03s; }
-    .visitor-card:nth-child(2)  { animation-delay: 0.06s; }
-    .visitor-card:nth-child(3)  { animation-delay: 0.09s; }
-    .visitor-card:nth-child(4)  { animation-delay: 0.12s; }
-    .visitor-card:nth-child(5)  { animation-delay: 0.15s; }
-    .visitor-card:nth-child(6)  { animation-delay: 0.18s; }
-    .visitor-card:nth-child(7)  { animation-delay: 0.21s; }
-    .visitor-card:nth-child(8)  { animation-delay: 0.24s; }
-    .visitor-card:nth-child(9)  { animation-delay: 0.27s; }
-    .visitor-card:nth-child(10) { animation-delay: 0.30s; }
+    .visitor-card:nth-child(1)  { animation-delay: 0.02s; }
+    .visitor-card:nth-child(2)  { animation-delay: 0.05s; }
+    .visitor-card:nth-child(3)  { animation-delay: 0.08s; }
+    .visitor-card:nth-child(4)  { animation-delay: 0.11s; }
+    .visitor-card:nth-child(5)  { animation-delay: 0.14s; }
+    .visitor-card:nth-child(6)  { animation-delay: 0.17s; }
+    .visitor-card:nth-child(7)  { animation-delay: 0.20s; }
+    .visitor-card:nth-child(8)  { animation-delay: 0.23s; }
+    .visitor-card:nth-child(9)  { animation-delay: 0.26s; }
+    .visitor-card:nth-child(10) { animation-delay: 0.29s; }
 </style>
 
-<section class="visitors-section">
-    <div class="container" style="max-width: 900px;">
-
-        <!-- Header -->
-        <div class="visitors-header">
-            <h4>@ViewBag.TotalRecords Visitors</h4>
-            <span class="subtitle">explored this portfolio</span>
+<section>
+    <div class="visitors-wrap">
+        <div class="visitors-head">
+            <h1 class="count"><span>@ViewBag.TotalRecords</span> Visitors</h1>
+            <div class="sub">explored this portfolio</div>
         </div>
 
-        <!-- Filter Panel -->
         <div class="filter-panel">
-            <button id="filterToggleButton" class="filter-toggle-btn">
+            <button type="button" id="filterToggleButton" class="filter-toggle">
                 <i id="filterToggleIcon" class="bi bi-funnel"></i> Filter
             </button>
             <div id="filterFormContainer">
-                <form asp-action="Visitors" class="filter-form mt-3">
+                <form asp-action="Visitors" class="filter-form">
                     <div class="row g-3 align-items-end">
                         <div class="col-sm-6 col-md-3">
-                            <label>From</label>
+                            <label for="startDate">From</label>
                             <input class="form-control" id="startDate" name="startDate" type="date" value="@ViewBag.StartDate" />
                         </div>
                         <div class="col-sm-6 col-md-3">
-                            <label>To</label>
+                            <label for="endDate">To</label>
                             <input class="form-control" id="endDate" name="endDate" type="date" value="@ViewBag.EndDate" />
                         </div>
                         <div class="col-sm-8 col-md-4">
-                            <label>Search</label>
-                            <input class="form-control" id="searchString" name="searchString" type="text" value="@ViewBag.SearchString" placeholder="Country, City, Device..." />
+                            <label for="searchString">Search</label>
+                            <input class="form-control" id="searchString" name="searchString" type="text" value="@ViewBag.SearchString" placeholder="Country, city, device…" />
                         </div>
                         <div class="col-sm-4 col-md-2">
-                            <button type="submit" class="btn btn-filter-submit w-100">View</button>
+                            <button type="submit" class="btn-filter-submit">View</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- Visitor Cards -->
         <div class="visitor-list">
             @foreach (var item in Model)
             {
                 <div class="visitor-card">
-                    <div class="card-top">
-                        <div class="location-info">
-                            @if (!string.IsNullOrEmpty(item.Country))
-                            {
-                                <span class="country-badge">@item.Country</span>
-                            }
-                            @if (!string.IsNullOrEmpty(item.City))
-                            {
-                                <span class="city-text">@item.City</span>
-                            }
+                    <div class="top">
+                        <div class="loc">
+                            @if (!string.IsNullOrEmpty(item.Country)) { <span class="country">@item.Country</span> }
+                            @if (!string.IsNullOrEmpty(item.City))    { <span class="city">@item.City</span> }
                         </div>
-                        <span class="visit-time">
-                            <i class="bi bi-clock"></i> @item.VisitTime.ToString("dd MMM yyyy, hh:mm tt")
-                        </span>
+                        <span class="time"><i class="bi bi-clock"></i> @item.VisitTime.ToString("dd MMM yyyy, hh:mm tt")</span>
                     </div>
-                    <div class="card-details">
-                        @if (!string.IsNullOrEmpty(item.OperatingSystem))
-                        {
-                            <span class="detail-chip"><i class="bi bi-laptop"></i> @item.OperatingSystem</span>
-                        }
-                        @if (!string.IsNullOrEmpty(item.Browser))
-                        {
-                            <span class="detail-chip"><i class="bi bi-globe2"></i> @item.Browser</span>
-                        }
-                        @if (!string.IsNullOrEmpty(item.DeviceBrand))
-                        {
-                            <span class="detail-chip"><i class="bi bi-phone"></i> @item.DeviceBrand</span>
-                        }
-                        @if (IsAuthenticated && !string.IsNullOrEmpty(item.IPAddress))
-                        {
-                            <span class="detail-chip ip-chip"><i class="bi bi-shield-lock"></i> @item.IPAddress</span>
-                        }
+                    <div class="chips">
+                        @if (!string.IsNullOrEmpty(item.OperatingSystem)) { <span class="chip"><i class="bi bi-laptop"></i> @item.OperatingSystem</span> }
+                        @if (!string.IsNullOrEmpty(item.Browser))         { <span class="chip"><i class="bi bi-globe2"></i> @item.Browser</span> }
+                        @if (!string.IsNullOrEmpty(item.DeviceBrand))     { <span class="chip"><i class="bi bi-phone"></i> @item.DeviceBrand</span> }
+                        @if (IsAuthenticated && !string.IsNullOrEmpty(item.IPAddress)) { <span class="chip ip"><i class="bi bi-shield-lock"></i> @item.IPAddress</span> }
                         @if (!string.IsNullOrEmpty(item.Latitude) && !string.IsNullOrEmpty(item.Longitude))
                         {
-                            <a href="https://www.google.com/maps?q=@item.Latitude,@item.Longitude" target="_blank" class="btn-go-location">
-                                <i class="bi bi-geo-alt-fill"></i> Go
+                            <a href="https://www.google.com/maps?q=@item.Latitude,@item.Longitude" target="_blank" class="go">
+                                <i class="bi bi-geo-alt-fill"></i> Map
                             </a>
                         }
                     </div>
@@ -360,8 +254,7 @@
             }
         </div>
 
-        <!-- Pagination -->
-        <div class="pagination-wrapper">
+        <div class="pagination-wrap">
             <span class="page-info">Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</span>
             @Html.PagedListPager(Model, page => Url.Action("Visitors", new { page, searchString = ViewBag.SearchString, startDate = ViewBag.StartDate, endDate = ViewBag.EndDate }))
         </div>

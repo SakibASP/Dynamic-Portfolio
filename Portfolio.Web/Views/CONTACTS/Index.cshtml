@@ -1,58 +1,43 @@
 @model IEnumerable<Portfolio.Domain.CONTACTS>
 
-@{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+@{ ViewData["Title"] = "Contacts"; }
 
 <section>
-    <div class="container-fluid p-5">
-        <h1>Index</h1>
-        @*<p>
-            <a asp-action="Create">Create New</a>
-        </p>*@
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.NAME)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.SUBJECT)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.EMAIL)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.PHONE)
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.NAME)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SUBJECT)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.EMAIL)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.PHONE)
-                        </td>
-                        <td>
-                            <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.AUTO_ID">View</a> |
-                            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.AUTO_ID">Delete</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+    <div class="admin-page">
+        <div class="admin-head">
+            <div>
+                <span class="eyebrow">Admin · Messages</span>
+                <h2>All contacts</h2>
+            </div>
+        </div>
 
+        @if (Model.Any())
+        {
+            <div class="admin-table-wrap">
+                <table class="admin-table">
+                    <thead>
+                        <tr><th>Name</th><th>Subject</th><th>Email</th><th>Phone</th><th style="width:120px;"></th></tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.NAME</td>
+                            <td>@item.SUBJECT</td>
+                            <td>@item.EMAIL</td>
+                            <td>@item.PHONE</td>
+                            <td>
+                                <div class="actions">
+                                    <a class="action-btn" asp-action="Details" asp-route-id="@item.AUTO_ID" title="View"><i class="bi bi-eye"></i></a>
+                                    <a class="action-btn danger" asp-action="Delete" asp-route-id="@item.AUTO_ID" title="Delete"><i class="bi bi-trash"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else { <div class="empty-state">No messages yet.</div> }
     </div>
 </section>

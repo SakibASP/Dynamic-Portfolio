@@ -1,40 +1,40 @@
 @model IEnumerable<Portfolio.Domain.DESCRIPTION_TYPE>
 
-@{
-    ViewData["Title"] = "Index";
-}
+@{ ViewData["Title"] = "Description Types"; }
 
 <section>
-    <div class="container-fluid py-5">
-        <h1>Index</h1>
+    <div class="admin-page">
+        <div class="admin-head">
+            <div>
+                <span class="eyebrow">Admin · Description types</span>
+                <h2>All types</h2>
+            </div>
+            <a asp-action="Create" class="btn-primary-grad"><i class="bi bi-plus-lg"></i> New type</a>
+        </div>
 
-        <p>
-            <a asp-action="Create">Create New</a>
-        </p>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.TYPE)
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.TYPE)
-                        </td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@item.AUTO_ID">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.AUTO_ID">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.AUTO_ID">Delete</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        @if (Model.Any())
+        {
+            <div class="admin-table-wrap">
+                <table class="admin-table">
+                    <thead><tr><th>Type</th><th style="width:160px;"></th></tr></thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.TYPE</td>
+                            <td>
+                                <div class="actions">
+                                    <a class="action-btn" asp-action="Edit"    asp-route-id="@item.AUTO_ID" title="Edit"><i class="bi bi-pencil"></i></a>
+                                    <a class="action-btn" asp-action="Details" asp-route-id="@item.AUTO_ID" title="Details"><i class="bi bi-eye"></i></a>
+                                    <a class="action-btn danger" asp-action="Delete" asp-route-id="@item.AUTO_ID" title="Delete"><i class="bi bi-trash"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else { <div class="empty-state">No types yet.</div> }
     </div>
 </section>

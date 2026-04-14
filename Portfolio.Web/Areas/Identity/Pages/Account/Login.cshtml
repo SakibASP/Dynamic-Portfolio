@@ -8,58 +8,44 @@
 <!-- Font Awesome CDN -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <style>
-    /* Full height and center-aligning the login section */
     .custom-login-section {
         display: flex;
         justify-content: center;
         align-items: center;
         min-height: 100vh;
     }
-
-    /* Form section styling */
     .custom-form-section {
-        background-color: #e9e8e6 !important; /* Ensure consistency with the page background */
-        border-radius: 8px;
-        padding: 30px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 2rem;
+        transition: border-color 0.2s var(--ease);
     }
-
-    .custom-form-section:hover {
-        transform: translateY(-5px); /* Move the element slightly upwards on hover */
-    }
-
-    /* Form heading */
-    h1 {
-        font-size: 1.8rem;
+    .custom-form-section:hover { border-color: var(--border-hi); }
+    .custom-form-section h1 {
+        font-size: 1.5rem;
         font-weight: 600;
-        color: #333;
+        color: var(--text);
+        letter-spacing: -0.02em;
     }
-
-    /* Eye Icon Styling */
     .eye-icon {
         position: absolute;
-        right: 12px;
+        right: 14px;
         top: 50%;
         transform: translateY(-50%);
         cursor: pointer;
-        color: #007bff;
-        font-size: 1.2rem;
+        color: var(--muted);
+        font-size: 1rem;
     }
-
-    /* Responsive adjustments */
-    @@media (max-width: 768px) {
-        .col-md-6 {
-            width: 90%;
-        }
-    }
-
+    .eye-icon:hover { color: var(--accent); }
+    @@media (max-width: 768px) { .col-md-6 { width: 90%; } }
 </style>
 
 <section class="custom-login-section">
     <div class="container-fluid p-5 d-flex justify-content-center align-items-center min-vh-100">
         <div class="row w-100 justify-content-center">
             <div class="col-md-6 col-lg-4">
-                <section class="custom-form-section p-4 shadow-sm rounded bg-white">
+                <section class="custom-form-section">
                     <form id="account" method="post">
                         <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                         <h1 class="text-center mb-4">@ViewData["Title"]</h1>

@@ -1,24 +1,23 @@
 @model Portfolio.Domain.DESCRIPTION_TYPE
 
-@{
-    ViewData["Title"] = "Details";
-}
+@{ ViewData["Title"] = "Type Details"; }
 
-<h1>Details</h1>
+<section>
+    <div class="admin-page narrow">
+        <div class="admin-head">
+            <div>
+                <span class="eyebrow">Admin · Description types</span>
+                <h2>@Model.TYPE</h2>
+            </div>
+        </div>
 
-<div>
-    <h4>DESCRIPTION_TYPE</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TYPE)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TYPE)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.AUTO_ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+        <div class="admin-details">
+            <div class="row"><div class="k">Type</div><div class="v">@Model.TYPE</div></div>
+        </div>
+
+        <div class="form-actions">
+            <a asp-action="Index" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
+            <a asp-action="Edit" asp-route-id="@Model?.AUTO_ID" class="btn-primary-grad"><i class="bi bi-pencil"></i> Edit</a>
+        </div>
+    </div>
+</section>

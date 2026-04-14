@@ -1,103 +1,96 @@
-
 @using Portfolio.Domain
-
 @addTagHelper*, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
     ViewData["Title"] = "Resume";
-    MY_PROFILE? mY_PROFILEs = ViewData["PROFILES"] as MY_PROFILE;
-    List<EDUCATION>? eDUCATIONs = ViewData["EDUCATIONS"] as List<EDUCATION>;
-    List<EXPERIENCE>? eXPERIENCEs = ViewData["EXPERIENCEs"] as List<EXPERIENCE>;
-    List<DESCRIPTION>? dESCRIPTIONs = ViewData["DESCRIPTIONs"] as List<DESCRIPTION>;
+    MY_PROFILE? profile = ViewData["PROFILES"] as MY_PROFILE;
+    List<EDUCATION>? educations = ViewData["EDUCATIONS"] as List<EDUCATION>;
+    List<EXPERIENCE>? experiences = ViewData["EXPERIENCEs"] as List<EXPERIENCE>;
+    List<DESCRIPTION>? descriptions = ViewData["DESCRIPTIONs"] as List<DESCRIPTION>;
 }
 
 <main id="main">
-    <!-- ======= Resume Section ======= -->
     <section id="resume" class="resume">
-        
-        <div class="container" data-aos="fade-up">
-            <div style="text-align: right;">
-                <a class="btn btn-danger" asp-action="CV_Viewer" asp-controller="CV" target="_blank"><i class="bi bi-file-pdf"></i> Pdf</a>
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+                <div class="section-title m-0">
+                    <span class="eyebrow">Résumé</span>
+                    <h2>The short version</h2>
+                    @if (profile != null && !string.IsNullOrWhiteSpace(profile.DES_1)) { <p>@profile.DES_1</p> }
+                </div>
+                <a class="btn-ghost" asp-action="CV_Viewer" asp-controller="CV" target="_blank">
+                    <i class="bi bi-file-earmark-pdf"></i> View PDF
+                </a>
             </div>
-            <div class="section-title">
-                <h2 id="changing-heading">Resume</h2>
-                @if(mY_PROFILEs != null){
-                    <p>@mY_PROFILEs.DES_1</p>
-                }
-            </div>
-            <div class="row">
-                <div class="col-lg-6">
-                    <h3 class="resume-title">Sumary</h3>
-                    @if(mY_PROFILEs != null)
-                    {   
-                        <div class="resume-item pb-0">
-                            <h4>@mY_PROFILEs.MY_NAME</h4>
-                            <p><em>@mY_PROFILEs.DES_3</em></p>
-                            <p>
-                                <ul>
-                                    <li>@mY_PROFILEs.HOMETOWN</li>
-                                    <li>@mY_PROFILEs.PHONE</li>
-                                    <li>@mY_PROFILEs.EMAIL</li>
-                                </ul>
-                            </p>
-                        </div>
-                    }
-                    else
-                    {
-                        <p>Not Found</p>
-                    }
 
-                    <h3 class="resume-title">Education</h3>
-                    @if(eDUCATIONs != null)
-                    {
-                        foreach(var item in eDUCATIONs)
+            <div class="resume-columns">
+                <div data-aos="fade-up">
+                    <h3 class="resume-title">Summary · Education</h3>
+                    <div class="timeline">
+                        @if (profile != null)
                         {
                             <div class="resume-item">
-                            <h4>@item.COURSE</h4>
-                            <h5>@item.FROM_DATE - @item.TO_DATE</h5>
-                            <p><em>@item.INSTITUTE</em></p>
-                            <p>@item.DESCRIPTION</p>
+                                <h4>@profile.MY_NAME</h4>
+                                @if (!string.IsNullOrWhiteSpace(profile.DESIGNATION))
+                                {
+                                    <h5>@profile.DESIGNATION</h5>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(profile.DES_3)) { <p>@profile.DES_3</p> }
+                                <ul>
+                                    @if (!string.IsNullOrWhiteSpace(profile.HOMETOWN)) { <li>@profile.HOMETOWN</li> }
+                                    @if (!string.IsNullOrWhiteSpace(profile.PHONE))    { <li>@profile.PHONE</li> }
+                                    @if (!string.IsNullOrWhiteSpace(profile.EMAIL))    { <li>@profile.EMAIL</li> }
+                                </ul>
                             </div>
                         }
-                    }
-                    else
-                    {
-                        <p> Not Found</p>
-                    }
-                </div>
-                <div class="col-lg-6">
-                    <h3 class="resume-title">Professional Experience</h3>
-                    @if(eXPERIENCEs != null)
-                    {
-                        foreach(var item in eXPERIENCEs)
+
+                        @if (educations != null && educations.Any())
                         {
-                            <div class="resume-item">
-                                <h4>@item.INSTITUTE</h4>
-                                <h5>@item.FROM_DATE - @item.TO_DATE</h5>
-                                <p><strong><em>@item.DESIGNATION</em></strong></p>
-                                <p>
-                                    @if(dESCRIPTIONs != null)
+                            foreach (var item in educations)
+                            {
+                                <div class="resume-item">
+                                    <h4>@item.COURSE</h4>
+                                    <h5>@item.FROM_DATE — @item.TO_DATE</h5>
+                                    <p>@item.INSTITUTE</p>
+                                    @if (!string.IsNullOrWhiteSpace(item.DESCRIPTION)) { <p>@item.DESCRIPTION</p> }
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+
+                <div data-aos="fade-up" data-aos-delay="100">
+                    <h3 class="resume-title">Experience</h3>
+                    <div class="timeline">
+                        @if (experiences != null && experiences.Any())
+                        {
+                            foreach (var item in experiences)
+                            {
+                                <div class="resume-item">
+                                    <h4>@item.DESIGNATION</h4>
+                                    <h5>@item.FROM_DATE — @item.TO_DATE · @item.INSTITUTE</h5>
+                                    @if (descriptions != null)
                                     {
-                                        foreach (var desc in dESCRIPTIONs.Where(d => d.DESCRIPTION_TYPE_!.TYPE!.Equals("Experience", StringComparison.CurrentCultureIgnoreCase) && d.EXPERIENCE_ID == item.AUTO_ID))
-                                            {
+                                        var bullets = descriptions
+                                            .Where(d => d.DESCRIPTION_TYPE_ != null
+                                                     && d.DESCRIPTION_TYPE_.TYPE != null
+                                                     && d.DESCRIPTION_TYPE_.TYPE.Equals("Experience", StringComparison.OrdinalIgnoreCase)
+                                                     && d.EXPERIENCE_ID == item.AUTO_ID)
+                                            .ToList();
+                                        if (bullets.Any())
+                                        {
                                             <ul>
-                                                <li>@desc.DESCRIPTION_TEXT</li>
+                                                @foreach (var desc in bullets) { <li>@desc.DESCRIPTION_TEXT</li> }
                                             </ul>
                                         }
                                     }
-
-                                </p>
-                            </div>
+                                </div>
+                            }
                         }
-                    }
-                    else
-                    {
-                        <p>Not Found</p>
-                    }
+                        else { <p>No experience records yet.</p> }
+                    </div>
                 </div>
             </div>
-
         </div>
-    </section><!-- End Resume Section -->
-
-</main><!-- End #main -->
+    </section>
+</main>

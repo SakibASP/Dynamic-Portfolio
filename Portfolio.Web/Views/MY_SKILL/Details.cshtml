@@ -1,35 +1,24 @@
 @model Portfolio.Domain.MY_SKILLS
 
-@{
-    ViewData["Title"] = "Details";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+@{ ViewData["Title"] = "Skill Details"; }
 
 <section>
-    <div class="container-fluid p-5">
-    <h1>Details</h1>
+    <div class="admin-page narrow">
+        <div class="admin-head">
+            <div>
+                <span class="eyebrow">Admin · Skills</span>
+                <h2>@Model.SKILL_NAME</h2>
+            </div>
+        </div>
 
-<div>
-    <h4>MY_SKILLS</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SKILL_NAME)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SKILL_NAME)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SKILL_PERCENTAGE)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SKILL_PERCENTAGE)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.AUTO_ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
-</div>
+        <div class="admin-details">
+            <div class="row"><div class="k">Name</div><div class="v">@Model.SKILL_NAME</div></div>
+            <div class="row"><div class="k">Percentage</div><div class="v">@Model.SKILL_PERCENTAGE%</div></div>
+        </div>
+
+        <div class="form-actions">
+            <a asp-action="Index" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
+            <a asp-action="Edit" asp-route-id="@Model?.AUTO_ID" class="btn-primary-grad"><i class="bi bi-pencil"></i> Edit</a>
+        </div>
+    </div>
 </section>

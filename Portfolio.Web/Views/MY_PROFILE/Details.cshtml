@@ -1,93 +1,45 @@
 @model Portfolio.Domain.MY_PROFILE
 
 @{
-    ViewData["Title"] = "Details";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Profile Details";
+    var rootpath = (string)ViewBag.rootPath;
 }
 
 <section>
-    <h1>Details</h1>
+    <div class="admin-page">
+        <div class="admin-head">
+            <div>
+                <span class="eyebrow">Admin · Profile</span>
+                <h2>@Model.MY_NAME</h2>
+                <span class="sub">@Model.DESIGNATION</span>
+            </div>
+        </div>
 
-    <div>
-        <h4>MY_PROFILE</h4>
-        <hr />
-        <dl class="row">
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.MY_NAME)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.MY_NAME)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.DESIGNATION)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.DESIGNATION)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.MY_WEBSITE)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.MY_WEBSITE)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.DEGREE)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.DEGREE)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.PHONE)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.PHONE)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.EMAIL)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.EMAIL)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.CURRENT_CITY)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.CURRENT_CITY)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.HOMETOWN)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.HOMETOWN)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.PROFILE_IMAGE)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.PROFILE_IMAGE)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.DES_1)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.DES_1)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.DES_2)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.DES_2)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.DES_3)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.DES_3)
-            </dd>
-        </dl>
-    </div>
-    <div>
-        <a asp-action="Edit" asp-route-id="@Model?.AUTO_ID">Edit</a> |
-        <a asp-action="Index">Back to List</a>
+        <div class="admin-details">
+            @if (Model.PROFILE_IMAGE != null)
+            {
+                <div class="row">
+                    <div class="k">Photo</div>
+                    <div class="v"><img class="preview" src="@Url.Content(Model.PROFILE_IMAGE.Replace(rootpath, ""))" alt="@Model.MY_NAME" /></div>
+                </div>
+            }
+            <div class="row"><div class="k">Name</div><div class="v">@Model.MY_NAME</div></div>
+            <div class="row"><div class="k">Designation</div><div class="v">@Model.DESIGNATION</div></div>
+            <div class="row"><div class="k">Date of birth</div><div class="v">@(Model.DATE_OF_BIRTH?.ToShortDateString())</div></div>
+            <div class="row"><div class="k">Website</div><div class="v">@Model.MY_WEBSITE</div></div>
+            <div class="row"><div class="k">Degree</div><div class="v">@Model.DEGREE</div></div>
+            <div class="row"><div class="k">Phone</div><div class="v">@Model.PHONE</div></div>
+            <div class="row"><div class="k">Email</div><div class="v">@Model.EMAIL</div></div>
+            <div class="row"><div class="k">Current city</div><div class="v">@Model.CURRENT_CITY</div></div>
+            <div class="row"><div class="k">Hometown</div><div class="v">@Model.HOMETOWN</div></div>
+            <div class="row"><div class="k">Description 1</div><div class="v" style="white-space:pre-wrap;">@Model.DES_1</div></div>
+            <div class="row"><div class="k">Description 2</div><div class="v" style="white-space:pre-wrap;">@Model.DES_2</div></div>
+            <div class="row"><div class="k">Description 3</div><div class="v" style="white-space:pre-wrap;">@Model.DES_3</div></div>
+        </div>
+
+        <div class="form-actions">
+            <a asp-action="Index" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
+            <a asp-action="Edit" asp-route-id="@Model.AUTO_ID" class="btn-primary-grad"><i class="bi bi-pencil"></i> Edit</a>
+        </div>
     </div>
 </section>
