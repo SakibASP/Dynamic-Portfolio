@@ -59,7 +59,55 @@ body {
     font-feature-settings: "ss01", "cv11";
     -webkit-font-smoothing: antialiased;
     letter-spacing: -0.005em;
+    position: relative;
+    min-height: 100vh;
 }
+
+/* ---------- Site-wide ambient background ----------
+   - Static dotted grid faded at the edges
+   - Radial cursor spotlight tinted with the accent, updated by JS via
+     --mx / --my on <html>.
+   Both are fixed to the viewport and sit behind all content. */
+
+html::before,
+html::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Dotted grid backdrop */
+html::before {
+    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.035) 1px, transparent 0);
+    background-size: 32px 32px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 35%, #000 40%, transparent 95%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 35%, #000 40%, transparent 95%);
+}
+
+/* Cursor spotlight — follows the mouse */
+html::after {
+    background: radial-gradient(
+        600px circle at var(--mx, 50%) var(--my, 50%),
+        rgba(190, 242, 100, 0.07),
+        transparent 55%
+    );
+    transition: background 0.15s var(--ease);
+}
+
+/* Everything above the background sits on z-index 1+ */
+#header,
+.myContainer,
+#footer,
+#preloader,
+.back-to-top { position: relative; z-index: 1; }
+
+#header { z-index: 2; }
+
+/* Hero keeps its own stronger spotlight + parallax as before,
+   but since body has one now, drop hero's duplicate dotted grid. */
+#hero::before { display: none; }
 
 ::selection { background: var(--accent); color: var(--accent-ink); }
 
