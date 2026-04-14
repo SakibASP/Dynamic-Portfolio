@@ -1,22 +1,21 @@
 ﻿<!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta name="color-scheme" content="dark light">
 
-    <title>Md. Sakibur Rahman — @ViewData["Title"]</title>
+    <title>Md. Sakibur Rahman - @ViewData["Title"]</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
+    <!-- Favicons -->
+    @* <link href="~/assets/img/favicon.png" rel="icon"> *@
     <link href="~/logo/SLogo.png" rel="icon">
     <link href="~/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
-    <!-- Fonts: Inter (body) + Space Grotesk (display) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
     <link href="~/css/home/layoutcontent.css" rel="stylesheet" />
     <!-- Vendor CSS Files -->
@@ -26,38 +25,32 @@
     <link href="~/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
     <link href="~/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
     <link href="~/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet" />
-    <!-- Template Main CSS -->
+    <link href="~/assets/vendor/boxicons/css/boxicons.css" rel="stylesheet" />
+    <!-- Template Main CSS File   -->
     <link href="~/assets/css/style.css" rel="stylesheet" />
-    <!-- DataTables -->
+    <!-- Datatable CDN for style -->
     <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
-    <!-- Legacy site CSS -->
+
     <link href="~/css/site.css" rel="stylesheet" />
-    <!-- New modern theme — MUST be last so it wins the cascade -->
-    <link href="~/css/theme.css" rel="stylesheet" asp-append-version="true" />
-
-    <!-- Load theme before paint to avoid flash -->
-    <script>
-        (function () {
-            var t = localStorage.getItem("theme") || "dark";
-            document.documentElement.setAttribute("data-theme", t);
-        })();
-    </script>
-
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-D8P8SMRTS1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
+
         gtag('config', 'G-D8P8SMRTS1');
     </script>
 </head>
 
 <body>
+
     <!-- ======= Header ======= -->
     <header id="header" class="fixed-top">
         <div class="container-fluid d-flex justify-content-between align-items-center">
 
+            @* <h1 class="circle"><a id="myH" asp-action="Index" asp-controller="Home">Sakib</a></h1> *@
+            <!-- Uncomment below if you prefer to use an image logo -->
             <a asp-action="Index" asp-controller="Home" class="logo"><img src="~/logo/myLogo.png" class="img-fluid" /></a>
 
             <nav id="navbar" class="navbar order-last order-lg-0">
@@ -88,14 +81,30 @@
                                         <li class="nav-item"><a asp-action="Index" asp-controller="EXPERIENCE">Edit Experience</a></li>
                                     </ul>
                                 </li>
-                                <li class="nav-item"><a asp-action="Index" asp-controller="CV">Edit CV</a></li>
-                                <li class="nav-item"><a asp-action="Index" asp-controller="PROJECTS">Edit Projects</a></li>
-                                <li class="nav-item"><a asp-action="Index" asp-controller="DESCRIPTIONs">Edit Description</a></li>
-                                <li class="nav-item"><a asp-action="Index" asp-controller="Logs">Logs</a></li>
                                 <li class="nav-item">
-                                    @if (ViewBag.Message != null && ViewBag.Message != "0")
+                                    <a asp-action="Index" asp-controller="CV">Edit CV</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-action="Index" asp-controller="PROJECTS">Edit Projects</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-action="Index" asp-controller="DESCRIPTIONs">Edit Description</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-action="Index" asp-controller="Logs">Logs</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    @if (@ViewBag.Message != null)
                                     {
-                                        <a style="color:#f87171;" asp-action="PendingIndex" asp-controller="CONTACTS">Messages <span>@ViewBag.Message</span></a>
+                                        @if (@ViewBag.Message != "0")
+                                        {
+                                            <a style="color:red;" asp-action="PendingIndex" asp-controller="CONTACTS">Messages <span>@ViewBag.Message</span></a>
+                                        }
+                                        else
+                                        {
+                                            <a asp-action="PendingIndex" asp-controller="CONTACTS">Messages</a>
+                                        }
                                     }
                                     else
                                     {
@@ -107,32 +116,30 @@
                     }
                 </ul>
                 <i class="bi bi-list mobile-nav-toggle"></i>
-            </nav>
+            </nav><!-- .navbar -->
 
-            <div class="header-social-links d-flex align-items-center">
+            <div class="header-social-links">
                 @{
-                    var githubLink    = @"https://github.com/SakibASP";
-                    var linkedinLink  = @"https://www.linkedin.com/in/md-sakibur-rahman-070853196/";
-                    var youtubeLink   = @"https://www.youtube.com/@SakibCoding";
-                    var facebookLink  = @"https://www.facebook.com/sakibur.cse";
+                    var githubLink = @"https://github.com/SakibASP";
+                    var linkedinLink = @"https://www.linkedin.com/in/md-sakibur-rahman-070853196/";
+                    var youtubeLink = @"https://www.youtube.com/@SakibCoding";
+                    var facebookLink = @"https://www.facebook.com/sakibur.cse";
                     var instagramLink = @"https://www.instagram.com/sakibur_rocky/";
-                    var tiktokLink    = @"https://www.tiktok.com/@sakibur_rocky";
-                    var twitterLink   = @"https://twitter.com/Sakibur78738178";
+                    var tiktokLink = @"https://www.tiktok.com/@sakibur_rocky";
+                    var twitterLink = @"https://twitter.com/Sakibur78738178";
                 }
-                <a href="@githubLink" target="_blank" aria-label="GitHub"><i class="bi bi-github"></i></a>
-                <a href="@linkedinLink" target="_blank" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
-                <a href="@youtubeLink" target="_blank" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
-                <a href="@facebookLink" target="_blank" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-                <a href="@instagramLink" target="_blank" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-                <a href="@tiktokLink" target="_blank" aria-label="TikTok"><i class="bi bi-tiktok"></i></a>
-                <a href="@twitterLink" target="_blank" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
-
-                <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
-                    <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
-                </button>
+                <a href="@githubLink" class="github" target="_blank"><i class="bi bi-github"></i></a>
+                <a href="@linkedinLink" class="linkedin" target="_blank"><i class="bi bi-linkedin"></i></a>
+                <a href="@youtubeLink" class="youtube" target="_blank"><i class="bi bi-youtube"></i></a>
+                <a href="@facebookLink" class="facebook" target="_blank"><i class="bi bi-facebook"></i></a>
+                <a href="@instagramLink" class="instagram" target="_blank"><i class="bi bi-instagram"></i></a>
+                <a href="@tiktokLink" class="twitter" target="_blank"><i class="bi bi-tiktok"></i></a>
+                <a href="@twitterLink" class="twitter" target="_blank"><i class="bi bi-twitter"></i></a>
             </div>
+
         </div>
-    </header>
+
+    </header><!-- End Header -->
 
     <div>
         <div class="myContainer">
@@ -142,9 +149,15 @@
 
     <footer id="footer">
         <div class="container">
-            <div><small>&copy; @DateTime.Now.Year <strong>Md. Sakibur Rahman</strong></small></div>
-            <div><small>Crafted with <span style="color: var(--brand-1);">.NET 10</span> + Clean Architecture</small></div>
-            <div><small><a href="https://github.com/SakibASP/Dynamic-Portfolio" target="_blank">Source</a></small></div>
+            <div class="copyright">
+                <small>&copy; @DateTime.Now.Year - <strong><span>Md. Sakibur Rahman</span></strong></small> 
+            </div>
+            <div>
+                <small>Powered by <strong style="color: white; background-color:rebeccapurple; padding:2px">.NET</strong></small>
+            </div>
+            <div>
+                <small><a href="https://github.com/SakibASP/Dynamic-Portfolio" target="_blank">Source Code</a></small>
+            </div>
             <div>
                 @if (User.Identity.IsAuthenticated)
                 {
@@ -157,13 +170,17 @@
                     <a asp-area="Identity" asp-page="/Account/Login">Login</a>
                 }
             </div>
+
+
         </div>
-    </footer>
+    </footer><!-- End  Footer -->
 
     <div id="preloader"></div>
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    @* <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> *@
+    <!-- Vendor JS Files -->
     <script src="~/assets/vendor/purecounter/purecounter_vanilla.js"></script>
     <script src="~/assets/vendor/aos/aos.js"></script>
     <script src="~/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -171,35 +188,21 @@
     <script src="~/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
     <script src="~/assets/vendor/swiper/swiper-bundle.min.js"></script>
     <script src="~/assets/vendor/waypoints/noframework.waypoints.js"></script>
+
+    @* Sweet Alert *@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Template Main JS File -->
     <script src="~/assets/js/main.js"></script>
     <script src="~/assets/js/location-tracking.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <!-- Datatable CDN for Javascript -->
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-
-    <!-- Theme toggle -->
-    <script>
-        (function () {
-            var btn = document.getElementById("themeToggle");
-            var icon = document.getElementById("themeIcon");
-            function sync() {
-                var t = document.documentElement.getAttribute("data-theme");
-                icon.className = t === "light" ? "bi bi-sun-fill" : "bi bi-moon-stars-fill";
-            }
-            sync();
-            btn && btn.addEventListener("click", function () {
-                var t = document.documentElement.getAttribute("data-theme") === "light" ? "dark" : "light";
-                document.documentElement.setAttribute("data-theme", t);
-                localStorage.setItem("theme", t);
-                sync();
-            });
-        })();
-    </script>
-
     @await RenderSectionAsync("Scripts", required: false)
 
     <script>
-        $(function () { $(".table").DataTable(); });
+        $(function () {
+            $(".table").DataTable();
+        })
     </script>
 </body>
 </html>

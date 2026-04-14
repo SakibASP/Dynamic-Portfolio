@@ -3,100 +3,119 @@
 
 @{
     ViewData["Title"] = "Contact";
-    MY_PROFILE? profile = ViewData["PROFILES"] as MY_PROFILE;
+    MY_PROFILE? mY_PROFILEs = ViewData["PROFILES"] as MY_PROFILE;
 }
 
+<style>
+    .error{
+        color: red;
+    }
+
+    .info {
+        background-color: #e9e8e6 !important;
+        padding: 10%;
+    }
+</style>
+
 <main id="main">
+
+    <!-- ======= Contact Section ======= -->
     <section id="contact" class="contact">
         <div class="container" data-aos="fade-up">
+
             <div class="section-title">
                 <h2 id="changing-heading">Contact</h2>
-                @if (profile != null) { <p>@profile.DES_1</p> }
-            </div>
-
-            <div class="contact-map">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d117658.97207999983!2d89.53250170000001!3d22.8453019!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ff9071cb47152f%3A0xf04b212290718952!2sKhulna!5e0!3m2!1sen!2sbd!4v1669381041337!5m2!1sen!2sbd"
-                        allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-            </div>
-
-            <div class="contact-layout">
-                @if (profile != null)
+                @if (mY_PROFILEs != null)
                 {
-                    <div class="contact-info" data-aos="fade-right" data-aos-delay="100">
-                        <div class="info-item">
-                            <i class="bi bi-geo-alt"></i>
-                            <div>
-                                <h4>Location</h4>
-                                <p>@profile.CURRENT_CITY</p>
+                    <p>@mY_PROFILEs.DES_1</p>
+                }
+            </div>
+
+            <div>
+                <iframe style="border : 1px solid #e9e8e6;border-radius: 15px; width: 100%; height: 270px;" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d117658.97207999983!2d89.53250170000001!3d22.8453019!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ff9071cb47152f%3A0xf04b212290718952!2sKhulna!5e0!3m2!1sen!2sbd!4v1669381041337!5m2!1sen!2sbd" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                @*<iframe style="border:0; width: 100%; height: 270px;" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d116843.64263619613!2d90.39927429562331!3d23.77005501986503!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b8b087026b81%3A0x8fa563bbdd5904c2!2sDhaka!5e0!3m2!1sen!2sbd!4v1671794598613!5m2!1sen!2sbd" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>*@
+            </div>
+
+            <div class="row">
+
+                @if(mY_PROFILEs != null)
+                {
+                    <div class="col-lg-4">
+                        <div class="info">
+                            <div class="address">
+                                <i class="bi bi-geo-alt"></i>
+                                <h4>Location:</h4>
+                                <p>@mY_PROFILEs.CURRENT_CITY</p>
                             </div>
-                        </div>
-                        <div class="info-item">
-                            <i class="bi bi-envelope"></i>
-                            <div>
-                                <h4>Email</h4>
-                                <p>@profile.EMAIL</p>
+
+                            <div class="email">
+                                <i class="bi bi-envelope"></i>
+                                <h4>Email:</h4>
+                                <p>@mY_PROFILEs.EMAIL</p>
                             </div>
-                        </div>
-                        <div class="info-item">
-                            <i class="bi bi-telephone"></i>
-                            <div>
-                                <h4>Call</h4>
-                                <p>@profile.PHONE</p>
+
+                            <div class="phone">
+                                <i class="bi bi-phone"></i>
+                                <h4>Call:</h4>
+                                <p>@mY_PROFILEs.PHONE</p>
                             </div>
+
                         </div>
+                        <br />
+
                     </div>
                 }
 
-                <form class="contact-form" data-aos="fade-left" data-aos-delay="200">
-                    <div class="field-row">
-                        <div>
-                            <div class="field">
-                                <input type="text" id="name" name="name" placeholder=" " required />
-                                <label for="name">Your name</label>
+                <div class="col-lg-8">
+                    <div class="container" style="padding: 5%;">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="input-container">
+                                    <input type="text" class="input-box" name="name" id="name" required>
+                                    <label for="name">Name</label>
+                                </div>
+                                <div class="error" id="nameError"></div>
                             </div>
-                            <div class="error-text" id="nameError"></div>
-                        </div>
-                        <div>
-                            <div class="field">
-                                <input type="email" id="email" name="email" placeholder=" " required />
-                                <label for="email">Email address</label>
+                            <div class="col-md-4">
+                                <div class="input-container">
+                                    <input type="email" class="input-box" name="email" id="email" required>
+                                    <label for="email">Email</label>
+                                </div>
+                                <div class="error" id="emailError"></div>
                             </div>
-                            <div class="error-text" id="emailError"></div>
+                            <div class="col-md-4">
+                                <div class="input-container">
+                                    <input type="text" class="input-box" name="phone" id="phone" required>
+                                    <label for="phone">Phone</label>
+                                </div>
+                                <div class="error" id="phoneError"></div>
+                            </div>
                         </div>
+                        <div class="input-container">
+                            <input type="text" class="input-box" name="subject" id="subject" required>
+                            <label for="subject">Subject</label>
+                            <div class="error" id="subjectError"></div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-container">
+                                <textarea class="form-control" spellcheck="true" name="message" id="message" rows="5" placeholder="Message"></textarea>
+                            </div>
+                            <div class="error" id="messageError"></div>
+                        </div>
+                        <br />
+                        <div><button style="background-color:green;color:white;" class="btn btn-default" id="myButton" type="submit">Send Message</button></div>
                     </div>
 
-                    <div class="field-row">
-                        <div>
-                            <div class="field">
-                                <input type="text" id="phone" name="phone" placeholder=" " />
-                                <label for="phone">Phone</label>
-                            </div>
-                            <div class="error-text" id="phoneError"></div>
-                        </div>
-                        <div>
-                            <div class="field">
-                                <input type="text" id="subject" name="subject" placeholder=" " required />
-                                <label for="subject">Subject</label>
-                            </div>
-                            <div class="error-text" id="subjectError"></div>
-                        </div>
-                    </div>
+                </div>
 
-                    <div class="field">
-                        <textarea id="message" name="message" rows="5" placeholder=" "></textarea>
-                        <label for="message">Message</label>
-                    </div>
-                    <div class="error-text" id="messageError"></div>
-
-                    <button type="submit" id="myButton" class="btn-primary-grad mt-3">
-                        <i class="bi bi-send"></i> Send Message
-                    </button>
-                </form>
             </div>
-        </div>
-    </section>
-</main>
 
-@section Scripts {
+        </div>
+    </section><!-- End Contact Section -->
+
+</main><!-- End #main -->
+
+@section Scripts{
+
     <script src="~/js/contacts/messagecontent.js"></script>
 }
