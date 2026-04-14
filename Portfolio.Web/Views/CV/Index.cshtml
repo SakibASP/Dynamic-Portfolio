@@ -1,51 +1,52 @@
 @model List<Portfolio.Application.DTOs.FileInfoViewModel>
 
-<br />
+@{ ViewData["Title"] = "CV Files"; }
 
 <section>
-    <div class="container-fluid p-5">
-        @if (@TempData["State"] != null)
-        {
-            if (!string.IsNullOrEmpty(@TempData["State"].ToString()))
-            {
-                <div class="container">
-                    <p style="color: red">@TempData["State"]</p>
-                </div>
-            }
-
-        }
-        
-        <div style="display: flex;">
-            <a asp-action="ClearCVFolder" style="margin: 5px;" class="btn btn-danger">Clear</a>
-            <a asp-action="UploadCV" style="margin: 5px;" class="btn btn-primary">Upload</a>
+    <div class="admin-page">
+        <div class="admin-head">
+            <div>
+                <span class="eyebrow">Admin · CV</span>
+                <h2>All CV files</h2>
+            </div>
+            <div style="display:flex;gap:0.5rem;">
+                <a asp-action="UploadCV" class="btn-primary-grad"><i class="bi bi-upload"></i> Upload</a>
+                <a asp-action="ClearCVFolder" class="btn-ghost" style="color:var(--danger);border-color:rgba(239,68,68,0.3);"><i class="bi bi-trash"></i> Clear all</a>
+            </div>
         </div>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Modified Date</th>
-                    <th>Type</th>
-                    <th>Size (MB)</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var file in Model)
-                {
-                    <tr>
-                        <td>@file.Name</td>
-                        <td>@file.ModifiedDate</td>
-                        <td>@file.Type</td>
-                        <td>@file.Size</td>
-                        <td>
-                            <a asp-action="DownloadCV" asp-route-filePath="@file.FilePath" class="btn btn-success">Download</a>
-                            <a asp-action="RemoveCV" asp-route-filePath="@file.FilePath" class="btn btn-danger">Remove</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
 
+        @if (TempData["State"] != null && !string.IsNullOrEmpty(TempData["State"].ToString()))
+        {
+            <div class="alert alert-danger">@TempData["State"]</div>
+        }
+
+        @if (Model.Any())
+        {
+            <div class="admin-table-wrap">
+                <table class="admin-table">
+                    <thead>
+                        <tr><th>Name</th><th>Modified</th><th>Type</th><th>Size (MB)</th><th style="width:160px;"></th></tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var file in Model)
+                    {
+                        <tr>
+                            <td>@file.Name</td>
+                            <td><span style="font-family:var(--font-mono);font-size:0.8125rem;color:var(--muted);">@file.ModifiedDate</span></td>
+                            <td><span style="font-family:var(--font-mono);font-size:0.75rem;color:var(--dim);">@file.Type</span></td>
+                            <td>@file.Size</td>
+                            <td>
+                                <div class="actions">
+                                    <a class="action-btn" asp-action="DownloadCV" asp-route-filePath="@file.FilePath" title="Download"><i class="bi bi-download"></i></a>
+                                    <a class="action-btn danger" asp-action="RemoveCV" asp-route-filePath="@file.FilePath" title="Remove"><i class="bi bi-trash"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else { <div class="empty-state">No CV uploaded yet.</div> }
     </div>
 </section>
-

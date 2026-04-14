@@ -1,58 +1,27 @@
 @model Portfolio.Domain.DESCRIPTION
 
-@{
-    ViewData["Title"] = "Details";
-}
+@{ ViewData["Title"] = "Description Details"; }
 
 <section>
-    <div class="container-fluid p-5">
-        <h1>Details</h1>
-
-        <div>
-            <h4>DESCRIPTION</h4>
-            <hr />
-            <dl class="row">
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.DESCRIPTION_TEXT)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.DESCRIPTION_TEXT)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.CREATED_BY)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.CREATED_BY)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.CREATED_DATE)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.CREATED_DATE)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.MODIFIED_BY)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.MODIFIED_BY)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.MODIFIED_DATE)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.MODIFIED_DATE)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.DESCRIPTION_TYPE_)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.DESCRIPTION_TYPE_.AUTO_ID)
-                </dd>
-            </dl>
+    <div class="admin-page narrow">
+        <div class="admin-head">
+            <div>
+                <span class="eyebrow">Admin · Descriptions</span>
+                <h2>Description #@Model.AUTO_ID</h2>
+            </div>
         </div>
-        <div>
-            <a asp-action="Edit" asp-route-id="@Model?.AUTO_ID">Edit</a> |
-            <a asp-action="Index">Back to List</a>
+
+        <div class="admin-details">
+            <div class="row"><div class="k">Text</div><div class="v">@Model.DESCRIPTION_TEXT</div></div>
+            <div class="row"><div class="k">Type</div><div class="v">@Model.DESCRIPTION_TYPE_?.TYPE</div></div>
+            <div class="row"><div class="k">Project</div><div class="v">@(Model.PROJECT_?.PROJECT_NAME ?? "—")</div></div>
+            <div class="row"><div class="k">Experience</div><div class="v">@(Model.EXPERIENCE_?.INSTITUTE ?? "—")</div></div>
+            <div class="row"><div class="k">Sort order</div><div class="v">@Model.SORT_ORDER</div></div>
+        </div>
+
+        <div class="form-actions">
+            <a asp-action="Index" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
+            <a asp-action="Edit" asp-route-id="@Model?.AUTO_ID" class="btn-primary-grad"><i class="bi bi-pencil"></i> Edit</a>
         </div>
     </div>
 </section>

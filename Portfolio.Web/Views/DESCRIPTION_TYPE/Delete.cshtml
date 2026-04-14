@@ -1,27 +1,23 @@
 @model Portfolio.Domain.DESCRIPTION_TYPE
 
-@{
-    ViewData["Title"] = "Delete";
-}
+@{ ViewData["Title"] = "Delete Type"; }
 
-<h1>Delete</h1>
+<section>
+    <div class="admin-page narrow">
+        <div class="admin-head center">
+            <span class="eyebrow">Admin · Description types</span>
+            <h2>Delete this type?</h2>
+            <span class="sub">This action cannot be undone.</span>
+        </div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>DESCRIPTION_TYPE</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TYPE)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TYPE)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="AUTO_ID" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
-</div>
+        <div class="admin-details">
+            <div class="row"><div class="k">Type</div><div class="v">@Model.TYPE</div></div>
+        </div>
+
+        <form asp-action="Delete" class="form-actions center">
+            <input type="hidden" asp-for="AUTO_ID" />
+            <a asp-action="Index" class="btn-ghost">Cancel</a>
+            <button type="submit" class="btn-danger-solid"><i class="bi bi-trash"></i> Delete</button>
+        </form>
+    </div>
+</section>

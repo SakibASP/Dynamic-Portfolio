@@ -1,47 +1,50 @@
 @model IEnumerable<Portfolio.Domain.MY_SKILLS>
 
-@{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+@{ ViewData["Title"] = "Skills"; }
 
 <section>
-    <div class="container-fluid p-5">
-        <h1>Index</h1>
+    <div class="admin-page">
+        <div class="admin-head">
+            <div>
+                <span class="eyebrow">Admin · Skills</span>
+                <h2>All skills</h2>
+            </div>
+            <a asp-action="Create" class="btn-primary-grad"><i class="bi bi-plus-lg"></i> New skill</a>
+        </div>
 
-        <p>
-            <a asp-action="Create">Create New</a>
-        </p>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.SKILL_NAME)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.SKILL_PERCENTAGE)
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SKILL_NAME)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SKILL_PERCENTAGE)
-                        </td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@item.AUTO_ID">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.AUTO_ID">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.AUTO_ID">Delete</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        @if (Model.Any())
+        {
+            <div class="admin-table-wrap">
+                <table class="admin-table">
+                    <thead>
+                        <tr><th>Name</th><th>Percentage</th><th style="width:160px;"></th></tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.SKILL_NAME</td>
+                            <td>
+                                <div style="display:flex;align-items:center;gap:0.5rem;min-width:180px;">
+                                    <div style="flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;">
+                                        <div style="height:100%;width:@(item.SKILL_PERCENTAGE ?? 0)%;background:var(--accent);"></div>
+                                    </div>
+                                    <span style="font-family:var(--font-mono);font-size:0.75rem;color:var(--muted);min-width:2.5rem;text-align:right;">@(item.SKILL_PERCENTAGE ?? 0)%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="actions">
+                                    <a class="action-btn" asp-action="Edit"    asp-route-id="@item.AUTO_ID" title="Edit"><i class="bi bi-pencil"></i></a>
+                                    <a class="action-btn" asp-action="Details" asp-route-id="@item.AUTO_ID" title="Details"><i class="bi bi-eye"></i></a>
+                                    <a class="action-btn danger" asp-action="Delete" asp-route-id="@item.AUTO_ID" title="Delete"><i class="bi bi-trash"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else { <div class="empty-state">No skills yet.</div> }
     </div>
 </section>

@@ -1,71 +1,53 @@
 @model IEnumerable<Portfolio.Domain.DESCRIPTION>
 
-@{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+@{ ViewData["Title"] = "Descriptions"; }
 
 <section>
-    <div class="container-fluid p-5">
-        <h3 class="text-center" id="changing-heading">Descriptions</h3>
-        <p>
-            <a class="btn btn-warning" asp-action="Create">Create New</a>
-        </p>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.DESCRIPTION_TEXT)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.TYPE_ID)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.PROJECT_ID)
-                    </th>  
-                    <th>
-                        @Html.DisplayNameFor(model => model.EXPERIENCE_ID)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.SORT_ORDER)
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.DESCRIPTION_TEXT)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.DESCRIPTION_TYPE_!.TYPE)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.PROJECT_!.PROJECT_NAME)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.EXPERIENCE_!.DESIGNATION)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SORT_ORDER)
-                        </td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@item.AUTO_ID">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.AUTO_ID">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.AUTO_ID">Delete</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+    <div class="admin-page">
+        <div class="admin-head">
+            <div>
+                <span class="eyebrow">Admin · Descriptions</span>
+                <h2>All descriptions</h2>
+            </div>
+            <a asp-action="Create" class="btn-primary-grad"><i class="bi bi-plus-lg"></i> New description</a>
+        </div>
 
+        @if (Model.Any())
+        {
+            <div class="admin-table-wrap">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Text</th>
+                            <th>Type</th>
+                            <th>Project / Experience</th>
+                            <th style="width:60px;">Order</th>
+                            <th style="width:160px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td style="max-width:380px;">
+                                <div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">@item.DESCRIPTION_TEXT</div>
+                            </td>
+                            <td><span class="country" style="background:rgba(190,242,100,0.08);border:1px solid rgba(190,242,100,0.25);color:var(--accent);padding:0.2rem 0.5rem;border-radius:999px;font-size:0.75rem;">@item.DESCRIPTION_TYPE_?.TYPE</span></td>
+                            <td style="color:var(--muted);font-size:0.875rem;">@(item.PROJECT_?.PROJECT_NAME ?? item.EXPERIENCE_?.INSTITUTE ?? "—")</td>
+                            <td>@item.SORT_ORDER</td>
+                            <td>
+                                <div class="actions">
+                                    <a class="action-btn" asp-action="Edit"    asp-route-id="@item.AUTO_ID" title="Edit"><i class="bi bi-pencil"></i></a>
+                                    <a class="action-btn" asp-action="Details" asp-route-id="@item.AUTO_ID" title="Details"><i class="bi bi-eye"></i></a>
+                                    <a class="action-btn danger" asp-action="Delete" asp-route-id="@item.AUTO_ID" title="Delete"><i class="bi bi-trash"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else { <div class="empty-state">No descriptions yet.</div> }
     </div>
 </section>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}

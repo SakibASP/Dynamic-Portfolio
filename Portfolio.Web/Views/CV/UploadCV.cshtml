@@ -1,55 +1,47 @@
-﻿
-<section>
-    <div class="container-fluid p-5">
-        <h1>File Upload</h1>
-        <div id="file-preview"></div>
-        <form id="uploadForm" enctype="multipart/form-data">
-            <input type="file" name="file" id="fileInput">
-            <button type="submit" class="btn btn-success">Upload</button>
-        </form>
+@{ ViewData["Title"] = "Upload CV"; }
 
-        <div id="result"></div>
+<section>
+    <div class="admin-page narrow">
+        <div class="admin-head">
+            <div>
+                <span class="eyebrow">Admin · CV</span>
+                <h2>Upload file</h2>
+            </div>
+        </div>
+
+        <form id="uploadForm" enctype="multipart/form-data" class="admin-form">
+            <div class="field">
+                <label>Choose file</label>
+                <input type="file" name="file" id="fileInput" />
+            </div>
+            <div id="file-preview"></div>
+            <div id="result" style="margin-top:0.5rem;font-family:var(--font-mono);font-size:0.8125rem;"></div>
+
+            <div class="form-actions">
+                <a asp-action="Index" class="btn-ghost">Cancel</a>
+                <button type="submit" class="btn-primary-grad"><i class="bi bi-cloud-upload"></i> Upload</button>
+            </div>
+        </form>
     </div>
 </section>
 
 @section Scripts {
     <script src="~/js/file-preview.js"></script>
     <script>
-        const uploadForm = document.getElementById('uploadForm');
-        const fileInput = document.getElementById('fileInput');
-        const resultDiv = document.getElementById('result');
-
-        uploadForm.addEventListener('submit', async (e) => {
+        const f = document.getElementById('uploadForm');
+        const i = document.getElementById('fileInput');
+        const r = document.getElementById('result');
+        f.addEventListener('submit', async (e) => {
             e.preventDefault();
-
-            const file = fileInput.files[0];
-            if (!file) {
-                resultDiv.textContent = 'Please select a file.';
-                resultDiv.style.color = 'red';
-                return;
-            }
-
+            const file = i.files[0];
+            if (!file) { r.textContent = 'Please select a file.'; r.style.color = 'var(--danger)'; return; }
             try {
-                const formData = new FormData();
-                formData.append('file', file);
-
-                const response = await fetch('/upload', {
-                    method: 'POST',
-                    body: formData,
-                });
-
-                if (response.ok) {
-                    const text = await response.text();
-                    resultDiv.textContent = text;
-                    resultDiv.style.color = 'green';
-                } else {
-                    resultDiv.textContent = 'Error uploading file.';
-                    resultDiv.style.color = 'red';
-                }
-            } catch (error) {
-                resultDiv.textContent = 'An error occurred: ' + error.message;
-                resultDiv.style.color = 'red';
-            }
+                const fd = new FormData();
+                fd.append('file', file);
+                const res = await fetch('/upload', { method: 'POST', body: fd });
+                if (res.ok) { r.textContent = await res.text(); r.style.color = 'var(--success)'; }
+                else { r.textContent = 'Error uploading file.'; r.style.color = 'var(--danger)'; }
+            } catch (err) { r.textContent = 'Error: ' + err.message; r.style.color = 'var(--danger)'; }
         });
     </script>
 }

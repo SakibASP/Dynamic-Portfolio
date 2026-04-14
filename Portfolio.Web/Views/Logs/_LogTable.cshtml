@@ -1,0 +1,33 @@
+@model List<Portfolio.Application.DTOs.FileInfoViewModel>
+
+@if (Model.Any())
+{
+    <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr><th>Name</th><th>Modified</th><th>Type</th><th>Size (MB)</th><th style="width:120px;"></th></tr>
+            </thead>
+            <tbody>
+            @foreach (var file in Model)
+            {
+                <tr>
+                    <td>@file.Name</td>
+                    <td><span style="font-family:var(--font-mono);font-size:0.8125rem;color:var(--muted);">@file.ModifiedDate</span></td>
+                    <td><span style="font-family:var(--font-mono);font-size:0.75rem;color:var(--dim);">@file.Type</span></td>
+                    <td>@file.Size</td>
+                    <td>
+                        <div class="actions">
+                            <a class="action-btn" asp-action="DownloadErrorTextFile" asp-route-filePath="@file.FilePath" asp-route-fileName="@file.Name" title="Download"><i class="bi bi-download"></i></a>
+                            <a class="action-btn danger" asp-action="DeleteErrorTextFile" asp-route-filePath="@file.FilePath" asp-route-fileName="@file.Name" title="Delete"><i class="bi bi-trash"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="empty-state">No log files.</div>
+}

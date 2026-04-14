@@ -1,57 +1,55 @@
 @model Portfolio.Domain.PROFILE_COVER
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Cover";
     var rootpath = (string)ViewBag.rootPath;
 }
 
 <section>
-    <div class="container-fluid p-5">
-        <h1>Edit</h1>
-
-        <h4>PROFILE_COVER</h4>
-        <hr />
-        <div class="row">
-            <div class="col-md-4">
-                <form asp-action="Edit" enctype="multipart/form-data">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" asp-for="AUTO_ID" />
-                    <input type="hidden" asp-for="COVER_IMAGE" />
-                    <div class="form-group">
-                        <label asp-for="COVER_NAME" class="control-label"></label>
-                        <input asp-for="COVER_NAME" class="form-control" />
-                        <span asp-validation-for="COVER_NAME" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="COVER_DESC" class="control-label"></label>
-                        <input asp-for="COVER_DESC" class="form-control" />
-                        <span asp-validation-for="COVER_DESC" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        @if(Model.COVER_IMAGE != null){
-                        <label asp-for="COVER_IMAGE" class="control-label"></label>
-                        <img class="img-fluid" style="height:75px;width:75px;" src="@Url.Content(Model.COVER_IMAGE.Replace(rootpath,""))" />
-                        @* <img class="img-fluid" style="height:120px;width:120px;" src="data:ImageData;base64,@System.Convert.ToBase64String(Model.COVER_IMAGE)" /> *@
-                        <span asp-validation-for="COVER_IMAGE" class="text-danger"></span>
-                        }
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="COVER_IMAGE" class="control-label"></label>
-                        <input type="file" id="fileInput" accept="image/*" asp-for="COVER_IMAGE" class="form-control-file" multiple="multiple" />
-                        <span asp-validation-for="COVER_IMAGE" class="text-danger"></span>
-                    </div>
-                    <div id="file-preview"></div>
-
-                    <div class="form-group">
-                        <input type="submit" value="Save" class="btn btn-primary" />
-                    </div>
-                </form>
+    <div class="admin-page narrow">
+        <div class="admin-head">
+            <div>
+                <span class="eyebrow">Admin · Profile Cover</span>
+                <h2>Edit cover</h2>
             </div>
         </div>
 
-        <div>
-            <a asp-action="Index">Back to List</a>
-        </div>
+        <form asp-action="Edit" enctype="multipart/form-data" class="admin-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="AUTO_ID" />
+            <input type="hidden" asp-for="COVER_IMAGE" />
+
+            <div class="field">
+                <label asp-for="COVER_NAME"></label>
+                <input asp-for="COVER_NAME" />
+                <span asp-validation-for="COVER_NAME" class="err"></span>
+            </div>
+            <div class="field">
+                <label asp-for="COVER_DESC"></label>
+                <input asp-for="COVER_DESC" />
+                <span asp-validation-for="COVER_DESC" class="err"></span>
+            </div>
+
+            @if (Model.COVER_IMAGE != null)
+            {
+                <div class="field">
+                    <label>Current image</label>
+                    <img class="preview" src="@Url.Content(Model.COVER_IMAGE.Replace(rootpath, ""))" alt="current" />
+                </div>
+            }
+
+            <div class="field">
+                <label asp-for="COVER_IMAGE">Replace image</label>
+                <input type="file" id="fileInput" accept="image/*" asp-for="COVER_IMAGE" class="form-control-file" />
+                <span asp-validation-for="COVER_IMAGE" class="err"></span>
+                <div id="file-preview"></div>
+            </div>
+
+            <div class="form-actions">
+                <a asp-action="Index" class="btn-ghost">Cancel</a>
+                <button type="submit" class="btn-primary-grad"><i class="bi bi-check2"></i> Save</button>
+            </div>
+        </form>
     </div>
 </section>
 

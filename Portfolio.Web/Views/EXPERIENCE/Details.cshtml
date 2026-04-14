@@ -1,48 +1,27 @@
 @model Portfolio.Domain.EXPERIENCE
 
-@{
-    ViewData["Title"] = "Details";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+@{ ViewData["Title"] = "Experience Details"; }
 
 <section>
-    <div class="container-fluid p-5">
-        <h1>Details</h1>
-
-        <div>
-            <h4>EXPERIENCE</h4>
-            <hr />
-            <dl class="row">
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.DESIGNATION)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.DESIGNATION)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.FROM_DATE)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.FROM_DATE)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.TO_DATE)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.TO_DATE)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.INSTITUTE)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.INSTITUTE)
-                </dd>
-
-            </dl>
+    <div class="admin-page narrow">
+        <div class="admin-head">
+            <div>
+                <span class="eyebrow">Admin · Experience</span>
+                <h2>@Model.DESIGNATION</h2>
+            </div>
         </div>
-        <div>
-            <a asp-action="Edit" asp-route-id="@Model?.AUTO_ID">Edit</a> |
-            <a asp-action="Index">Back to List</a>
+
+        <div class="admin-details">
+            <div class="row"><div class="k">Designation</div><div class="v">@Model.DESIGNATION</div></div>
+            <div class="row"><div class="k">Institute</div><div class="v">@Model.INSTITUTE</div></div>
+            <div class="row"><div class="k">From</div><div class="v">@Model.FROM_DATE</div></div>
+            <div class="row"><div class="k">To</div><div class="v">@Model.TO_DATE</div></div>
+            <div class="row"><div class="k">Sort order</div><div class="v">@Model.SORT_ORDER</div></div>
+        </div>
+
+        <div class="form-actions">
+            <a asp-action="Index" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
+            <a asp-action="Edit" asp-route-id="@Model?.AUTO_ID" class="btn-primary-grad"><i class="bi bi-pencil"></i> Edit</a>
         </div>
     </div>
 </section>

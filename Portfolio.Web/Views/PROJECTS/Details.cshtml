@@ -1,76 +1,47 @@
 @model Portfolio.Domain.PROJECTS
 
 @{
-    ViewData["Title"] = "Details";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    List<DESCRIPTION>? dESCRIPTIONs = ViewData["DESCRIPTIONs"] as List<DESCRIPTION>;
+    ViewData["Title"] = "Project Details";
+    var descriptions = ViewData["DESCRIPTIONs"] as List<Portfolio.Domain.DESCRIPTION>;
 }
 
 <section>
-    <div class="container-fluid p-5">
-        <h1>Project Details</h1>
-
-        <div>
-            <hr />
-            <dl class="row">
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.PROJECT_NAME)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.PROJECT_NAME)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.LOGO)
-                </dt>
-                <dd class="col-sm-10">
-                    @if(Model.LOGO != null)
-                    {
-                        <img class="img-thumbnail" style="width:300px;height:150px" src="data:ImageData;base64,@System.Convert.ToBase64String(Model.LOGO)" />
-                    }
-                    else
-                    {
-                        <p>No Image Found</p>
-                    }
-                </dd>
-            </dl>
+    <div class="admin-page">
+        <div class="admin-head">
+            <div>
+                <span class="eyebrow">Project</span>
+                <h2>@Model.PROJECT_NAME</h2>
+            </div>
         </div>
-        <ul>
-            @if(dESCRIPTIONs.Count > 0)
-            {
-                foreach(var item in dESCRIPTIONs)
+
+        <div class="admin-details">
+            <div class="row"><div class="k">Name</div><div class="v">@Model.PROJECT_NAME</div></div>
+            <div class="row">
+                <div class="k">Logo</div>
+                <div class="v">
+                    @if (Model.LOGO != null && Model.LOGO.Length > 0)
+                    {
+                        <img class="preview" src="data:image/*;base64,@System.Convert.ToBase64String(Model.LOGO)" alt="@Model.PROJECT_NAME" />
+                    }
+                    else { <span style="color:var(--dim);">—</span> }
+                </div>
+            </div>
+        </div>
+
+        @if (descriptions != null && descriptions.Any())
+        {
+            <h3 style="margin-top:2rem;font-size:0.75rem;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:0.12em;color:var(--dim);font-weight:500;">Descriptions</h3>
+            <div class="admin-details">
+                @foreach (var d in descriptions)
                 {
-                    <li>@item.DESCRIPTION_TEXT</li>
+                    <div class="row"><div class="k">#@d.AUTO_ID</div><div class="v">@d.DESCRIPTION_TEXT</div></div>
                 }
-            }
-            @* @if (Model.DESCRIPTION_1 != null)
-            {
-                <li>@Html.DisplayFor(model => model.DESCRIPTION_1)</li>
-            }
-            @if (Model.DESCRIPTION_2 != null)
-            {
-                <li>@Html.DisplayFor(model => model.DESCRIPTION_2)</li>
-            }
-            @if (Model.DESCRIPTION_3 != null)
-            {
-                <li>@Html.DisplayFor(model => model.DESCRIPTION_3)</li>
-            }
-            @if (Model.DESCRIPTION_4 != null)
-            {
-                <li>@Html.DisplayFor(model => model.DESCRIPTION_4)</li>
-            }
-            @if (Model.DESCRIPTION_5 != null)
-            {
-                <li>@Html.DisplayFor(model => model.DESCRIPTION_5)</li>
-            }
-            @if (Model.DESCRIPTION_6 != null)
-            {
-                <li>@Html.DisplayFor(model => model.DESCRIPTION_6)</li>
-            } *@
-           
-        </ul>
-        <div>
-            @*<a asp-action="Edit" asp-route-id="@Model?.AUTO_ID">Edit</a> |*@
-            @*<a asp-action="Index">Back to List</a>*@
+            </div>
+        }
+
+        <div class="form-actions">
+            <a asp-action="Index" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
+            <a asp-action="Edit" asp-route-id="@Model.AUTO_ID" class="btn-primary-grad"><i class="bi bi-pencil"></i> Edit</a>
         </div>
     </div>
 </section>

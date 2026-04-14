@@ -1,67 +1,59 @@
 @model IEnumerable<Portfolio.Domain.PROFILE_COVER>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Profile Covers";
     var rootpath = (string)ViewBag.rootPath;
 }
 
-<h1>Index</h1>
-
 <section>
-    <div class="container-fluid p-5">
-        @*<p>
-            <a asp-action="Create">Create New</a>
-        </p>*@
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.COVER_NAME)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.COVER_DESC)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.COVER_IMAGE)
-                    </th>
-                    @*<th>
-                        @Html.DisplayNameFor(model => model.MOBILE_COVER)
-                    </th>*@
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.COVER_NAME)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.COVER_DESC)
-                        </td>
-                        <td>
-                            @if (item.COVER_IMAGE != null)
-                            {
-                                <img class="img-fluid" style="height:120px;width:120px;" src="@Url.Content(item.COVER_IMAGE.Replace(rootpath,""))" />
-                                @* <img class="img-fluid" style="height:120px;width:120px;" src="data:ImageData;base64,@System.Convert.ToBase64String(item.COVER_IMAGE)" /> *@
-                            }
-                        </td>
-                        @*<td>
-                            @if (item.MOBILE_COVER != null)
-                            {
-                                <img class="img-fluid" style="height:120px;width:120px;" src="data:ImageData;base64,@System.Convert.ToBase64String(item.MOBILE_COVER)" />
-                            }
-                        </td>*@
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@item.AUTO_ID">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.AUTO_ID">Details</a> |
-                            @*<a asp-action="Delete" asp-route-id="@item.AUTO_ID">Delete</a>*@
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+    <div class="admin-page">
+        <div class="admin-head">
+            <div>
+                <span class="eyebrow">Admin · Profile Cover</span>
+                <h2>All covers</h2>
+            </div>
+            <a asp-action="Create" class="btn-primary-grad"><i class="bi bi-plus-lg"></i> New cover</a>
+        </div>
+
+        @if (Model.Any())
+        {
+            <div class="admin-table-wrap">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 96px;">Image</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th style="width: 160px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @if (item.COVER_IMAGE != null)
+                                {
+                                    <img class="thumb" src="@Url.Content(item.COVER_IMAGE.Replace(rootpath, ""))" alt="@item.COVER_NAME" />
+                                }
+                            </td>
+                            <td>@item.COVER_NAME</td>
+                            <td>@item.COVER_DESC</td>
+                            <td>
+                                <div class="actions">
+                                    <a class="action-btn" asp-action="Edit" asp-route-id="@item.AUTO_ID" title="Edit"><i class="bi bi-pencil"></i></a>
+                                    <a class="action-btn" asp-action="Details" asp-route-id="@item.AUTO_ID" title="Details"><i class="bi bi-eye"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">No covers yet. Create one to get started.</div>
+        }
     </div>
 </section>
-
