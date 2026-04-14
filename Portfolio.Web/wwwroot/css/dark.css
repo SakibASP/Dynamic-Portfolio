@@ -461,33 +461,8 @@ p { margin: 0 0 1rem; color: var(--muted); }
     isolation: isolate;
 }
 
-/* Dotted grid — static background pattern, very subtle */
-#hero::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.04) 1px, transparent 0);
-    background-size: 28px 28px;
-    mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 40%, transparent 100%);
-    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 40%, transparent 100%);
-    z-index: -2;
-    pointer-events: none;
-}
-
-/* Cursor spotlight — follows mouse, tinted with accent */
-#hero::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(
-        420px circle at var(--mx, 50%) var(--my, 50%),
-        rgba(190, 242, 100, 0.08),
-        transparent 60%
-    );
-    z-index: -1;
-    pointer-events: none;
-    transition: background 0.2s var(--ease);
-}
+/* Hero backdrop layers removed — the click/trail FX handles the
+   delight, no need for a persistent lime spotlight on the hero. */
 
 /* Parallax-enabled hero elements respond to --px/--py */
 .hero-avatar {
