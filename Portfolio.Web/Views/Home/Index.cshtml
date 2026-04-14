@@ -71,6 +71,7 @@
 
 @section Scripts {
     <script>
+        /* Typed role rotator */
         (function () {
             const roles = [
                 "software_developer",
@@ -92,6 +93,49 @@
                     setTimeout(tick, deleting ? 1400 : 300);
                 }
             })();
+        })();
+
+        /* Cursor spotlight + parallax */
+        (function () {
+            const hero = document.getElementById("hero");
+            if (!hero || window.matchMedia("(hover: none)").matches) return;
+
+            let rafId = 0, tx = 0, ty = 0, px = 0.5, py = 0.5;
+            hero.addEventListener("mousemove", (e) => {
+                const r = hero.getBoundingClientRect();
+                tx = ((e.clientX - r.left) / r.width)  * 100;
+                ty = ((e.clientY - r.top)  / r.height) * 100;
+                px = (e.clientX - r.left) / r.width  - 0.5;
+                py = (e.clientY - r.top)  / r.height - 0.5;
+                if (!rafId) rafId = requestAnimationFrame(apply);
+            });
+            hero.addEventListener("mouseleave", () => {
+                hero.style.setProperty("--mx", "50%");
+                hero.style.setProperty("--my", "50%");
+                hero.style.setProperty("--px", 0);
+                hero.style.setProperty("--py", 0);
+            });
+
+            function apply() {
+                hero.style.setProperty("--mx", tx + "%");
+                hero.style.setProperty("--my", ty + "%");
+                hero.style.setProperty("--px", px.toFixed(3));
+                hero.style.setProperty("--py", py.toFixed(3));
+                rafId = 0;
+            }
+        })();
+
+        /* Magnetic buttons */
+        (function () {
+            document.querySelectorAll(".hero-actions a").forEach((btn) => {
+                btn.addEventListener("mousemove", (e) => {
+                    const r = btn.getBoundingClientRect();
+                    const x = e.clientX - r.left - r.width / 2;
+                    const y = e.clientY - r.top  - r.height / 2;
+                    btn.style.transform = `translate(${x * 0.15}px, ${y * 0.2}px)`;
+                });
+                btn.addEventListener("mouseleave", () => { btn.style.transform = ""; });
+            });
         })();
     </script>
 }

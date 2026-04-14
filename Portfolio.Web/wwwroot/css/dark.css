@@ -196,21 +196,85 @@ p { margin: 0 0 1rem; color: var(--muted); }
 /* Remove template underline animation */
 #navbar a::after { display: none !important; }
 
-/* Dropdowns */
-#navbar .dropdown ul {
-    background: var(--surface) !important;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
+/* Dropdowns — hidden by default, fade in on hover */
+#navbar .dropdown { position: relative; }
+
+#navbar .dropdown > ul {
+    position: absolute;
+    top: calc(100% + 0.25rem);
+    left: 0;
+    min-width: 200px;
+    margin: 0;
     padding: 0.375rem !important;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+    background: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius-sm) !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity 0.15s var(--ease), transform 0.15s var(--ease), visibility 0.15s;
+    z-index: 100;
 }
+
+#navbar .dropdown:hover > ul,
+#navbar .dropdown:focus-within > ul {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+#navbar .dropdown ul li { width: 100%; }
 
 #navbar .dropdown ul li a {
+    display: block !important;
+    width: 100%;
     padding: 0.5rem 0.75rem !important;
     border-radius: var(--radius-xs);
+    white-space: nowrap;
+    font-size: 0.8125rem !important;
 }
 
-#navbar .dropdown ul li a:hover { background: var(--surface-hi); }
+#navbar .dropdown ul li a:hover { background: var(--surface-hi) !important; }
+
+/* Nested dropdown — opens to the right */
+#navbar .dropdown .dropdown > ul {
+    top: -0.375rem;
+    left: calc(100% + 0.25rem);
+}
+
+#navbar .dropdown-toggle::after {
+    content: "";
+    display: inline-block;
+    width: 0.375rem;
+    height: 0.375rem;
+    margin-left: 0.375rem;
+    border: 1px solid currentColor;
+    border-top: 0;
+    border-left: 0;
+    transform: rotate(45deg) translate(-1px, -1px);
+    transition: transform 0.15s var(--ease);
+    border-radius: 1px;
+}
+
+#navbar .dropdown:hover > a.dropdown-toggle::after { transform: rotate(225deg) translate(-1px, -1px); }
+
+/* Mobile nav — stack vertically, always-open */
+.navbar-mobile .dropdown > ul {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    box-shadow: none;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin-left: 0.75rem;
+    margin-top: 0.25rem;
+}
 
 .header-social-links {
     display: flex !important;
@@ -310,11 +374,64 @@ p { margin: 0 0 1rem; color: var(--muted); }
 /* ---------- Hero ---------- */
 
 #hero {
+    position: relative;
     min-height: calc(100vh - 64px);
     padding: 7rem 0 4rem !important;
     display: flex;
     align-items: center;
     background: var(--bg) !important;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+/* Dotted grid — static background pattern, very subtle */
+#hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.04) 1px, transparent 0);
+    background-size: 28px 28px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 40%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 40%, transparent 100%);
+    z-index: -2;
+    pointer-events: none;
+}
+
+/* Cursor spotlight — follows mouse, tinted with accent */
+#hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        420px circle at var(--mx, 50%) var(--my, 50%),
+        rgba(190, 242, 100, 0.08),
+        transparent 60%
+    );
+    z-index: -1;
+    pointer-events: none;
+    transition: background 0.2s var(--ease);
+}
+
+/* Parallax-enabled hero elements respond to --px/--py */
+.hero-avatar {
+    transform: perspective(1200px)
+               rotateY(calc(var(--px, 0) * 6deg))
+               rotateX(calc(var(--py, 0) * -6deg));
+    transition: transform 0.2s var(--ease);
+    will-change: transform;
+}
+
+.hero-intro {
+    transform: translate(calc(var(--px, 0) * -4px), calc(var(--py, 0) * -4px));
+    transition: transform 0.3s var(--ease);
+}
+
+/* Magnetic buttons — small cursor-tracked nudge */
+.hero-actions .btn-primary-grad,
+.hero-actions .btn-ghost {
+    position: relative;
+    transition: transform 0.15s var(--ease), background 0.15s var(--ease), border-color 0.15s var(--ease);
+    will-change: transform;
 }
 
 #hero .container,
