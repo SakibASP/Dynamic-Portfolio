@@ -51,7 +51,9 @@ html {
 
 body {
     margin: 0;
-    background: var(--bg);
+    /* Transparent so the fixed backdrop layers on <body::before/::after>
+       are visible. The solid color lives on <html> as a fallback. */
+    background: transparent;
     color: var(--text);
     font-family: var(--font-sans);
     font-size: 15px;
@@ -64,39 +66,41 @@ body {
 }
 
 /* ---------- Site-wide ambient background ----------
-   - Static dotted grid faded at the edges
-   - Radial cursor spotlight tinted with the accent, updated by JS via
-     --mx / --my on <html>.
-   Both are fixed to the viewport and sit behind all content. */
+   Two fixed layers that sit BEHIND every content element:
+   1. Dotted grid — static, masked so it fades at edges
+   2. Cursor spotlight — radial lime glow tracking --mx / --my (in px,
+      set by cursorSpotlight() in site.js)
 
-html::before,
-html::after {
+   Both use z-index:-1 relative to body's stacking context. Content
+   gets position:relative + z-index:1 so it paints on top. */
+
+body::before,
+body::after {
     content: "";
     position: fixed;
     inset: 0;
     pointer-events: none;
-    z-index: 0;
+    z-index: -1;
 }
 
-/* Dotted grid backdrop */
-html::before {
-    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.035) 1px, transparent 0);
+body::before {
+    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.06) 1px, transparent 0);
     background-size: 32px 32px;
-    mask-image: radial-gradient(ellipse 70% 60% at 50% 35%, #000 40%, transparent 95%);
-    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 35%, #000 40%, transparent 95%);
+    opacity: 0.8;
+    mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, #000 45%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, #000 45%, transparent 100%);
 }
 
-/* Cursor spotlight — follows the mouse */
-html::after {
+body::after {
     background: radial-gradient(
-        600px circle at var(--mx, 50%) var(--my, 50%),
-        rgba(190, 242, 100, 0.07),
+        720px circle at var(--mx, 50%) var(--my, 50%),
+        rgba(190, 242, 100, 0.18),
+        rgba(190, 242, 100, 0.06) 25%,
         transparent 55%
     );
-    transition: background 0.15s var(--ease);
 }
 
-/* Everything above the background sits on z-index 1+ */
+/* Everything above the backdrop */
 #header,
 .myContainer,
 #footer,
@@ -105,9 +109,9 @@ html::after {
 
 #header { z-index: 2; }
 
-/* Hero keeps its own stronger spotlight + parallax as before,
-   but since body has one now, drop hero's duplicate dotted grid. */
-#hero::before { display: none; }
+/* Hero keeps its own effect — drop the local dotted grid so it doesn't
+   double with the body-level one. */
+#hero::before { display: none !important; }
 
 ::selection { background: var(--accent); color: var(--accent-ink); }
 
@@ -115,9 +119,11 @@ img, svg { display: block; max-width: 100%; }
 
 a { color: inherit; text-decoration: none; }
 
-/* Kill iPortfolio backgrounds / gradients globally */
+/* CRITICAL: sections must be TRANSPARENT, not solid --bg. A solid
+   background on each section would cover the fixed backdrop and hide
+   the spotlight. */
 section, main, #main, #hero, #hero:before,
-.about, .skills, .resume, .contact { background: var(--bg) !important; }
+.about, .skills, .resume, .contact { background: transparent !important; }
 
 section { padding: 5rem 0 !important; position: relative; }
 
