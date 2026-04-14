@@ -1,144 +1,82 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Portfolio.Interfaces;
-using Portfolio.Models;
-using Portfolio.Utils;
+using Portfolio.Application.Common;
+using Portfolio.Application.Services;
+using Portfolio.Domain;
 using Portfolio.Web.Common;
 using Serilog;
 
 namespace Portfolio.Web.Controllers;
 
 [Authorize]
-public class EXPERIENCEController(IExperienceRepo experience) : BaseController
+public class EXPERIENCEController(IExperienceService experiences) : BaseController
 {
-    private readonly IExperienceRepo _experience = experience;
+    private readonly IExperienceService _experiences = experiences;
 
-    // GET: EXPERIENCE
-    public async Task<IActionResult> Index()
-    {
-        var experiences = await _experience.GetAllExperiencesAsync();
-          return View(experiences);
-    }
+    public async Task<IActionResult> Index() => View(await _experiences.GetAllAsync());
 
-    // GET: EXPERIENCE/Details/5
     public async Task<IActionResult> Details(int? id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
-
-        var eXPERIENCE = await _experience.GetExperienceByIdAsync(id);
-        if (eXPERIENCE == null)
-        {
-            return NotFound();
-        }
-
-        return View(eXPERIENCE);
+        if (id == null) return NotFound();
+        var item = await _experiences.GetByIdAsync(id);
+        return item == null ? NotFound() : View(item);
     }
 
-    // GET: EXPERIENCE/Create
-    public IActionResult Create()
-    {
-        return View();
-    }
+    public IActionResult Create() => View();
 
-    // POST: EXPERIENCE/Create
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    [HttpPost]
-    [ValidateAntiForgeryToken]
+    [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(EXPERIENCE eXPERIENCE)
     {
         try
         {
-            var saveParameter = GenerateParameter.SingleModel(eXPERIENCE, User.Identity!.Name, BdCurrentTime);
-            await _experience.AddExperienceAsync(saveParameter);
+            await _experiences.CreateAsync(eXPERIENCE, CurrentUserName);
             return RedirectToAction(nameof(Index));
         }
-        catch (Exception ex)
-        {
-            TempData[Constant.Error] = Constant.ErrorMessage;
-            Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
-        }
+        catch (Exception ex) { LogAndFlash(ex); }
         return View(eXPERIENCE);
     }
 
-    // GET: EXPERIENCE/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
-
-        var eXPERIENCE = await _experience.GetExperienceByIdAsync(id);
-        if (eXPERIENCE == null)
-        {
-            return NotFound();
-        }
-        return View(eXPERIENCE);
+        if (id == null) return NotFound();
+        var item = await _experiences.GetByIdAsync(id);
+        return item == null ? NotFound() : View(item);
     }
 
-    // POST: EXPERIENCE/Edit/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    [HttpPost]
-    [ValidateAntiForgeryToken]
+    [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, EXPERIENCE eXPERIENCE)
     {
-        if (id != eXPERIENCE.AUTO_ID)
-        {
-            return NotFound();
-        }
-
+        if (id != eXPERIENCE.AUTO_ID) return NotFound();
         try
         {
-            var saveParameter = GenerateParameter.SingleModel(eXPERIENCE, User.Identity!.Name, BdCurrentTime);
-            await _experience.UpdateExperienceAsync(saveParameter);
+            await _experiences.UpdateAsync(eXPERIENCE, CurrentUserName);
             return RedirectToAction(nameof(Index));
         }
-        catch (Exception ex)
-        {
-            TempData[Constant.Error] = Constant.ErrorMessage;
-            Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
-        }
+        catch (Exception ex) { LogAndFlash(ex); }
         return View(eXPERIENCE);
     }
 
-    // GET: EXPERIENCE/Delete/5
     public async Task<IActionResult> Delete(int? id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
-
-        var eXPERIENCE = await _experience.GetExperienceByIdAsync(id);
-        if (eXPERIENCE == null)
-        {
-            return NotFound();
-        }
-
-        return View(eXPERIENCE);
+        if (id == null) return NotFound();
+        var item = await _experiences.GetByIdAsync(id);
+        return item == null ? NotFound() : View(item);
     }
 
-    // POST: EXPERIENCE/Delete/5
-    [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
+    [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        try
-        {
-            await _experience.RemoveExperienceAsync(id);
-        }
-        catch (Exception ex)
-        {
-            TempData[Constant.Error] = Constant.ErrorMessage;
-            Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
-        }
-
+        try { await _experiences.RemoveAsync(id); }
+        catch (Exception ex) { LogAndFlash(ex); }
         return RedirectToAction(nameof(Index));
     }
 
+    private void LogAndFlash(Exception ex)
+    {
+        TempData[Constant.Error] = Constant.ErrorMessage;
+        Log.Error(ex, "{Controller}.{Action} by {User}",
+            ControllerContext.ActionDescriptor.ControllerName,
+            ControllerContext.ActionDescriptor.ActionName,
+            CurrentUserName);
+    }
 }

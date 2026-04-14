@@ -1,60 +1,55 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Portfolio.Interfaces;
-using Portfolio.ViewModels;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using Portfolio.Application.DTOs;
+using Portfolio.Application.Services;
 using Portfolio.Web.Common;
 using Portfolio.Web.Models;
-using System.Diagnostics;
 
 namespace Portfolio.Web.Controllers;
 
-public class HomeController(IHomeRepo home, IProfileCoverRepo cover, IWebHostEnvironment environment) : BaseController
+public class HomeController(
+    IHomeService home,
+    IProfileCoverService covers,
+    IWebHostEnvironment environment) : BaseController
 {
-    private readonly IWebHostEnvironment _hostEnvironment = environment;
-    private readonly IHomeRepo _home = home;
-    private readonly IProfileCoverRepo _cover = cover;
+    private readonly IHomeService _home = home;
+    private readonly IProfileCoverService _covers = covers;
+    private readonly IWebHostEnvironment _env = environment;
 
     public async Task<IActionResult> Index()
     {
-        if (User.Identity!.IsAuthenticated)
+        if (User.Identity?.IsAuthenticated == true)
         {
-            var messageCount = await _home.GetUnreadMessagesCountAsync();
-            ViewData["Message"] = messageCount == null ? "" : messageCount.ToString();
+            var count = await _home.GetUnreadMessagesCountAsync();
+            ViewData["Message"] = count?.ToString() ?? "";
         }
 
-        var coverList = await _cover.GetAllProfileCoversAsync();
-        var cover = coverList.FirstOrDefault();
-        var filePath = Utility.GetFilePathOfCV(_hostEnvironment);
+        var cover = (await _covers.GetAllAsync()).FirstOrDefault();
 
-        ViewBag.FilePath = filePath;
+        ViewBag.FilePath = Utility.GetFilePathOfCV(_env);
         ViewBag.Name = "Zarif Jim";
         ViewBag.Bio = "I am a professional Business Analyst from Dhaka, Bangladesh";
         ViewBag.Cover = cover;
-        ViewData["rootPath"] = _hostEnvironment.WebRootPath;
-
+        ViewData["rootPath"] = _env.WebRootPath;
         return View();
     }
 
-    public IActionResult Privacy()
-    {
-        return View();
-    }
+    public IActionResult Privacy() => View();
 
     [HttpPost]
     public async Task<JsonResult> SaveLocation([FromBody] LocationRequest request)
     {
         if (request is null) return Json(new { success = false });
-        request.IPAddress = HttpContext.Connection.RemoteIpAddress!.ToString();
+
+        request.IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? string.Empty;
         request.UserAgent = HttpContext.Request.Headers.UserAgent.ToString();
-        request.OperatingSystem = Utility.GetVisitorsDeviceInfo(request.UserAgent).OperatingSystem!;
         request.VisitTime = BdCurrentTime;
-        var result = await _home.SaveLocationAsync(request);
-        if (result) return Json(new { success = true });
-        return Json(new { success = false });
+
+        var ok = await _home.SaveLocationAsync(request);
+        return Json(new { success = ok });
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-    }
+    public IActionResult Error() =>
+        View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 }

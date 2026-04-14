@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Portfolio.Models;
-using Portfolio.Repositories.Data;
-using Portfolio.Utils;
+using Microsoft.EntityFrameworkCore;
+using Portfolio.Domain;
+using Portfolio.Infrastructure.Persistence;
+using Portfolio.Application.Common;
 using Serilog;
 
 namespace Portfolio.Web.Middlewares

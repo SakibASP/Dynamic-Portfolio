@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Portfolio.Infrastructure</RootNamespace>
+    <AssemblyName>Portfolio.Infrastructure</AssemblyName>
+    <!-- INFRASTRUCTURE LAYER
+         Concrete implementations of Application abstractions: EF DbContext, Identity
+         store, repositories, SMTP adapter, ip-api.com geo adapter, UA parsing. -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="UAParser" Version="3.1.47" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Portfolio.Application\Portfolio.Application.csproj" />
+    <ProjectReference Include="..\Portfolio.Domain\Portfolio.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

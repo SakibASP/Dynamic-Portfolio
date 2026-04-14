@@ -1,160 +1,108 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Portfolio.Interfaces;
-using Portfolio.Models;
-using Portfolio.Utils;
+using Portfolio.Application.Common;
+using Portfolio.Application.Services;
+using Portfolio.Domain;
 using Portfolio.Web.Common;
 using Serilog;
 
 namespace Portfolio.Web.Controllers;
 
 [Authorize]
-public class DESCRIPTIONsController(IDescriptionRepo description, IProfileRepo profile, IDescriptionTypeRepo type) : BaseController
+public class DESCRIPTIONsController(
+    IDescriptionService descriptions,
+    IDescriptionTypeService types,
+    IProjectService projects,
+    IExperienceService experiences) : BaseController
 {
-    private readonly IDescriptionRepo _description = description;
-    private readonly IProfileRepo _profile = profile;
-    private readonly IDescriptionTypeRepo _type = type;
+    private readonly IDescriptionService _descriptions = descriptions;
+    private readonly IDescriptionTypeService _types = types;
+    private readonly IProjectService _projects = projects;
+    private readonly IExperienceService _experiences = experiences;
 
-    // GET: DESCRIPTIONs
-    public async Task<IActionResult> Index()
-    {
-        var descriptions = await _description.GetAllDescriptionsAsync();
-        return View(descriptions);
-    }
+    public async Task<IActionResult> Index() => View(await _descriptions.GetAllAsync());
 
-    // GET: DESCRIPTIONs/Details/5
     public async Task<IActionResult> Details(int? id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
-
-        var dESCRIPTION = await _description.GetDescriptionByIdAsync(id);
-        if (dESCRIPTION == null)
-        {
-            return NotFound();
-        }
-
-        return View(dESCRIPTION);
+        if (id == null) return NotFound();
+        var item = await _descriptions.GetByIdAsync(id);
+        return item == null ? NotFound() : View(item);
     }
 
-    // GET: DESCRIPTIONs/Create
     public async Task<IActionResult> Create()
     {
-        ViewData["TYPE_ID"] = new SelectList(await _type.GetAllDescriptionTypesAsync(), "AUTO_ID", "TYPE");
-        ViewData["PROJECT_ID"] = new SelectList(await _profile.GetProjectsAsync(), "AUTO_ID", "PROJECT_NAME");
-        ViewData["EXPERIENCE_ID"] = new SelectList(await _profile.GetExperiencesAsync(), "AUTO_ID", "INSTITUTE");
+        await PopulateLookupsAsync(null);
         return View();
     }
 
-    // POST: DESCRIPTIONs/Create
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    [HttpPost]
-    [ValidateAntiForgeryToken]
+    [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(DESCRIPTION dESCRIPTION)
     {
         try
         {
-            var saveParameter = GenerateParameter.SingleModel<DESCRIPTION>(dESCRIPTION, User.Identity!.Name, BdCurrentTime);
-            await _description.AddDescriptionAsync(saveParameter);
+            await _descriptions.CreateAsync(dESCRIPTION, CurrentUserName);
             return RedirectToAction(nameof(Index));
         }
-        catch (Exception ex)
-        {
-            TempData[Constant.Error] = Constant.ErrorMessage;
-            Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
-        }
+        catch (Exception ex) { LogAndFlash(ex); }
 
-        ViewData["TYPE_ID"] = new SelectList(await _type.GetAllDescriptionTypesAsync(), "AUTO_ID", "TYPE", dESCRIPTION.TYPE_ID);
-        ViewData["PROJECT_ID"] = new SelectList(await _profile.GetProjectsAsync(), "AUTO_ID", "PROJECT_NAME", dESCRIPTION.PROJECT_ID);
-        ViewData["EXPERIENCE_ID"] = new SelectList(await _profile.GetExperiencesAsync(), "AUTO_ID", "INSTITUTE", dESCRIPTION.EXPERIENCE_ID);
+        await PopulateLookupsAsync(dESCRIPTION);
         return View(dESCRIPTION);
     }
 
-    // GET: DESCRIPTIONs/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
+        if (id == null) return NotFound();
+        var item = await _descriptions.GetByIdAsync(id);
+        if (item == null) return NotFound();
 
-        var dESCRIPTION = await _description.GetDescriptionByIdAsync(id);
-        if (dESCRIPTION == null)
-        {
-            return NotFound();
-        }
-
-        ViewData["TYPE_ID"] = new SelectList(await _type.GetAllDescriptionTypesAsync(), "AUTO_ID", "TYPE", dESCRIPTION.TYPE_ID);
-        ViewData["PROJECT_ID"] = new SelectList(await _profile.GetProjectsAsync(), "AUTO_ID", "PROJECT_NAME", dESCRIPTION.PROJECT_ID);
-        ViewData["EXPERIENCE_ID"] = new SelectList(await _profile.GetExperiencesAsync(), "AUTO_ID", "INSTITUTE", dESCRIPTION.EXPERIENCE_ID);
-        return View(dESCRIPTION);
+        await PopulateLookupsAsync(item);
+        return View(item);
     }
 
-    // POST: DESCRIPTIONs/Edit/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    [HttpPost]
-    [ValidateAntiForgeryToken]
+    [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, DESCRIPTION dESCRIPTION)
     {
-        if (id != dESCRIPTION.AUTO_ID)
-        {
-            return NotFound();
-        }
-
+        if (id != dESCRIPTION.AUTO_ID) return NotFound();
         try
         {
-            var saveParameter = GenerateParameter.SingleModel<DESCRIPTION>(dESCRIPTION, User.Identity!.Name, BdCurrentTime);
-            await _description.UpdateDescriptionAsync(saveParameter);
+            await _descriptions.UpdateAsync(dESCRIPTION, CurrentUserName);
             return RedirectToAction(nameof(Index));
         }
-        catch (Exception ex)
-        {
-            TempData[Constant.Error] = Constant.ErrorMessage;
-            Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
-        }
+        catch (Exception ex) { LogAndFlash(ex); }
 
-        ViewData["TYPE_ID"] = new SelectList(await _type.GetAllDescriptionTypesAsync(), "AUTO_ID", "TYPE", dESCRIPTION.TYPE_ID);
-        ViewData["PROJECT_ID"] = new SelectList(await _profile.GetProjectsAsync(), "AUTO_ID", "PROJECT_NAME", dESCRIPTION.PROJECT_ID);
-        ViewData["EXPERIENCE_ID"] = new SelectList(await _profile.GetExperiencesAsync(), "AUTO_ID", "INSTITUTE", dESCRIPTION.EXPERIENCE_ID);
+        await PopulateLookupsAsync(dESCRIPTION);
         return View(dESCRIPTION);
     }
 
-    // GET: DESCRIPTIONs/Delete/5
     public async Task<IActionResult> Delete(int? id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
-
-        var dESCRIPTION = await _description.GetDescriptionByIdAsync(id);
-        if (dESCRIPTION == null)
-        {
-            return NotFound();
-        }
-
-        return View(dESCRIPTION);
+        if (id == null) return NotFound();
+        var item = await _descriptions.GetByIdAsync(id);
+        return item == null ? NotFound() : View(item);
     }
 
-    // POST: DESCRIPTIONs/Delete/5
-    [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
+    [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        try
-        {
-            await _description.RemoveDescriptionAsync(id);
-        }
-        catch (Exception ex)
-        {
-            TempData[Constant.Error] = Constant.ErrorMessage;
-            Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
-        }
+        try { await _descriptions.RemoveAsync(id); }
+        catch (Exception ex) { LogAndFlash(ex); }
         return RedirectToAction(nameof(Index));
+    }
+
+    private async Task PopulateLookupsAsync(DESCRIPTION? current)
+    {
+        ViewData["TYPE_ID"]       = new SelectList(await _types.GetAllAsync(),       "AUTO_ID", "TYPE",         current?.TYPE_ID);
+        ViewData["PROJECT_ID"]    = new SelectList(await _projects.GetAllAsync(),    "AUTO_ID", "PROJECT_NAME", current?.PROJECT_ID);
+        ViewData["EXPERIENCE_ID"] = new SelectList(await _experiences.GetAllAsync(), "AUTO_ID", "INSTITUTE",    current?.EXPERIENCE_ID);
+    }
+
+    private void LogAndFlash(Exception ex)
+    {
+        TempData[Constant.Error] = Constant.ErrorMessage;
+        Log.Error(ex, "{Controller}.{Action} by {User}",
+            ControllerContext.ActionDescriptor.ControllerName,
+            ControllerContext.ActionDescriptor.ActionName,
+            CurrentUserName);
     }
 }

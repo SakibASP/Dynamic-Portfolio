@@ -1,46 +1,43 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Portfolio.Repositories.Data;
-using Portfolio.Utils;
-using Portfolio.Web.Data;
+using Microsoft.Extensions.DependencyInjection;
+using Portfolio.Application;
+using Portfolio.Application.Common;
+using Portfolio.Infrastructure;
+using Portfolio.Web.Filters;
 
-namespace Portfolio.Web.ServiceExtention
+namespace Portfolio.Web.ServiceExtention;
+
+/// <summary>
+/// Presentation-layer composition root. Wires Application (use-case services) and
+/// Infrastructure (EF + Identity + adapters) via their own AddApplication /
+/// AddInfrastructure extensions, then layers on MVC-only concerns.
+/// </summary>
+public static class ConfigureExtention
 {
-    public static class ConfigureExtention
+    public static IServiceCollection AddConfigurations(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        public static IServiceCollection AddConfigurations(this IServiceCollection serviceCollection, IConfiguration configuration)
+        services.AddInfrastructure(configuration);
+        services.AddApplication();
+
+        services.AddDatabaseDeveloperPageExceptionFilter();
+
+        services.AddControllersWithViews(options =>
         {
-            //getting the connection string
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
-            connectionString = EncryptionHelper.Decrypt(connectionString);
+            // Global action filter; replaces the 90-line god-method that used to sit
+            // on BaseController. Delegates to IVisitorTrackingService.
+            options.Filters.Add<VisitorTrackingFilter>();
+        });
+        services.AddRazorPages();
 
-            //adding dbContext for crud operations
-            serviceCollection.AddDbContext<PortfolioDbContext>(options =>
-                options.UseSqlServer(connectionString));
+        services.AddSession(options =>
+        {
+            options.Cookie.Name = Constant.portfolionSession;
+            options.Cookie.HttpOnly = true;
+            options.Cookie.IsEssential = true;
+        });
 
-            //adding dbContext for identity purpose
-            serviceCollection.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString));
-            serviceCollection.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-            
-            //setting up error page
-            serviceCollection.AddDatabaseDeveloperPageExceptionFilter();
-
-            // Add services to the container.
-            serviceCollection.AddControllersWithViews();
-            serviceCollection.AddMvc();
-
-            //Session
-            serviceCollection.AddSession(options =>
-            {
-                options.Cookie.Name = Constant.portfolionSession;
-                //options.IdleTimeout = TimeSpan.FromMinutes(30);
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
-            });
-
-            return serviceCollection;
-        }
+        services.AddScoped<VisitorTrackingFilter>();
+        return services;
     }
 }

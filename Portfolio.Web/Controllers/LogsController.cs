@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Portfolio.Utils;
-using Portfolio.ViewModels;
+using Portfolio.Application.Common;
+using Portfolio.Application.DTOs;
 using Portfolio.Web.Common;
 using Serilog;
 

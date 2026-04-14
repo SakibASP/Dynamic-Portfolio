@@ -1,162 +1,94 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Portfolio.Interfaces;
-using Portfolio.Models;
-using Portfolio.Utils;
+using Portfolio.Application.Common;
+using Portfolio.Application.Services;
+using Portfolio.Domain;
 using Portfolio.Web.Common;
 using Serilog;
 
 namespace Portfolio.Web.Controllers;
 
-public class PROJECTSController(IProjectRepo project) : BaseController
+public class PROJECTSController(IProjectService projects) : BaseController
 {
-    private readonly IProjectRepo _project = project;
+    private readonly IProjectService _projects = projects;
 
-    // GET: SERVICES
     [Authorize]
-    public async Task<IActionResult> Index()
-    {
-        var projects = await _project.GetAllProjectsAsync();
-        return View(projects);
-    }
+    public async Task<IActionResult> Index() => View(await _projects.GetAllAsync());
 
-    // GET: SERVICES/Details/5
     public async Task<IActionResult> Details(int? id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
+        if (id == null) return NotFound();
+        var project = await _projects.GetByIdAsync(id);
+        if (project == null) return NotFound();
 
-        var PROJECTS = await _project.GetProjectByIdAsync(id);
-        if (PROJECTS == null)
-        {
-            return NotFound();
-        }
-        ViewData["DESCRIPTIONs"] = await _project.GetDescriptionByProjectIdAsync(id);
-
-        return View(PROJECTS);
+        ViewData["DESCRIPTIONs"] = await _projects.GetDescriptionsByProjectIdAsync(id);
+        return View(project);
     }
 
     [Authorize]
-    // GET: PROJECTS/Create
-    public IActionResult Create()
-    {
-        return View();
-    }
+    public IActionResult Create() => View();
 
-    // POST: PROJECTS/Create
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    [HttpPost]
-    [Authorize]
-    [ValidateAntiForgeryToken]
+    [HttpPost, Authorize, ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(PROJECTS pROJECTS)
     {
         try
         {
-            var imgFile = Request.Form.Files.FirstOrDefault();
-            if (imgFile != null)
-            {
+            if (Request.Form.Files.FirstOrDefault() != null)
                 pROJECTS.LOGO = await Utility.GetImageBytes(pROJECTS.LOGO, Request.Form.Files);
-            }
 
-            var saveParameter = GenerateParameter.SingleModel(pROJECTS, User.Identity?.Name, BdCurrentTime);
-            await _project.AddProjectAsync(saveParameter);
-
+            await _projects.CreateAsync(pROJECTS, CurrentUserName);
             return RedirectToAction(nameof(Index));
         }
-        catch (Exception ex)
-        {
-            TempData[Constant.Error] = Constant.ErrorMessage;
-            Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
-        }
+        catch (Exception ex) { LogAndFlash(ex); }
         return View(pROJECTS);
     }
 
-    // GET: SERVICES/Edit/5
     [Authorize]
     public async Task<IActionResult> Edit(int? id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
-
-        var PROJECTS = await _project.GetProjectByIdAsync(id);
-        if (PROJECTS == null)
-        {
-            return NotFound();
-        }
-        return View(PROJECTS);
+        if (id == null) return NotFound();
+        var project = await _projects.GetByIdAsync(id);
+        return project == null ? NotFound() : View(project);
     }
 
-    // POST: PROJECTS/Edit/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    [HttpPost]
-    [Authorize]
-    [ValidateAntiForgeryToken]
+    [HttpPost, Authorize, ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, PROJECTS pROJECTS)
     {
-        if (id != pROJECTS.AUTO_ID)
-        {
-            return NotFound();
-        }
+        if (id != pROJECTS.AUTO_ID) return NotFound();
         try
         {
-            var imgFile = Request.Form.Files.FirstOrDefault();
-            if (imgFile != null)
-            {
+            if (Request.Form.Files.FirstOrDefault() != null)
                 pROJECTS.LOGO = await Utility.GetImageBytes(pROJECTS.LOGO, Request.Form.Files);
-            }
 
-            var saveParameter = GenerateParameter.SingleModel(pROJECTS, User.Identity?.Name, BdCurrentTime);
-            await _project.UpdateProjectAsync(saveParameter);
+            await _projects.UpdateAsync(pROJECTS, CurrentUserName);
             return RedirectToAction(nameof(Index));
         }
-        catch (Exception ex)
-        {
-            TempData[Constant.Error] = Constant.ErrorMessage;
-            Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
-        }
+        catch (Exception ex) { LogAndFlash(ex); }
         return View(pROJECTS);
     }
 
-    // GET: PROJECTS/Delete/5
     [Authorize]
     public async Task<IActionResult> Delete(int? id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
-
-        var PROJECTS = await _project.GetProjectByIdAsync(id);
-        if (PROJECTS == null)
-        {
-            return NotFound();
-        }
-
-        return View(PROJECTS);
+        if (id == null) return NotFound();
+        var project = await _projects.GetByIdAsync(id);
+        return project == null ? NotFound() : View(project);
     }
 
-    // POST: PROJECTS/Delete/5
-    [HttpPost, ActionName("Delete")]
-    [Authorize]
-    [ValidateAntiForgeryToken]
+    [HttpPost, ActionName("Delete"), Authorize, ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        try
-        {
-            await _project.RemoveProjectAsync(id);
-        }
-        catch (Exception ex)
-        {
-            TempData[Constant.Error] = Constant.ErrorMessage;
-            Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
-        }
-
+        try { await _projects.RemoveAsync(id); }
+        catch (Exception ex) { LogAndFlash(ex); }
         return RedirectToAction(nameof(Index));
+    }
+
+    private void LogAndFlash(Exception ex)
+    {
+        TempData[Constant.Error] = Constant.ErrorMessage;
+        Log.Error(ex, "{Controller}.{Action} by {User}",
+            ControllerContext.ActionDescriptor.ControllerName,
+            ControllerContext.ActionDescriptor.ActionName,
+            CurrentUserName);
     }
 }
