@@ -7,28 +7,8 @@ window.addEventListener('load', function () {
     typeHeadingWriter();
     toggleFilterButton();
     getLocation();
-    cursorSpotlight();
     //setInterval(changeHeadingColor, 5000); // 5000 milliseconds = 5 seconds
 });
-
-/* Site-wide cursor spotlight — updates the --mx / --my CSS custom
-   properties on <html> so dark.css can render the radial gradient that
-   tracks the mouse. Skips on touch devices; rAF-throttled. */
-const cursorSpotlight = function () {
-    if (window.matchMedia("(hover: none)").matches) return;
-    const root = document.documentElement;
-    let x = 0, y = 0, ticking = false;
-    function apply() {
-        root.style.setProperty('--mx', x + 'px');
-        root.style.setProperty('--my', y + 'px');
-        ticking = false;
-    }
-    window.addEventListener('mousemove', (e) => {
-        x = e.clientX;
-        y = e.clientY;
-        if (!ticking) { requestAnimationFrame(apply); ticking = true; }
-    }, { passive: true });
-};
 
 //Type writing element
 const typeHeadingWriter = function () {

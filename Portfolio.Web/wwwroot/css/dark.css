@@ -51,9 +51,7 @@ html {
 
 body {
     margin: 0;
-    /* Transparent so the fixed backdrop layers on <body::before/::after>
-       are visible. The solid color lives on <html> as a fallback. */
-    background: transparent;
+    background: var(--bg);
     color: var(--text);
     font-family: var(--font-sans);
     font-size: 15px;
@@ -61,57 +59,7 @@ body {
     font-feature-settings: "ss01", "cv11";
     -webkit-font-smoothing: antialiased;
     letter-spacing: -0.005em;
-    position: relative;
-    min-height: 100vh;
 }
-
-/* ---------- Site-wide ambient background ----------
-   Two fixed layers that sit BEHIND every content element:
-   1. Dotted grid — static, masked so it fades at edges
-   2. Cursor spotlight — radial lime glow tracking --mx / --my (in px,
-      set by cursorSpotlight() in site.js)
-
-   Both use z-index:-1 relative to body's stacking context. Content
-   gets position:relative + z-index:1 so it paints on top. */
-
-body::before,
-body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: -1;
-}
-
-body::before {
-    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.06) 1px, transparent 0);
-    background-size: 32px 32px;
-    opacity: 0.8;
-    mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, #000 45%, transparent 100%);
-    -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, #000 45%, transparent 100%);
-}
-
-body::after {
-    background: radial-gradient(
-        720px circle at var(--mx, 50%) var(--my, 50%),
-        rgba(190, 242, 100, 0.18),
-        rgba(190, 242, 100, 0.06) 25%,
-        transparent 55%
-    );
-}
-
-/* Everything above the backdrop */
-#header,
-.myContainer,
-#footer,
-#preloader,
-.back-to-top { position: relative; z-index: 1; }
-
-#header { z-index: 2; }
-
-/* Hero keeps its own effect — drop the local dotted grid so it doesn't
-   double with the body-level one. */
-#hero::before { display: none !important; }
 
 ::selection { background: var(--accent); color: var(--accent-ink); }
 
@@ -119,11 +67,9 @@ img, svg { display: block; max-width: 100%; }
 
 a { color: inherit; text-decoration: none; }
 
-/* CRITICAL: sections must be TRANSPARENT, not solid --bg. A solid
-   background on each section would cover the fixed backdrop and hide
-   the spotlight. */
+/* Kill iPortfolio backgrounds / gradients globally */
 section, main, #main, #hero, #hero:before,
-.about, .skills, .resume, .contact { background: transparent !important; }
+.about, .skills, .resume, .contact { background: var(--bg) !important; }
 
 section { padding: 5rem 0 !important; position: relative; }
 
