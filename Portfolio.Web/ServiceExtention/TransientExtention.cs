@@ -1,15 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity.UI.Services;
-using Portfolio.Web.Common;
+namespace Portfolio.Web.ServiceExtention;
 
-namespace Portfolio.Web.ServiceExtention
+/// <summary>
+/// Web-layer transient registrations. IEmailSender is registered inside
+/// <see cref="Portfolio.Infrastructure.InfrastructureServiceCollectionExtensions.AddInfrastructure"/>.
+/// </summary>
+public static class TransientExtention
 {
-    public static class TransientExtention
+    public static IServiceCollection AddAllTransient(this IServiceCollection services)
     {
-        public static IServiceCollection AddAllTransient(this IServiceCollection serviceCollection)
-        {
-            serviceCollection.AddTransient<IEmailSender, SendEmail>();
-
-            return serviceCollection;
-        }
+        return services;
     }
 }

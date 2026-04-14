@@ -1,143 +1,82 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Portfolio.Interfaces;
-using Portfolio.Models;
-using Portfolio.Utils;
+using Portfolio.Application.Common;
+using Portfolio.Application.Services;
+using Portfolio.Domain;
 using Portfolio.Web.Common;
 using Serilog;
 
 namespace Portfolio.Web.Controllers;
 
 [Authorize]
-public class MY_SKILLController(ISkillsRepo skills) : BaseController
+public class MY_SKILLController(ISkillsService skills) : BaseController
 {
-    private readonly ISkillsRepo _skills = skills;
+    private readonly ISkillsService _skills = skills;
 
-    // GET: MY_SKILL
-    public async Task<IActionResult> Index()
-    {
-        var skills = await _skills.GetAllSkillsAsync();
-        return View(skills);
-    }
+    public async Task<IActionResult> Index() => View(await _skills.GetAllAsync());
 
-    // GET: MY_SKILL/Details/5
     public async Task<IActionResult> Details(int? id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
-
-        var mY_SKILLS = await _skills.GetSkillByIdAsync(id);
-        if (mY_SKILLS == null)
-        {
-            return NotFound();
-        }
-
-        return View(mY_SKILLS);
+        if (id == null) return NotFound();
+        var item = await _skills.GetByIdAsync(id);
+        return item == null ? NotFound() : View(item);
     }
 
-    // GET: MY_SKILL/Create
-    public IActionResult Create()
-    {
-        return View();
-    }
+    public IActionResult Create() => View();
 
-    // POST: MY_SKILL/Create
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    [HttpPost]
-    [ValidateAntiForgeryToken]
+    [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(MY_SKILLS mY_SKILLS)
     {
         try
         {
-            var saveParameter = GenerateParameter.SingleModel(mY_SKILLS, User.Identity!.Name, BdCurrentTime);
-            await _skills.AddSkillAsync(saveParameter);
+            await _skills.CreateAsync(mY_SKILLS, CurrentUserName);
             return RedirectToAction(nameof(Index));
         }
-        catch (Exception ex)
-        {
-            TempData[Constant.Error] = Constant.ErrorMessage;
-            Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
-        }
+        catch (Exception ex) { LogAndFlash(ex); }
         return View(mY_SKILLS);
     }
 
-    // GET: MY_SKILL/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
-
-        var mY_SKILLS = await _skills.GetSkillByIdAsync(id);
-        if (mY_SKILLS == null)
-        {
-            return NotFound();
-        }
-        return View(mY_SKILLS);
+        if (id == null) return NotFound();
+        var item = await _skills.GetByIdAsync(id);
+        return item == null ? NotFound() : View(item);
     }
 
-    // POST: MY_SKILL/Edit/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    [HttpPost]
-    [ValidateAntiForgeryToken]
+    [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, MY_SKILLS mY_SKILLS)
     {
-        if (id != mY_SKILLS.AUTO_ID)
-        {
-            return NotFound();
-        }
-
+        if (id != mY_SKILLS.AUTO_ID) return NotFound();
         try
         {
-            var saveParameter = GenerateParameter.SingleModel(mY_SKILLS, User.Identity!.Name, BdCurrentTime);
-            await _skills.UpdateSkillAsync(saveParameter);
+            await _skills.UpdateAsync(mY_SKILLS, CurrentUserName);
             return RedirectToAction(nameof(Index));
         }
-        catch (Exception ex)
-        {
-            TempData[Constant.Error] = Constant.ErrorMessage;
-            Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
-        }
+        catch (Exception ex) { LogAndFlash(ex); }
         return View(mY_SKILLS);
     }
 
-    // GET: MY_SKILL/Delete/5
     public async Task<IActionResult> Delete(int? id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
-
-        var mY_SKILLS = await _skills.GetSkillByIdAsync(id);
-        if (mY_SKILLS == null)
-        {
-            return NotFound();
-        }
-
-        return View(mY_SKILLS);
+        if (id == null) return NotFound();
+        var item = await _skills.GetByIdAsync(id);
+        return item == null ? NotFound() : View(item);
     }
 
-    // POST: MY_SKILL/Delete/5
-    [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
+    [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        try
-        {
-            await _skills.RemoveSkillAsync(id);
-        }
-        catch (Exception ex)
-        {
-            TempData[Constant.Error] = Constant.ErrorMessage;
-            Log.Error(ex, $"I am from {ControllerContext.ActionDescriptor.ControllerName} {ControllerContext.ActionDescriptor.MethodInfo.Name}... {User.Identity?.Name}");
-        }
-
+        try { await _skills.RemoveAsync(id); }
+        catch (Exception ex) { LogAndFlash(ex); }
         return RedirectToAction(nameof(Index));
+    }
+
+    private void LogAndFlash(Exception ex)
+    {
+        TempData[Constant.Error] = Constant.ErrorMessage;
+        Log.Error(ex, "{Controller}.{Action} by {User}",
+            ControllerContext.ActionDescriptor.ControllerName,
+            ControllerContext.ActionDescriptor.ActionName,
+            CurrentUserName);
     }
 }

@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm -f \"Portfolio.Web/Common/SendEmail.cs\" \"Portfolio.Web/Data/ApplicationDbContext.cs\")",
+      "Bash(rmdir \"Portfolio.Web/Data\")",
+      "Bash(dotnet build:*)",
+      "Bash(mv Portfolio.Web Portfolio.Presentation)",
+      "Bash(mv Portfolio.Presentation/Portfolio.Web.csproj Portfolio.Presentation/Portfolio.Presentation.csproj)",
+      "Bash(mv Portfolio.Presentation/Portfolio.Web.csproj.user Portfolio.Presentation/Portfolio.Presentation.csproj.user)",
+      "Bash(mv Portfolio.Domain/Portfolio.Models.csproj Portfolio.Domain/Portfolio.Domain.csproj)",
+      "Bash(mv Portfolio.Infrastructure/Portfolio.Repositories.csproj Portfolio.Infrastructure/Portfolio.Infrastructure.csproj)",
+      "Bash(rm -rf Portfolio.Web/bin Portfolio.Web/obj)",
+      "Bash(powershell -NoProfile -Command 'Get-Process | Where-Object {$_.Path -like '\\\\''*Portfolio.Web*'\\\\''} | Select-Object ProcessName,Id,Path')",
+      "Bash(powershell -NoProfile -Command \"Rename-Item -Path 'Portfolio.Web' -NewName 'Portfolio.Presentation'\")",
+      "Bash(powershell -NoProfile -Command \"Get-Process dotnet,devenv,msbuild,ServiceHub.* -ErrorAction SilentlyContinue | Select-Object ProcessName,Id\")",
+      "Bash(mv Portfolio.Interfaces/IVisitorTrackingService.cs Portfolio.Application/Abstractions/Infrastructure/)",
+      "Bash(mv Portfolio.Interfaces/IGeoLocationClient.cs Portfolio.Application/Abstractions/Infrastructure/)",
+      "Bash(mv Portfolio.ViewModels/GeoLocation.cs Portfolio.Application/DTOs/)",
+      "Bash(mv Portfolio.ViewModels/*.cs Portfolio.Application/DTOs/)",
+      "Bash(mv Portfolio.Utils/*.cs Portfolio.Application/Common/)",
+      "Bash(rm -rf Portfolio.Interfaces Portfolio.ViewModels)",
+      "Bash(rm -rf Portfolio.Utils/bin Portfolio.Utils/obj Portfolio.Utils/Portfolio.Utils.csproj)",
+      "Bash(powershell -NoProfile -Command ':*)",
+      "Bash(rm -rf Portfolio.Domain/bin Portfolio.Domain/obj Portfolio.Application/bin Portfolio.Application/obj Portfolio.Infrastructure/bin Portfolio.Infrastructure/obj Portfolio.Web/bin Portfolio.Web/obj)",
+      "Bash(dotnet restore:*)"
+    ]
+  }
+}

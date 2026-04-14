@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Portfolio.Application</RootNamespace>
+    <AssemblyName>Portfolio.Application</AssemblyName>
+    <!-- APPLICATION LAYER
+         Use-case services, abstractions (repo + infra contracts), DTOs, and shared
+         domain-adjacent helpers (timezone, encryption, request envelopes).
+         Depends ONLY on Domain + minimal framework abstractions. No EF, no HTTP,
+         no ASP.NET MVC. -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.2" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Portfolio.Domain\Portfolio.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

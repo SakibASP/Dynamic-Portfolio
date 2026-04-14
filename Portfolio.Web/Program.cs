@@ -3,7 +3,7 @@ using Portfolio.Web.ServiceExtention;
 using Serilog.Events;
 using Serilog;
 using UAParser;
-using Portfolio.Utils;
+using Portfolio.Application.Common;
 
 //Creating Serilog configuration
 Log.Logger = new LoggerConfiguration()

@@ -5,6 +5,11 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-Portfolio-bdc3f6f3-1103-4e99-acca-e1b64b295cda</UserSecretsId>
+    <!-- PRESENTATION LAYER (ASP.NET Core MVC host)
+         Controllers, Razor Views, Identity UI, filters, middleware, DI composition root.
+         Depends on Application (contracts + services) and, as a pragmatic composition
+         root, on Infrastructure (to call AddInfrastructure). No direct reference to
+         concrete repositories — controllers resolve everything via interfaces. -->
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,9 +22,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="10.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -37,11 +40,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Portfolio.Interfaces\Portfolio.Interfaces.csproj" />
-    <ProjectReference Include="..\Portfolio.Models\Portfolio.Models.csproj" />
-    <ProjectReference Include="..\Portfolio.Repositories\Portfolio.Repositories.csproj" />
-    <ProjectReference Include="..\Portfolio.Utils\Portfolio.Utils.csproj" />
-    <ProjectReference Include="..\Portfolio.ViewModels\Portfolio.ViewModels.csproj" />
+    <ProjectReference Include="..\Portfolio.Application\Portfolio.Application.csproj" />
+    <ProjectReference Include="..\Portfolio.Domain\Portfolio.Domain.csproj" />
+    <ProjectReference Include="..\Portfolio.Infrastructure\Portfolio.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,22 +50,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="C:\Users\Programmer\.nuget\packages\tesseract\5.2.0\build\\..\x64\leptonica-1.82.0.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="C:\Users\Programmer\.nuget\packages\tesseract\5.2.0\build\\..\x64\tesseract50.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="C:\Users\Programmer\.nuget\packages\tesseract\5.2.0\build\\..\x86\leptonica-1.82.0.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="C:\Users\Programmer\.nuget\packages\tesseract\5.2.0\build\\..\x86\tesseract50.dll" />
   </ItemGroup>
 
 </Project>
