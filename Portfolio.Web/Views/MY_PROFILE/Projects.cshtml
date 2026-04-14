@@ -3,72 +3,46 @@
 
 @{
     ViewData["Title"] = "Projects";
-    MY_PROFILE? mY_PROFILEs = ViewData["PROFILES"] as MY_PROFILE;
-    List<PROJECTS>? sERVICEs = ViewData["PROJECTS"] as List<PROJECTS>;
+    MY_PROFILE? profile = ViewData["PROFILES"] as MY_PROFILE;
+    List<PROJECTS>? projects = ViewData["PROJECTS"] as List<PROJECTS>;
 }
 
-<style>
-    #myTxt {
-        width: 200px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-</style>
-
 <main id="main">
-
-    <!-- ======= Services Section ======= -->
     <section>
-        <div class="container" data-aos="fade-up">
+        <div class="container">
+            <div class="section-title">
+                <span class="eyebrow">Selected work</span>
+                <h2>Projects</h2>
+                @if (profile != null && !string.IsNullOrWhiteSpace(profile.DES_1)) { <p>@profile.DES_1</p> }
+            </div>
 
-            @if (sERVICEs != null)
+            @if (projects != null && projects.Any())
             {
-                <div class="section-title">
-                    <h2 id="changing-heading">Projects</h2>
-                    @if (mY_PROFILEs != null)
+                <div class="project-grid">
+                    @foreach (var (item, idx) in projects.Select((p, i) => (p, i)))
                     {
-                        <p>@mY_PROFILEs.DES_1</p>
-                    }
-                </div>
-
-                <div class="row">
-                    @if (sERVICEs != null)
-                    {
-                        foreach (var item in sERVICEs)
-                        {
-                            @* @Html.HiddenFor(x=>item.DESCRIPTION_1,new{ @id = "desc"}) *@
-                            <div id="forTitle" title="project" class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
-                                <div class="card" style="width: 18rem;">
-                                    <img class="img-thumbnail" style="width:300px;height:150px" src="data:ImageData;base64,@System.Convert.ToBase64String(@item.LOGO)" />
-                                    <div class="card-body">
-                                        <h5 id="myTxt" class="card-title">@item.PROJECT_NAME</h5>
-                                        @* <p id="myTxt" class="card-text">@item.DESCRIPTION_1</p> *@
-                                        <a asp-action="Details" asp-controller="PROJECTS" asp-route-id="@item.AUTO_ID" class="btn btn-primary">View Details</a>
-                                    </div>
-                                </div>
+                        <article class="project-card" data-aos="fade-up" data-aos-delay="@(idx * 60)">
+                            <div class="thumb">
+                                @if (item.LOGO != null && item.LOGO.Length > 0)
+                                {
+                                    <img src="data:image/*;base64,@System.Convert.ToBase64String(item.LOGO)" alt="@item.PROJECT_NAME" />
+                                }
                             </div>
-                        }
+                            <div class="body">
+                                <span class="idx">No. @((idx + 1).ToString("00"))</span>
+                                <h3 class="name" title="@item.PROJECT_NAME">@item.PROJECT_NAME</h3>
+                                <a class="view" asp-action="Details" asp-controller="PROJECTS" asp-route-id="@item.AUTO_ID">
+                                    Case study <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+                        </article>
                     }
                 </div>
             }
             else
             {
-                <p>No Works to display now.</p>
+                <p>No projects to show yet.</p>
             }
-
         </div>
-    </section><!-- End Services Section -->
-
+    </section>
 </main>
-
-@section Scripts{
-    <script>
-        
-        //$('#myTxt').hover(function(){
-        //    var att = $('#desc').val();
-        //    $("#forTitle").attr('title', att);
-        //});
-       
-    </script>
-}
