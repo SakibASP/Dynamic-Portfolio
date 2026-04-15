@@ -1,8 +1,22 @@
 /* Blog — public */
 .blog-index { padding: 80px 0 60px; }
-.blog-index .section-title { text-align: center; margin-bottom: 2rem; }
-.blog-index .section-title h2 { font-size: 2rem; margin-bottom: .5rem; }
-.blog-index .section-title p { opacity: .7; }
+.blog-index .section-title,
+.featured-blogs .section-title {
+    text-align: left;
+    margin-bottom: 2rem;
+}
+.blog-index .section-title h2,
+.featured-blogs .section-title h2 {
+    font-size: 2rem;
+    line-height: 1.15;
+    margin: 0 0 .35rem;
+}
+.blog-index .section-title p,
+.featured-blogs .section-title p {
+    opacity: .7;
+    margin: 0;
+    font-size: .95rem;
+}
 
 .blog-grid {
     display: grid;
@@ -127,7 +141,4 @@
 
 /* ===== Home — featured blogs ===== */
 .featured-blogs { padding: 60px 0; }
-.featured-blogs .section-title { text-align: center; margin-bottom: 2rem; }
-.featured-blogs .section-title h2 { font-size: 1.8rem; margin-bottom: .4rem; }
-.featured-blogs .section-title p { opacity: .65; }
-.featured-blogs__cta { text-align: center; margin-top: 2rem; }
+.featured-blogs__cta { margin-top: 2rem; text-align: left; }
