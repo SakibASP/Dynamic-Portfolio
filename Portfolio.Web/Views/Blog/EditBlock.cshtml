@@ -30,7 +30,25 @@
                 </select>
             </div>
 
-            @if (Model.BLOCK_TYPE != BlogBlockType.Image)
+            @if (Model.BLOCK_TYPE == BlogBlockType.Video)
+            {
+                <div class="field">
+                    <label>YouTube link or video ID</label>
+                    <input asp-for="CONTENT" placeholder="https://www.youtube.com/watch?v=... or an 11-char id" />
+                </div>
+                <div class="field"><label>Caption</label><input asp-for="IMAGE_CAPTION" /></div>
+                @{ var prevId = BlogBlockType.ExtractYouTubeId(Model.CONTENT); }
+                @if (!string.IsNullOrEmpty(prevId))
+                {
+                    <div class="field">
+                        <label>Preview</label>
+                        <div class="blk-video__frame" style="max-width:480px;">
+                            <iframe src="https://www.youtube.com/embed/@prevId" loading="lazy" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                }
+            }
+            else if (Model.BLOCK_TYPE != BlogBlockType.Image)
             {
                 <div class="field">
                     <label>Content</label>

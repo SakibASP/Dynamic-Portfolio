@@ -74,6 +74,25 @@
                             </figure>
                         }
                         break;
+
+                    case BlogBlockType.Video:
+                        var vid = BlogBlockType.ExtractYouTubeId(b.CONTENT);
+                        if (!string.IsNullOrEmpty(vid))
+                        {
+                            <figure class="blk-video">
+                                <div class="blk-video__frame">
+                                    <iframe src="https://www.youtube.com/embed/@vid"
+                                            title="@(b.IMAGE_CAPTION ?? "YouTube video")"
+                                            loading="lazy"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                            referrerpolicy="strict-origin-when-cross-origin"
+                                            allowfullscreen></iframe>
+                                </div>
+                                @if (!string.IsNullOrWhiteSpace(b.IMAGE_CAPTION))
+                                { <figcaption>@b.IMAGE_CAPTION</figcaption> }
+                            </figure>
+                        }
+                        break;
                 }
             }
         </article>

@@ -40,6 +40,37 @@ public static class BlogBlockType
     public const string Code    = "Code";
     public const string Image   = "Image";
     public const string Quote   = "Quote";
+    public const string Video   = "Video";
 
-    public static readonly string[] All = [Heading, Text, Code, Image, Quote];
+    public static readonly string[] All = [Heading, Text, Code, Image, Quote, Video];
+
+    /// <summary>
+    /// Extracts a YouTube video id from any common URL form
+    /// (watch?v=, youtu.be/, shorts/, embed/) or returns the input unchanged
+    /// if it's already a bare 11-char id. Returns null for anything unrecognised.
+    /// </summary>
+    public static string? ExtractYouTubeId(string? urlOrId)
+    {
+        if (string.IsNullOrWhiteSpace(urlOrId)) return null;
+        var s = urlOrId.Trim();
+
+        // Bare id (11 chars, YouTube-safe charset)
+        if (s.Length == 11 && System.Text.RegularExpressions.Regex.IsMatch(s, "^[A-Za-z0-9_-]{11}$"))
+            return s;
+
+        var patterns = new[]
+        {
+            @"(?:youtube\.com/watch\?v=)([A-Za-z0-9_-]{11})",
+            @"(?:youtu\.be/)([A-Za-z0-9_-]{11})",
+            @"(?:youtube\.com/embed/)([A-Za-z0-9_-]{11})",
+            @"(?:youtube\.com/shorts/)([A-Za-z0-9_-]{11})",
+            @"(?:youtube\.com/v/)([A-Za-z0-9_-]{11})"
+        };
+        foreach (var p in patterns)
+        {
+            var m = System.Text.RegularExpressions.Regex.Match(s, p);
+            if (m.Success) return m.Groups[1].Value;
+        }
+        return null;
+    }
 }

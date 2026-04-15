@@ -100,6 +100,19 @@
                                     <div class="muted">@b.IMAGE_CAPTION</div>
                                 }
                                 break;
+
+                            case BlogBlockType.Video:
+                                var vid = BlogBlockType.ExtractYouTubeId(b.CONTENT);
+                                if (!string.IsNullOrEmpty(vid))
+                                {
+                                    <div>
+                                        <i class="bi bi-youtube" style="color:#ff4343;"></i>
+                                        <a href="https://www.youtube.com/watch?v=@vid" target="_blank" rel="noopener">youtu.be/@vid</a>
+                                        @if (!string.IsNullOrWhiteSpace(b.IMAGE_CAPTION)) { <span class="muted"> — @b.IMAGE_CAPTION</span> }
+                                    </div>
+                                }
+                                else { <div class="muted">@b.CONTENT</div> }
+                                break;
                             default:
                                 <div>@(b.CONTENT?.Length > 220 ? b.CONTENT[..220] + "…" : b.CONTENT)</div>
                                 break;
@@ -130,6 +143,15 @@
             <div class="field" data-block="Heading Text Quote Code">
                 <label>Content</label>
                 <textarea name="CONTENT" rows="6" placeholder="Write here. For Code blocks, paste the raw code — it won't be modified."></textarea>
+            </div>
+
+            <div class="field" data-block="Video">
+                <label>YouTube link or video ID</label>
+                <input name="CONTENT" placeholder="https://www.youtube.com/watch?v=..., https://youtu.be/..., or an 11-char id" />
+            </div>
+            <div class="field" data-block="Video">
+                <label>Caption (optional)</label>
+                <input name="IMAGE_CAPTION" placeholder="Shown below the video" />
             </div>
 
             <div class="field" data-block="Code">
