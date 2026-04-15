@@ -13,9 +13,6 @@
         ? Url.Content(Cover.COVER_IMAGE.Replace(rootpath, ""))
         : Url.Content("~/assets/img/about.jpg");
 
-    var parts = displayName.Split(' ', 2);
-    var firstName = parts[0];
-    var restName  = parts.Length > 1 ? parts[1] : "";
 
     var profile      = Model.Profile;
     var currentRole  = Model.CurrentRole;
@@ -36,13 +33,7 @@
             <div class="hero-intro">
                 <span class="eyebrow">Portfolio · 2026</span>
 
-                <h1 class="hero-name">
-                    @firstName
-                    @if (!string.IsNullOrEmpty(restName))
-                    {
-                        <br /><span class="muted">@restName</span>
-                    }
-                </h1>
+                <h1 class="hero-name">@displayName</h1>
 
                 <p class="hero-role"><span id="typedRole" class="hero-cursor"></span></p>
 
