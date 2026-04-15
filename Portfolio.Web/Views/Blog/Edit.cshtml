@@ -1,0 +1,218 @@
+@model Portfolio.Domain.BLOG_POSTS
+@using Portfolio.Domain
+@using Portfolio.Web.Common
+
+@{
+    ViewData["Title"] = "Edit Post";
+    var rootpath = (string?)ViewData["rootPath"] ?? "";
+}
+
+<section>
+    <div class="admin-page">
+        <div class="admin-head">
+            <div>
+                <span class="eyebrow">Admin · Blog</span>
+                <h2>Edit post</h2>
+            </div>
+            <div>
+                <a asp-action="Details" asp-route-id="@Model.AUTO_ID" class="btn-ghost" target="_blank"><i class="bi bi-eye"></i> Preview</a>
+                <a asp-action="Manage" class="btn-ghost">Back</a>
+            </div>
+        </div>
+
+        @if (TempData["Success"] != null) { <div class="flash ok">@TempData["Success"]</div> }
+        @if (TempData["Error"]   != null) { <div class="flash err">@TempData["Error"]</div> }
+
+        <!-- ===== Post meta form ===== -->
+        <form asp-action="Edit" asp-route-id="@Model.AUTO_ID" enctype="multipart/form-data" class="admin-form" method="post">
+            <input type="hidden" asp-for="AUTO_ID" />
+
+            <div class="field"><label asp-for="TITLE"></label><input asp-for="TITLE" /></div>
+            <div class="field"><label asp-for="SLUG">Slug</label><input asp-for="SLUG" /></div>
+            <div class="field"><label asp-for="SUMMARY">Summary</label><textarea asp-for="SUMMARY" rows="3"></textarea></div>
+            <div class="field"><label asp-for="TAGS">Tags</label><input asp-for="TAGS" /></div>
+
+            <div class="field">
+                <label asp-for="COVER_IMAGE">Cover image (leave empty to keep)</label>
+                <input type="file" id="fileInput" accept="image/*" asp-for="COVER_IMAGE" class="form-control-file" />
+                @{ var curCover = Utility.ToWebUrl(Model.COVER_IMAGE, rootpath); }
+                @if (!string.IsNullOrEmpty(curCover))
+                {
+                    <img class="thumb" style="margin-top:.5rem;max-height:120px;" src="@curCover" />
+                }
+                <div id="file-preview"></div>
+            </div>
+
+            <div class="field inline">
+                <label><input type="checkbox" asp-for="IS_PUBLISHED" /> Published</label>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary-grad"><i class="bi bi-check2"></i> Save post</button>
+            </div>
+        </form>
+
+        <hr style="margin:2rem 0;opacity:.2;" />
+
+        <!-- ===== Existing blocks ===== -->
+        <h3 style="margin-bottom:1rem;">Content blocks</h3>
+
+        @if (Model.BLOCKS.Any())
+        {
+            <div class="block-list">
+            @foreach (var b in Model.BLOCKS)
+            {
+                <div class="block-row">
+                    <div class="block-row__head">
+                        <span class="block-row__type">@b.BLOCK_TYPE</span>
+                        <div class="actions">
+                            <form asp-action="MoveBlock" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@b.AUTO_ID" />
+                                <input type="hidden" name="postId" value="@Model.AUTO_ID" />
+                                <input type="hidden" name="direction" value="-1" />
+                                <button class="action-btn" title="Move up"><i class="bi bi-arrow-up"></i></button>
+                            </form>
+                            <form asp-action="MoveBlock" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@b.AUTO_ID" />
+                                <input type="hidden" name="postId" value="@Model.AUTO_ID" />
+                                <input type="hidden" name="direction" value="1" />
+                                <button class="action-btn" title="Move down"><i class="bi bi-arrow-down"></i></button>
+                            </form>
+                            <a class="action-btn" asp-action="EditBlock" asp-route-id="@b.AUTO_ID" title="Edit"><i class="bi bi-pencil"></i></a>
+                            <form asp-action="DeleteBlock" method="post" style="display:inline;" onsubmit="return confirm('Delete this block?');">
+                                <input type="hidden" name="id" value="@b.AUTO_ID" />
+                                <input type="hidden" name="postId" value="@Model.AUTO_ID" />
+                                <button class="action-btn danger"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="block-row__body">
+                        @switch (b.BLOCK_TYPE)
+                        {
+                            case BlogBlockType.Code:
+                                <pre style="margin:0;"><code>@b.CONTENT</code></pre>
+                                break;
+                            case BlogBlockType.Image:
+                                var imgUrl = Utility.ToWebUrl(b.IMAGE_PATH, rootpath);
+                                if (!string.IsNullOrEmpty(imgUrl))
+                                {
+                                    <img style="max-height:160px;" src="@imgUrl" />
+                                    <div class="muted">@b.IMAGE_CAPTION</div>
+                                }
+                                break;
+                            default:
+                                <div>@(b.CONTENT?.Length > 220 ? b.CONTENT[..220] + "…" : b.CONTENT)</div>
+                                break;
+                        }
+                    </div>
+                </div>
+            }
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">No blocks yet — add one below.</div>
+        }
+
+        <!-- ===== Add a new block ===== -->
+        <h3 style="margin:2rem 0 1rem;">Add a block</h3>
+        <form asp-action="AddBlock" enctype="multipart/form-data" method="post" class="admin-form block-add">
+            <input type="hidden" name="BLOG_POST_ID" value="@Model.AUTO_ID" />
+
+            <div class="field">
+                <label>Block type</label>
+                <select name="BLOCK_TYPE" id="blockType">
+                    @foreach (var t in BlogBlockType.All)
+                    { <option value="@t">@t</option> }
+                </select>
+            </div>
+
+            <div class="field" data-block="Heading Text Quote Code">
+                <label>Content</label>
+                <textarea name="CONTENT" rows="6" placeholder="Write here. For Code blocks, paste the raw code — it won't be modified."></textarea>
+            </div>
+
+            <div class="field" data-block="Code">
+                <label>Language (for syntax highlight)</label>
+                <input name="CODE_LANGUAGE" placeholder="csharp, javascript, sql, bash..." />
+            </div>
+
+            <div class="grid2" data-block="Heading Text Quote">
+                <div class="field">
+                    <label>Font family</label>
+                    <select name="FONT_FAMILY">
+                        <option value="">Default (Geist)</option>
+                        <option value="Geist, sans-serif">Geist Sans</option>
+                        <option value="'Geist Mono', monospace">Geist Mono</option>
+                        <option value="Georgia, serif">Georgia (serif)</option>
+                        <option value="'Courier New', monospace">Courier New</option>
+                        <option value="'Times New Roman', serif">Times New Roman</option>
+                        <option value="Arial, sans-serif">Arial</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Font size</label>
+                    <select name="FONT_SIZE">
+                        <option value="">Default</option>
+                        <option value="0.9rem">Small</option>
+                        <option value="1rem">Normal</option>
+                        <option value="1.15rem">Medium</option>
+                        <option value="1.35rem">Large</option>
+                        <option value="1.75rem">XL</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Style</label>
+                    <select name="FONT_STYLE">
+                        <option value="">Normal</option>
+                        <option value="bold">Bold</option>
+                        <option value="italic">Italic</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Align</label>
+                    <select name="TEXT_ALIGN">
+                        <option value="">Default</option>
+                        <option value="left">Left</option>
+                        <option value="center">Center</option>
+                        <option value="right">Right</option>
+                        <option value="justify">Justify</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="field" data-block="Image">
+                <label>Image file</label>
+                <input type="file" name="IMAGE_PATH_FILE" accept="image/*" />
+            </div>
+            <div class="field" data-block="Image">
+                <label>Caption</label>
+                <input name="IMAGE_CAPTION" />
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary-grad"><i class="bi bi-plus-lg"></i> Add block</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/file-preview.js"></script>
+    <script>
+        (function () {
+            const typeSel = document.getElementById('blockType');
+            const fields = document.querySelectorAll('.block-add [data-block]');
+            function apply() {
+                const t = typeSel.value;
+                fields.forEach(f => {
+                    const allowed = f.getAttribute('data-block').split(' ');
+                    f.style.display = allowed.includes(t) ? '' : 'none';
+                });
+            }
+            typeSel.addEventListener('change', apply);
+            apply();
+        })();
+    </script>
+}

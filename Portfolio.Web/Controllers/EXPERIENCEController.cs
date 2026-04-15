@@ -9,17 +9,26 @@ using Serilog;
 namespace Portfolio.Web.Controllers;
 
 [Authorize]
-public class EXPERIENCEController(IExperienceService experiences) : BaseController
+public class EXPERIENCEController(
+    IExperienceService experiences,
+    IWebHostEnvironment env) : BaseController
 {
     private readonly IExperienceService _experiences = experiences;
+    private readonly IWebHostEnvironment _env = env;
 
-    public async Task<IActionResult> Index() => View(await _experiences.GetAllAsync());
+    public async Task<IActionResult> Index()
+    {
+        ViewData["rootPath"] = _env.WebRootPath;
+        return View(await _experiences.GetAllAsync());
+    }
 
     public async Task<IActionResult> Details(int? id)
     {
         if (id == null) return NotFound();
         var item = await _experiences.GetByIdAsync(id);
-        return item == null ? NotFound() : View(item);
+        if (item == null) return NotFound();
+        ViewData["rootPath"] = _env.WebRootPath;
+        return View(item);
     }
 
     public IActionResult Create() => View();
@@ -29,6 +38,10 @@ public class EXPERIENCEController(IExperienceService experiences) : BaseControll
     {
         try
         {
+            var saved = await Utility.SaveUploadedAsync(
+                Request.Form.Files.FirstOrDefault(), _env, "Images", "Experience");
+            if (saved != null) eXPERIENCE.LOGO = saved;
+
             await _experiences.CreateAsync(eXPERIENCE, CurrentUserName);
             return RedirectToAction(nameof(Index));
         }
@@ -40,7 +53,9 @@ public class EXPERIENCEController(IExperienceService experiences) : BaseControll
     {
         if (id == null) return NotFound();
         var item = await _experiences.GetByIdAsync(id);
-        return item == null ? NotFound() : View(item);
+        if (item == null) return NotFound();
+        ViewData["rootPath"] = _env.WebRootPath;
+        return View(item);
     }
 
     [HttpPost, ValidateAntiForgeryToken]
@@ -49,6 +64,18 @@ public class EXPERIENCEController(IExperienceService experiences) : BaseControll
         if (id != eXPERIENCE.AUTO_ID) return NotFound();
         try
         {
+            var existing = await _experiences.GetByIdAsync(id);
+            var saved = await Utility.SaveUploadedAsync(
+                Request.Form.Files.FirstOrDefault(), _env, "Images", "Experience");
+            if (saved != null)
+            {
+                Utility.DeleteIfExists(existing?.LOGO);
+                eXPERIENCE.LOGO = saved;
+            }
+            else
+            {
+                eXPERIENCE.LOGO = existing?.LOGO;
+            }
             await _experiences.UpdateAsync(eXPERIENCE, CurrentUserName);
             return RedirectToAction(nameof(Index));
         }
@@ -66,7 +93,12 @@ public class EXPERIENCEController(IExperienceService experiences) : BaseControll
     [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        try { await _experiences.RemoveAsync(id); }
+        try
+        {
+            var existing = await _experiences.GetByIdAsync(id);
+            Utility.DeleteIfExists(existing?.LOGO);
+            await _experiences.RemoveAsync(id);
+        }
         catch (Exception ex) { LogAndFlash(ex); }
         return RedirectToAction(nameof(Index));
     }

@@ -15,9 +15,9 @@
 # Logs (keep folder structure untracked)
 /Portfolio.Web/Logs/
 
-# Secrets / local files (kept from previous config)
-/Portfolio.Utils/EmailSettings.cs
-/Portfolio.Utils/EncryptionHelper.cs
+# Secrets / local files — never commit
+/Portfolio.Application/Common/EmailSettings.cs
+/Portfolio.Application/Common/EncryptionHelper.cs
 
 # OS / editor junk
 .DS_Store

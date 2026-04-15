@@ -25,13 +25,14 @@ public class HomeController(
         }
 
         var cover = (await _covers.GetAllAsync()).FirstOrDefault();
+        var feed  = await _home.GetHomeFeedAsync(featuredCount: 3);
 
         ViewBag.FilePath = Utility.GetFilePathOfCV(_env);
         ViewBag.Name = "Md. Sakibur Rahman";
         ViewBag.Bio = "I am a professiona Software Developer from Khulna, Bangladesh";
         ViewBag.Cover = cover;
         ViewData["rootPath"] = _env.WebRootPath;
-        return View();
+        return View(feed);
     }
 
     public IActionResult Privacy() => View();

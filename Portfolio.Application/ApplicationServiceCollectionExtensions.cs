@@ -23,6 +23,7 @@ public static class ApplicationServiceCollectionExtensions
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<IProfileCoverService, ProfileCoverService>();
         services.AddScoped<IHomeService, HomeService>();
+        services.AddScoped<IBlogService, BlogService>();
         services.AddScoped<IEmailSenderRelay, EmailSenderRelay>();
         return services;
     }

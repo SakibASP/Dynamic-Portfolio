@@ -1,4 +1,6 @@
+@model Portfolio.Application.DTOs.HomeFeedDto
 @using Portfolio.Domain
+@using Portfolio.Web.Common
 
 @{
     ViewData["Title"] = "Home";
@@ -14,6 +16,15 @@
     var parts = displayName.Split(' ', 2);
     var firstName = parts[0];
     var restName  = parts.Length > 1 ? parts[1] : "";
+
+    var profile      = Model.Profile;
+    var currentRole  = Model.CurrentRole;
+    var logos        = Model.CompanyLogos;
+    var featured     = Model.FeaturedPosts;
+
+    string location = !string.IsNullOrWhiteSpace(profile?.CURRENT_CITY)
+        ? profile!.CURRENT_CITY!
+        : "Khulna · BD";
 }
 
 <input type="hidden" id="coverName" value="@displayName" />
@@ -37,6 +48,31 @@
 
                 <p class="hero-bio">@displayBio</p>
 
+                @if (currentRole != null)
+                {
+                    <div class="current-role">
+                        @{ var curLogo = Utility.ToWebUrl(currentRole.LOGO, rootpath); }
+                        @if (!string.IsNullOrEmpty(curLogo))
+                        {
+                            <div class="current-role__logo">
+                                <img src="@curLogo" alt="@currentRole.INSTITUTE" />
+                            </div>
+                        }
+                        <div class="current-role__body">
+                            <span class="k">Currently</span>
+                            <strong>@currentRole.DESIGNATION</strong>
+                            @if (!string.IsNullOrEmpty(currentRole.COMPANY_URL))
+                            {
+                                <span>@@ <a href="@currentRole.COMPANY_URL" target="_blank" rel="noopener">@currentRole.INSTITUTE</a></span>
+                            }
+                            else
+                            {
+                                <span>@@ @currentRole.INSTITUTE</span>
+                            }
+                        </div>
+                    </div>
+                }
+
                 <div class="hero-actions">
                     <a asp-action="About" asp-controller="MY_PROFILE" class="btn-primary-grad">
                         About me <i class="bi bi-arrow-right"></i>
@@ -53,7 +89,7 @@
                     </div>
                     <div>
                         <span class="k">Location</span>
-                        <span class="v">Khulna · BD</span>
+                        <span class="v">@location</span>
                     </div>
                     <div>
                         <span class="k">Stack</span>
@@ -68,6 +104,87 @@
         </div>
     </div>
 </section>
+
+@if (logos.Any())
+{
+    <section class="company-marquee">
+        <div class="container">
+            <div class="section-eyebrow">Worked with</div>
+            <div class="marquee">
+                <div class="marquee__track">
+                    @* Two copies in a row for seamless loop *@
+                    @foreach (var c in logos)
+                    {
+                        var url = Utility.ToWebUrl(c.LOGO, rootpath);
+                        if (string.IsNullOrEmpty(url)) continue;
+                        <div class="marquee__item" title="@c.INSTITUTE">
+                            @if (!string.IsNullOrEmpty(c.COMPANY_URL))
+                            {
+                                <a href="@c.COMPANY_URL" target="_blank" rel="noopener"><img src="@url" alt="@c.INSTITUTE" /></a>
+                            }
+                            else
+                            {
+                                <img src="@url" alt="@c.INSTITUTE" />
+                            }
+                        </div>
+                    }
+                    @foreach (var c in logos)
+                    {
+                        var url = Utility.ToWebUrl(c.LOGO, rootpath);
+                        if (string.IsNullOrEmpty(url)) continue;
+                        <div class="marquee__item" aria-hidden="true">
+                            <img src="@url" alt="" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+@if (featured.Any())
+{
+    <section class="featured-blogs">
+        <div class="container">
+            <div class="section-title">
+                <h2>Featured posts</h2>
+                <p>Walkthroughs, notes and code.</p>
+            </div>
+            <div class="blog-grid">
+                @foreach (var p in featured)
+                {
+                    var cover = Utility.ToWebUrl(p.COVER_IMAGE, rootpath);
+                    <a class="blog-card" asp-action="Details" asp-controller="Blog" asp-route-id="@p.AUTO_ID">
+                        @if (!string.IsNullOrEmpty(cover))
+                        {
+                            <div class="blog-card__cover"><img src="@cover" alt="@p.TITLE" /></div>
+                        }
+                        <div class="blog-card__body">
+                            @if (!string.IsNullOrWhiteSpace(p.TAGS))
+                            {
+                                <div class="blog-card__tags">
+                                    @foreach (var t in p.TAGS.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                                    { <span class="tag">@t</span> }
+                                </div>
+                            }
+                            <h3>@p.TITLE</h3>
+                            @if (!string.IsNullOrWhiteSpace(p.SUMMARY)) { <p>@p.SUMMARY</p> }
+                            <div class="blog-card__meta">
+                                <span>@((p.PUBLISHED_DATE ?? p.CREATED_DATE).ToString("MMM dd, yyyy"))</span>
+                                <span><i class="bi bi-eye"></i> @p.VIEW_COUNT</span>
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+            <div class="featured-blogs__cta">
+                <a asp-action="Index" asp-controller="Blog" class="btn-primary-grad">
+                    View full blog <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+}
 
 @section Scripts {
     <script>
@@ -99,7 +216,6 @@
         (function () {
             const hero = document.getElementById("hero");
             if (!hero || window.matchMedia("(hover: none)").matches) return;
-
             let rafId = 0, tx = 0, ty = 0, px = 0.5, py = 0.5;
             hero.addEventListener("mousemove", (e) => {
                 const r = hero.getBoundingClientRect();
@@ -115,7 +231,6 @@
                 hero.style.setProperty("--px", 0);
                 hero.style.setProperty("--py", 0);
             });
-
             function apply() {
                 hero.style.setProperty("--mx", tx + "%");
                 hero.style.setProperty("--my", ty + "%");

@@ -1,0 +1,54 @@
+@model IEnumerable<Portfolio.Domain.BLOG_POSTS>
+@using Portfolio.Web.Common
+
+@{
+    ViewData["Title"] = "Blog";
+    var rootpath = (string?)ViewData["rootPath"] ?? "";
+}
+
+<section class="blog-index">
+    <div class="container" data-aos="fade-up">
+        <div class="section-title">
+            <h2>Blog</h2>
+            <p>Notes, walkthroughs and code recipes.</p>
+        </div>
+
+        @if (Model.Any())
+        {
+            <div class="blog-grid">
+                @foreach (var p in Model)
+                {
+                    <a class="blog-card" asp-action="Details" asp-route-id="@p.AUTO_ID">
+                        @{ var cover = Utility.ToWebUrl(p.COVER_IMAGE, rootpath); }
+                        @if (!string.IsNullOrEmpty(cover))
+                        {
+                            <div class="blog-card__cover">
+                                <img src="@cover" alt="@p.TITLE" />
+                            </div>
+                        }
+                        <div class="blog-card__body">
+                            @if (!string.IsNullOrWhiteSpace(p.TAGS))
+                            {
+                                <div class="blog-card__tags">
+                                    @foreach (var t in p.TAGS.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                                    { <span class="tag">@t</span> }
+                                </div>
+                            }
+                            <h3>@p.TITLE</h3>
+                            @if (!string.IsNullOrWhiteSpace(p.SUMMARY)) { <p>@p.SUMMARY</p> }
+                            <div class="blog-card__meta">
+                                <span>@((p.PUBLISHED_DATE ?? p.CREATED_DATE).ToString("MMM dd, yyyy"))</span>
+                                <span><i class="bi bi-eye"></i> @p.VIEW_COUNT</span>
+                                @if (!p.IS_PUBLISHED) { <span class="badge-draft">Draft</span> }
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">No posts yet.</div>
+        }
+    </div>
+</section>

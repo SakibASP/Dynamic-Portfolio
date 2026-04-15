@@ -1,0 +1,34 @@
+/**
+------------------------------------------
+Author	: Md. Sakibur Rahman
+Date	: 2026-04-16
+Purpose	: Ordered content blocks that make up a blog post.
+          BLOCK_TYPE values: 'Heading','Text','Code','Image','Quote'
+**/
+IF OBJECT_ID('dbo.BLOG_POST_BLOCKS', 'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.BLOG_POST_BLOCKS
+    (
+        AUTO_ID         INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        BLOG_POST_ID    INT             NOT NULL,
+        BLOCK_TYPE      NVARCHAR(32)    NOT NULL,
+        CONTENT         NVARCHAR(MAX)   NULL,
+        CODE_LANGUAGE   NVARCHAR(32)    NULL,
+        FONT_FAMILY     NVARCHAR(64)    NULL,
+        FONT_SIZE       NVARCHAR(16)    NULL,
+        FONT_STYLE      NVARCHAR(32)    NULL,
+        TEXT_ALIGN      NVARCHAR(16)    NULL,
+        IMAGE_PATH      NVARCHAR(512)   NULL,
+        IMAGE_CAPTION   NVARCHAR(256)   NULL,
+        SORT_ORDER      INT             NOT NULL CONSTRAINT DF_BLOG_POST_BLOCKS_SORT_ORDER DEFAULT(0),
+        CREATED_BY      NVARCHAR(256)   NULL,
+        CREATED_DATE    DATETIME        NOT NULL CONSTRAINT DF_BLOG_POST_BLOCKS_CREATED_DATE DEFAULT(GETDATE()),
+        UPDATED_BY      NVARCHAR(256)   NULL,
+        UPDATED_DATE    DATETIME        NULL,
+        CONSTRAINT FK_BLOG_POST_BLOCKS_POST FOREIGN KEY (BLOG_POST_ID)
+            REFERENCES dbo.BLOG_POSTS(AUTO_ID) ON DELETE CASCADE
+    );
+
+    CREATE INDEX IX_BLOG_POST_BLOCKS_Post ON dbo.BLOG_POST_BLOCKS (BLOG_POST_ID, SORT_ORDER);
+END
+GO

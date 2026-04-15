@@ -54,4 +54,6 @@ public class PortfolioDbContext : IdentityDbContext<IdentityUser>
     public virtual DbSet<PROFILE_COVER> PROFILE_COVER { get; set; } = default!;
     public virtual DbSet<DESCRIPTION> DESCRIPTION { get; set; } = default!;
     public virtual DbSet<DESCRIPTION_TYPE> DESCRIPTION_TYPE { get; set; } = default!;
+    public virtual DbSet<BLOG_POSTS> BLOG_POSTS { get; set; } = default!;
+    public virtual DbSet<BLOG_POST_BLOCKS> BLOG_POST_BLOCKS { get; set; } = default!;
 }

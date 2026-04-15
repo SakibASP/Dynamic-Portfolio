@@ -1,19 +1,15 @@
 using Portfolio.Application.DTOs;
+using Portfolio.Domain;
 
 namespace Portfolio.Application.Abstractions;
 
 public interface IHomeRepo
 {
-    /// <summary>
-    /// Get the messages count which are not confirmed yet
-    /// </summary>
-    /// <returns></returns>
     Task<int?> GetUnreadMessagesCountAsync();
-
-    /// <summary>
-    /// Saves visitor location information
-    /// </summary>
-    /// <param name="request"></param>
-    /// <returns></returns>
     Task<bool> SaveLocationAsync(LocationRequest request);
+
+    Task<MY_PROFILE?> GetProfileAsync();
+    Task<EXPERIENCE?> GetCurrentExperienceAsync();
+    Task<IList<EXPERIENCE>> GetCompaniesWithLogosAsync();
+    Task<IList<BLOG_POSTS>> GetFeaturedBlogPostsAsync(int take);
 }

@@ -1,0 +1,103 @@
+@model Portfolio.Domain.BLOG_POSTS
+@using Portfolio.Domain
+@using Portfolio.Web.Common
+
+@{
+    ViewData["Title"] = Model.TITLE;
+    var rootpath = (string?)ViewData["rootPath"] ?? "";
+}
+
+<section class="blog-read">
+    <div class="container" data-aos="fade-up">
+        <div class="blog-read__head">
+            @if (!string.IsNullOrWhiteSpace(Model.TAGS))
+            {
+                <div class="blog-card__tags">
+                    @foreach (var t in Model.TAGS.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                    { <span class="tag">@t</span> }
+                </div>
+            }
+            <h1>@Model.TITLE</h1>
+            @if (!string.IsNullOrWhiteSpace(Model.SUMMARY)) { <p class="lead">@Model.SUMMARY</p> }
+            <div class="blog-read__meta">
+                <span>By @(Model.CREATED_BY ?? "admin")</span>
+                <span>@((Model.PUBLISHED_DATE ?? Model.CREATED_DATE).ToString("MMM dd, yyyy"))</span>
+                <span><i class="bi bi-eye"></i> @Model.VIEW_COUNT</span>
+            </div>
+            @{ var cover = Utility.ToWebUrl(Model.COVER_IMAGE, rootpath); }
+            @if (!string.IsNullOrEmpty(cover))
+            {
+                <div class="blog-read__cover">
+                    <img src="@cover" alt="@Model.TITLE" />
+                </div>
+            }
+        </div>
+
+        <article class="blog-article">
+            @foreach (var b in Model.BLOCKS)
+            {
+                var style = $"font-family:{b.FONT_FAMILY};font-size:{b.FONT_SIZE};font-style:{(b.FONT_STYLE=="italic"?"italic":"normal")};font-weight:{(b.FONT_STYLE=="bold"?"700":"400")};text-align:{b.TEXT_ALIGN};".Replace(":;", ":inherit;");
+
+                switch (b.BLOCK_TYPE)
+                {
+                    case BlogBlockType.Heading:
+                        <h2 class="blk-heading" style="@style">@b.CONTENT</h2>
+                        break;
+
+                    case BlogBlockType.Text:
+                        <div class="blk-text" style="@style">@Html.Raw(System.Net.WebUtility.HtmlEncode(b.CONTENT).Replace("\n", "<br/>"))</div>
+                        break;
+
+                    case BlogBlockType.Quote:
+                        <blockquote class="blk-quote" style="@style">@b.CONTENT</blockquote>
+                        break;
+
+                    case BlogBlockType.Code:
+                        var lang = string.IsNullOrWhiteSpace(b.CODE_LANGUAGE) ? "plaintext" : b.CODE_LANGUAGE;
+                        <div class="blk-code">
+                            <div class="blk-code__bar">
+                                <span class="lang">@lang</span>
+                                <button type="button" class="copy-btn" data-copy><i class="bi bi-clipboard"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-@lang">@b.CONTENT</code></pre>
+                        </div>
+                        break;
+
+                    case BlogBlockType.Image:
+                        var imgUrl = Utility.ToWebUrl(b.IMAGE_PATH, rootpath);
+                        if (!string.IsNullOrEmpty(imgUrl))
+                        {
+                            <figure class="blk-image">
+                                <img src="@imgUrl" alt="@b.IMAGE_CAPTION" />
+                                @if (!string.IsNullOrWhiteSpace(b.IMAGE_CAPTION))
+                                { <figcaption>@b.IMAGE_CAPTION</figcaption> }
+                            </figure>
+                        }
+                        break;
+                }
+            }
+        </article>
+
+        <div class="blog-read__foot">
+            <a asp-action="Index" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back to blog</a>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script>
+        document.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
+        document.querySelectorAll('[data-copy]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const code = btn.closest('.blk-code').querySelector('code').innerText;
+                navigator.clipboard.writeText(code).then(() => {
+                    const orig = btn.innerHTML;
+                    btn.innerHTML = '<i class="bi bi-check2"></i> Copied';
+                    setTimeout(() => btn.innerHTML = orig, 1500);
+                });
+            });
+        });
+    </script>
+}

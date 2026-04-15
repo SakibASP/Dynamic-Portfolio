@@ -41,6 +41,7 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddScoped<IProjectRepo, ProjectRepo>();
         services.AddScoped<IProfileCoverRepo, ProfileCoverRepo>();
         services.AddScoped<IHomeRepo, HomeRepo>();
+        services.AddScoped<IBlogRepo, BlogRepo>();
 
         // External adapters.
         services.AddHttpClient(GeoLocationClient.HttpClientName, c =>

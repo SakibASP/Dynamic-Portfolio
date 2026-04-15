@@ -7,6 +7,7 @@ public interface IHomeService
 {
     Task<int?> GetUnreadMessagesCountAsync();
     Task<bool> SaveLocationAsync(LocationRequest request);
+    Task<HomeFeedDto> GetHomeFeedAsync(int featuredCount = 3);
 }
 
 public class HomeService(IHomeRepo repo) : IHomeService
@@ -15,4 +16,15 @@ public class HomeService(IHomeRepo repo) : IHomeService
 
     public Task<int?> GetUnreadMessagesCountAsync() => _repo.GetUnreadMessagesCountAsync();
     public Task<bool> SaveLocationAsync(LocationRequest request) => _repo.SaveLocationAsync(request);
+
+    public async Task<HomeFeedDto> GetHomeFeedAsync(int featuredCount = 3)
+    {
+        return new HomeFeedDto
+        {
+            Profile       = await _repo.GetProfileAsync(),
+            CurrentRole   = await _repo.GetCurrentExperienceAsync(),
+            CompanyLogos  = await _repo.GetCompaniesWithLogosAsync(),
+            FeaturedPosts = await _repo.GetFeaturedBlogPostsAsync(featuredCount)
+        };
+    }
 }

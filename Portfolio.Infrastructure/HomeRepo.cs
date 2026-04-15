@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Portfolio.Application.Abstractions;
+using Portfolio.Application.DTOs;
+using Portfolio.Domain;
 using Portfolio.Infrastructure.Adapters;
 using Portfolio.Infrastructure.Persistence;
-using Portfolio.Application.DTOs;
 
 namespace Portfolio.Infrastructure;
 
@@ -22,8 +23,6 @@ public class HomeRepo(PortfolioDbContext context) : IHomeRepo
     {
         if (request is null) return false;
 
-        // Resolve the OS from the raw UA here so callers (controllers) don't have to
-        // depend on a specific UA-parsing library — Web just forwards the raw UA.
         var os = UserAgentParser.Parse(request.UserAgent).OperatingSystem;
 
         var visitor = await _context.Visitors
@@ -38,5 +37,50 @@ public class HomeRepo(PortfolioDbContext context) : IHomeRepo
         visitor.Longitude = request.Longitude;
         await _context.SaveChangesAsync();
         return true;
+    }
+
+    public async Task<MY_PROFILE?> GetProfileAsync() =>
+        await _context.MY_PROFILE.AsNoTracking().FirstOrDefaultAsync();
+
+    public async Task<EXPERIENCE?> GetCurrentExperienceAsync()
+    {
+        // 1) Explicit IS_CURRENT flag wins.
+        var flagged = await _context.EXPERIENCE.AsNoTracking()
+            .Where(e => e.IS_CURRENT)
+            .OrderByDescending(e => e.SORT_ORDER ?? 0)
+            .ThenByDescending(e => e.AUTO_ID)
+            .FirstOrDefaultAsync();
+        if (flagged != null) return flagged;
+
+        // 2) Otherwise, any row whose TO_DATE reads "Present" — pick the newest.
+        var present = await _context.EXPERIENCE.AsNoTracking()
+            .Where(e => e.TO_DATE != null && e.TO_DATE.ToLower().Contains("present"))
+            .OrderByDescending(e => e.FROM_DATE)
+            .ThenByDescending(e => e.AUTO_ID)
+            .FirstOrDefaultAsync();
+        if (present != null) return present;
+
+        // 3) Ultimate fallback: most recently inserted row.
+        return await _context.EXPERIENCE.AsNoTracking()
+            .OrderByDescending(e => e.AUTO_ID)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<IList<EXPERIENCE>> GetCompaniesWithLogosAsync()
+    {
+        return await _context.EXPERIENCE.AsNoTracking()
+            .Where(e => e.LOGO != null && e.LOGO != "")
+            .OrderByDescending(e => e.IS_CURRENT)
+            .ThenByDescending(e => e.SORT_ORDER)
+            .ToListAsync();
+    }
+
+    public async Task<IList<BLOG_POSTS>> GetFeaturedBlogPostsAsync(int take)
+    {
+        return await _context.BLOG_POSTS.AsNoTracking()
+            .Where(p => p.IS_PUBLISHED)
+            .OrderByDescending(p => p.PUBLISHED_DATE ?? p.CREATED_DATE)
+            .Take(take)
+            .ToListAsync();
     }
 }

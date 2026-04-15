@@ -1,0 +1,66 @@
+@model IEnumerable<Portfolio.Domain.BLOG_POSTS>
+@using Portfolio.Web.Common
+
+@{
+    ViewData["Title"] = "Manage Blog";
+    var rootpath = (string?)ViewData["rootPath"] ?? "";
+}
+
+<section>
+    <div class="admin-page">
+        <div class="admin-head">
+            <div>
+                <span class="eyebrow">Admin · Blog</span>
+                <h2>All posts</h2>
+            </div>
+            <a asp-action="Create" class="btn-primary-grad"><i class="bi bi-plus-lg"></i> New post</a>
+        </div>
+
+        @if (Model.Any())
+        {
+            <div class="admin-table-wrap">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th style="width:96px;">Cover</th>
+                            <th>Title</th>
+                            <th style="width:100px;">Status</th>
+                            <th style="width:140px;">Date</th>
+                            <th style="width:80px;">Views</th>
+                            <th style="width:180px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @{ var c = Utility.ToWebUrl(item.COVER_IMAGE, rootpath); }
+                                @if (!string.IsNullOrEmpty(c))
+                                {
+                                    <img class="thumb" src="@c" alt="@item.TITLE" />
+                                }
+                            </td>
+                            <td>@item.TITLE</td>
+                            <td>
+                                @if (item.IS_PUBLISHED) { <span class="badge-pub">Published</span> }
+                                else { <span class="badge-draft">Draft</span> }
+                            </td>
+                            <td>@((item.PUBLISHED_DATE ?? item.CREATED_DATE).ToString("yyyy-MM-dd"))</td>
+                            <td>@item.VIEW_COUNT</td>
+                            <td>
+                                <div class="actions">
+                                    <a class="action-btn" asp-action="Edit"    asp-route-id="@item.AUTO_ID" title="Edit"><i class="bi bi-pencil"></i></a>
+                                    <a class="action-btn" asp-action="Details" asp-route-id="@item.AUTO_ID" title="View"><i class="bi bi-eye"></i></a>
+                                    <a class="action-btn danger" asp-action="Delete" asp-route-id="@item.AUTO_ID" title="Delete"><i class="bi bi-trash"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else { <div class="empty-state">No posts yet.</div> }
+    </div>
+</section>

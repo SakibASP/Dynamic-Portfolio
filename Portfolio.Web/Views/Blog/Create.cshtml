@@ -1,0 +1,43 @@
+@model Portfolio.Domain.BLOG_POSTS
+
+@{ ViewData["Title"] = "New Post"; }
+
+<section>
+    <div class="admin-page narrow">
+        <div class="admin-head">
+            <div>
+                <span class="eyebrow">Admin · Blog</span>
+                <h2>New post</h2>
+            </div>
+        </div>
+
+        <form asp-action="Create" enctype="multipart/form-data" class="admin-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="field"><label asp-for="TITLE"></label><input asp-for="TITLE" /><span asp-validation-for="TITLE" class="err"></span></div>
+            <div class="field"><label asp-for="SLUG">Slug (optional, e.g. setup-auth-in-net)</label><input asp-for="SLUG" /></div>
+            <div class="field"><label asp-for="SUMMARY">Summary</label><textarea asp-for="SUMMARY" rows="3"></textarea></div>
+            <div class="field"><label asp-for="TAGS">Tags (comma-separated)</label><input asp-for="TAGS" placeholder=".NET, Auth, Tutorial" /></div>
+
+            <div class="field">
+                <label asp-for="COVER_IMAGE">Cover image</label>
+                <input type="file" id="fileInput" accept="image/*" asp-for="COVER_IMAGE" class="form-control-file" />
+                <div id="file-preview"></div>
+            </div>
+
+            <div class="field inline">
+                <label><input type="checkbox" asp-for="IS_PUBLISHED" /> Publish now</label>
+            </div>
+
+            <div class="form-actions">
+                <a asp-action="Manage" class="btn-ghost">Cancel</a>
+                <button type="submit" class="btn-primary-grad"><i class="bi bi-check2"></i> Create &amp; add content</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/file-preview.js"></script>
+}

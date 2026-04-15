@@ -1,0 +1,92 @@
+@model Portfolio.Domain.BLOG_POST_BLOCKS
+@using Portfolio.Domain
+@using Portfolio.Web.Common
+
+@{
+    ViewData["Title"] = "Edit Block";
+    var rootpath = (string?)ViewData["rootPath"] ?? "";
+}
+
+<section>
+    <div class="admin-page narrow">
+        <div class="admin-head">
+            <div>
+                <span class="eyebrow">Admin · Blog · Block</span>
+                <h2>Edit @Model.BLOCK_TYPE block</h2>
+            </div>
+            <a asp-action="Edit" asp-route-id="@Model.BLOG_POST_ID" class="btn-ghost">Back</a>
+        </div>
+
+        <form asp-action="EditBlock" asp-route-id="@Model.AUTO_ID" enctype="multipart/form-data" method="post" class="admin-form">
+            <input type="hidden" asp-for="AUTO_ID" />
+            <input type="hidden" asp-for="BLOG_POST_ID" />
+            <input type="hidden" asp-for="SORT_ORDER" />
+
+            <div class="field">
+                <label>Block type</label>
+                <select asp-for="BLOCK_TYPE">
+                    @foreach (var t in BlogBlockType.All)
+                    { <option value="@t" selected="@(Model.BLOCK_TYPE==t)">@t</option> }
+                </select>
+            </div>
+
+            @if (Model.BLOCK_TYPE != BlogBlockType.Image)
+            {
+                <div class="field">
+                    <label>Content</label>
+                    <textarea asp-for="CONTENT" rows="10"></textarea>
+                </div>
+            }
+
+            @if (Model.BLOCK_TYPE == BlogBlockType.Code)
+            {
+                <div class="field"><label>Language</label><input asp-for="CODE_LANGUAGE" placeholder="csharp, js, sql..." /></div>
+            }
+
+            @if (Model.BLOCK_TYPE != BlogBlockType.Code && Model.BLOCK_TYPE != BlogBlockType.Image)
+            {
+                <div class="grid2">
+                    <div class="field"><label>Font family</label><input asp-for="FONT_FAMILY" placeholder="e.g. Georgia, serif" /></div>
+                    <div class="field"><label>Font size</label><input asp-for="FONT_SIZE" placeholder="1rem, 1.25rem..." /></div>
+                    <div class="field">
+                        <label>Style</label>
+                        <select asp-for="FONT_STYLE">
+                            <option value="">Normal</option>
+                            <option value="bold">Bold</option>
+                            <option value="italic">Italic</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Align</label>
+                        <select asp-for="TEXT_ALIGN">
+                            <option value="">Default</option>
+                            <option value="left">Left</option>
+                            <option value="center">Center</option>
+                            <option value="right">Right</option>
+                            <option value="justify">Justify</option>
+                        </select>
+                    </div>
+                </div>
+            }
+
+            @if (Model.BLOCK_TYPE == BlogBlockType.Image)
+            {
+                <div class="field">
+                    <label>Image (leave empty to keep current)</label>
+                    <input type="file" name="IMAGE_PATH_FILE" accept="image/*" />
+                    @{ var curImg = Utility.ToWebUrl(Model.IMAGE_PATH, rootpath); }
+                    @if (!string.IsNullOrEmpty(curImg))
+                    {
+                        <img style="margin-top:.5rem;max-height:160px;" src="@curImg" />
+                    }
+                </div>
+                <div class="field"><label>Caption</label><input asp-for="IMAGE_CAPTION" /></div>
+            }
+
+            <div class="form-actions">
+                <a asp-action="Edit" asp-route-id="@Model.BLOG_POST_ID" class="btn-ghost">Cancel</a>
+                <button type="submit" class="btn-primary-grad"><i class="bi bi-check2"></i> Save block</button>
+            </div>
+        </form>
+    </div>
+</section>

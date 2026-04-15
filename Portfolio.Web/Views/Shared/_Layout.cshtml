@@ -29,6 +29,7 @@
 
     <!-- Dark theme — last so it wins -->
     <link href="~/css/dark.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/blog.css" rel="stylesheet" asp-append-version="true" />
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-D8P8SMRTS1"></script>
     <script>
@@ -52,6 +53,7 @@
                     <li class="nav-item"><a asp-action="Resume" asp-controller="MY_PROFILE">Resume</a></li>
                     <li class="nav-item"><a asp-action="Projects" asp-controller="MY_PROFILE">Projects</a></li>
                     <li class="nav-item"><a asp-action="Contact" asp-controller="MY_PROFILE">Contact</a></li>
+                    <li class="nav-item"><a asp-action="Index" asp-controller="Blog">Blog</a></li>
                     <li class="nav-item"><a asp-action="Visitors" asp-controller="MY_PROFILE">Visitors</a></li>
                     @if (User.Identity!.IsAuthenticated)
                     {
@@ -75,6 +77,7 @@
                                 </li>
                                 <li class="nav-item"><a asp-action="Index" asp-controller="CV">Edit CV</a></li>
                                 <li class="nav-item"><a asp-action="Index" asp-controller="PROJECTS">Edit Projects</a></li>
+                                <li class="nav-item"><a asp-action="Manage" asp-controller="Blog">Manage Blog</a></li>
                                 <li class="nav-item"><a asp-action="Index" asp-controller="DESCRIPTIONs">Edit Description</a></li>
                                 <li class="nav-item"><a asp-action="Index" asp-controller="Logs">Logs</a></li>
                                 <li class="nav-item">

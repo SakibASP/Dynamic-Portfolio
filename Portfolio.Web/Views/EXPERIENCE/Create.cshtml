@@ -11,14 +11,25 @@
             </div>
         </div>
 
-        <form asp-action="Create" class="admin-form">
+        <form asp-action="Create" enctype="multipart/form-data" class="admin-form">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="field"><label asp-for="DESIGNATION"></label><input asp-for="DESIGNATION" /><span asp-validation-for="DESIGNATION" class="err"></span></div>
-            <div class="field"><label asp-for="INSTITUTE"></label><input asp-for="INSTITUTE" /><span asp-validation-for="INSTITUTE" class="err"></span></div>
+            <div class="field"><label asp-for="INSTITUTE">Company / Institute</label><input asp-for="INSTITUTE" /><span asp-validation-for="INSTITUTE" class="err"></span></div>
+            <div class="field"><label asp-for="COMPANY_URL">Company URL</label><input asp-for="COMPANY_URL" placeholder="https://..." /></div>
             <div class="field"><label asp-for="FROM_DATE"></label><input asp-for="FROM_DATE" /><span asp-validation-for="FROM_DATE" class="err"></span></div>
-            <div class="field"><label asp-for="TO_DATE"></label><input asp-for="TO_DATE" /><span asp-validation-for="TO_DATE" class="err"></span></div>
-            <div class="field"><label asp-for="SORT_ORDER"></label><input asp-for="SORT_ORDER" /><span asp-validation-for="SORT_ORDER" class="err"></span></div>
+            <div class="field"><label asp-for="TO_DATE"></label><input asp-for="TO_DATE" placeholder="Leave as Present if current" /></div>
+            <div class="field"><label asp-for="SORT_ORDER"></label><input asp-for="SORT_ORDER" /></div>
+
+            <div class="field">
+                <label asp-for="LOGO">Company logo</label>
+                <input type="file" id="fileInput" accept="image/*" name="LOGO_FILE" class="form-control-file" />
+                <div id="file-preview"></div>
+            </div>
+
+            <div class="field inline">
+                <label><input type="checkbox" asp-for="IS_CURRENT" /> This is my current role</label>
+            </div>
 
             <div class="form-actions">
                 <a asp-action="Index" class="btn-ghost">Cancel</a>
@@ -28,4 +39,7 @@
     </div>
 </section>
 
-@section Scripts { @{await Html.RenderPartialAsync("_ValidationScriptsPartial");} }
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/file-preview.js"></script>
+}

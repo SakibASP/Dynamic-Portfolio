@@ -1,0 +1,26 @@
+@model Portfolio.Domain.BLOG_POSTS
+
+@{ ViewData["Title"] = "Delete Post"; }
+
+<section>
+    <div class="admin-page narrow">
+        <div class="admin-head">
+            <div>
+                <span class="eyebrow">Admin · Blog</span>
+                <h2>Delete post?</h2>
+            </div>
+        </div>
+
+        <div class="admin-form">
+            <p><strong>@Model.TITLE</strong> — this will also remove all its content blocks.</p>
+
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="AUTO_ID" />
+                <div class="form-actions">
+                    <a asp-action="Manage" class="btn-ghost">Cancel</a>
+                    <button type="submit" class="btn-primary-grad" style="background:linear-gradient(135deg,#ef4444,#b91c1c);"><i class="bi bi-trash"></i> Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
