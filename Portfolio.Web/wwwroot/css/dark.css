@@ -602,7 +602,7 @@ p { margin: 0 0 1rem; color: var(--muted); }
     border-radius: var(--radius);
     overflow: hidden;
     border: 1px solid var(--border);
-    background: var(--surface);
+    background: transparent;
 }
 
 .hero-avatar img {
