@@ -37,8 +37,8 @@
                     <input asp-for="CONTENT" placeholder="https://www.youtube.com/watch?v=... or an 11-char id" />
                 </div>
                 <div class="field"><label>Caption</label><input asp-for="IMAGE_CAPTION" /></div>
-                @{ var prevId = BlogBlockType.ExtractYouTubeId(Model.CONTENT); }
-                @if (!string.IsNullOrEmpty(prevId))
+                var prevId = BlogBlockType.ExtractYouTubeId(Model.CONTENT);
+                if (!string.IsNullOrEmpty(prevId))
                 {
                     <div class="field">
                         <label>Preview</label>
