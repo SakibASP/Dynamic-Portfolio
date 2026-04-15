@@ -2,7 +2,7 @@
 ------------------------------------------
 Author  : Md. Sakibur Rahman
 Date    : 2026-04-16
-Purpose : Second demo blog post — Dependency Injection in ASP.NET Core.
+Purpose : Second demo blog post - Dependency Injection in ASP.NET Core.
           Idempotent: guarded by SLUG.
 **/
 SET QUOTED_IDENTIFIER ON;
@@ -16,7 +16,7 @@ BEGIN
     INSERT INTO dbo.BLOG_POSTS
         (TITLE, SLUG, SUMMARY, TAGS, IS_PUBLISHED, PUBLISHED_DATE, VIEW_COUNT, CREATED_BY, CREATED_DATE)
     VALUES
-        (N'Dependency Injection in ASP.NET Core — the practical guide',
+        (N'Dependency Injection in ASP.NET Core - the practical guide',
          N'dependency-injection-in-aspnet-core',
          N'Scoped vs Transient vs Singleton explained with a real bug each one causes, plus the composition-root pattern I use in every .NET project.',
          N'.NET, DI, Architecture',
@@ -33,7 +33,7 @@ BEGIN
                 N'Why DI matters',
                 NULL, NULL, NULL, NULL, NULL
         UNION ALL SELECT 20, N'Text',
-                N'Dependency Injection is not about interfaces or "unit testing" — it is about keeping the wiring of your application in exactly one place. When a new controller needs a database, an email sender, and a clock, it asks for them in its constructor. It does not know where they come from. That is the whole trick.',
+                N'Dependency Injection is not about interfaces or "unit testing" - it is about keeping the wiring of your application in exactly one place. When a new controller needs a database, an email sender, and a clock, it asks for them in its constructor. It does not know where they come from. That is the whole trick.',
                 NULL, N'Geist, sans-serif', N'1.02rem', NULL, N'justify'
         UNION ALL SELECT 30, N'Heading',
                 N'The three lifetimes',
@@ -42,20 +42,20 @@ BEGIN
                 N'ASP.NET Core ships with three lifetimes. Pick the wrong one and the bugs are subtle.',
                 NULL, NULL, NULL, NULL, NULL
         UNION ALL SELECT 50, N'Code',
-                N'// one instance per HTTP request — the default for DbContext, services
+                N'// one instance per HTTP request - the default for DbContext, services
 services.AddScoped<IBlogService, BlogService>();
 
-// a new instance every time someone asks — cheap, stateless helpers
+// a new instance every time someone asks - cheap, stateless helpers
 services.AddTransient<IEmailSender, SmtpEmailSender>();
 
-// one instance for the whole process — config, caches, expensive clients
+// one instance for the whole process - config, caches, expensive clients
 services.AddSingleton<IClock, SystemClock>();',
                 N'csharp', NULL, NULL, NULL, NULL
         UNION ALL SELECT 60, N'Heading',
                 N'The bug each one causes',
                 NULL, NULL, NULL, NULL, NULL
         UNION ALL SELECT 70, N'Text',
-                N'• Scoped injected into a Singleton → "Cannot consume scoped service from singleton". ASP.NET catches this at startup if you enable scope validation.\n• Singleton that holds a DbContext → cross-request state leaks, threading errors, "The instance of entity type cannot be tracked" explosions.\n• Transient HttpClient → socket exhaustion. Use IHttpClientFactory instead.',
+                N'* Scoped injected into a Singleton → "Cannot consume scoped service from singleton". ASP.NET catches this at startup if you enable scope validation.\n* Singleton that holds a DbContext → cross-request state leaks, threading errors, "The instance of entity type cannot be tracked" explosions.\n* Transient HttpClient → socket exhaustion. Use IHttpClientFactory instead.',
                 NULL, NULL, NULL, NULL, NULL
         UNION ALL SELECT 80, N'Quote',
                 N'Rule of thumb: start with Scoped. Move to Singleton only when you have evidence the object is expensive to build AND provably thread-safe. Transient is for pure helpers.',
@@ -64,7 +64,7 @@ services.AddSingleton<IClock, SystemClock>();',
                 N'The composition root pattern',
                 NULL, NULL, NULL, NULL, NULL
         UNION ALL SELECT 100, N'Text',
-                N'Do not scatter AddScoped calls across Program.cs. Put them in one extension method per layer — the "composition root". Your Web project calls a single AddInfrastructure() and AddApplication() and is done.',
+                N'Do not scatter AddScoped calls across Program.cs. Put them in one extension method per layer - the "composition root". Your Web project calls a single AddInfrastructure() and AddApplication() and is done.',
                 NULL, NULL, NULL, NULL, NULL
         UNION ALL SELECT 110, N'Code',
                 N'// Portfolio.Infrastructure/InfrastructureServiceCollectionExtensions.cs
@@ -81,7 +81,7 @@ public static IServiceCollection AddInfrastructure(
 }',
                 N'csharp', NULL, NULL, NULL, NULL
         UNION ALL SELECT 120, N'Code',
-                N'// Program.cs — the whole startup stays short
+                N'// Program.cs - the whole startup stays short
 builder.Services
     .AddInfrastructure(builder.Configuration)
     .AddApplication();
@@ -98,7 +98,7 @@ app.Run();',
                 N'Constructor injection wins',
                 NULL, NULL, NULL, NULL, NULL
         UNION ALL SELECT 140, N'Text',
-                N'Prefer constructors over service locators. Your class''s public API makes every dependency visible at the top of the file — no surprise calls to serviceProvider.GetRequiredService() buried three layers deep.',
+                N'Prefer constructors over service locators. Your class''s public API makes every dependency visible at the top of the file - no surprise calls to serviceProvider.GetRequiredService() buried three layers deep.',
                 NULL, NULL, NULL, NULL, NULL
         UNION ALL SELECT 150, N'Code',
                 N'public class BlogController(IBlogService blog, IWebHostEnvironment env) : BaseController
@@ -126,6 +126,6 @@ app.Run();',
 END
 ELSE
 BEGIN
-    PRINT 'DI post already exists — skipping.';
+    PRINT 'DI post already exists - skipping.';
 END
 GO

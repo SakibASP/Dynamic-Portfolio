@@ -2,7 +2,7 @@
 ------------------------------------------
 Author  : Md. Sakibur Rahman
 Date    : 2026-04-16
-Purpose : Third demo blog post — EF Core migrations in production.
+Purpose : Third demo blog post - EF Core migrations in production.
           Idempotent: guarded by SLUG.
 **/
 SET QUOTED_IDENTIFIER ON;
@@ -16,7 +16,7 @@ BEGIN
     INSERT INTO dbo.BLOG_POSTS
         (TITLE, SLUG, SUMMARY, TAGS, IS_PUBLISHED, PUBLISHED_DATE, VIEW_COUNT, CREATED_BY, CREATED_DATE)
     VALUES
-        (N'EF Core migrations in production — what nobody tells you',
+        (N'EF Core migrations in production - what nobody tells you',
          N'ef-core-migrations-in-production',
          N'The migration commands you already know, plus the ones you need when the first deploy fails and you are staring at a locked database at 2am.',
          N'.NET, EF Core, SQL Server, Migrations',
@@ -57,10 +57,10 @@ dotnet ef migrations script AddBlogTables AddBlogViewCounts \
                 N'The three rules that save you',
                 NULL, NULL, NULL, NULL, NULL
         UNION ALL SELECT 80, N'Text',
-                N'1. Never edit a migration that has already been applied to any shared environment. Add a new one instead.\n2. Every migration must be reversible — test the Down method locally before you merge.\n3. Separate schema changes from data fixes. Mixing them makes a half-failed deploy almost impossible to recover.',
+                N'1. Never edit a migration that has already been applied to any shared environment. Add a new one instead.\n2. Every migration must be reversible - test the Down method locally before you merge.\n3. Separate schema changes from data fixes. Mixing them makes a half-failed deploy almost impossible to recover.',
                 NULL, NULL, NULL, NULL, NULL
         UNION ALL SELECT 90, N'Quote',
-                N'A good migration does one small thing and does it atomically. A bad migration is a 400-line script that renames columns, seeds data, and "also backfills a lookup table — should be fine".',
+                N'A good migration does one small thing and does it atomically. A bad migration is a 400-line script that renames columns, seeds data, and "also backfills a lookup table - should be fine".',
                 NULL, N'Georgia, serif', N'1.05rem', N'italic', NULL
         UNION ALL SELECT 100, N'Heading',
                 N'Rename a column without data loss',
@@ -92,7 +92,7 @@ protected override void Down(MigrationBuilder migrationBuilder)
                 N'SQL Server will reject an ADD COLUMN NOT NULL unless you give it a default. Do it in two migrations if the column should eventually be mandatory with no default:',
                 NULL, NULL, NULL, NULL, NULL
         UNION ALL SELECT 150, N'Code',
-                N'// Migration 1 — nullable, backfill, then tighten later
+                N'// Migration 1 - nullable, backfill, then tighten later
 migrationBuilder.AddColumn<string>(
     name: "SLUG",
     table: "BLOG_POSTS",
@@ -105,7 +105,7 @@ migrationBuilder.Sql(@"
 ");',
                 N'csharp', NULL, NULL, NULL, NULL
         UNION ALL SELECT 160, N'Code',
-                N'// Migration 2 (next deploy) — now safely NOT NULL
+                N'// Migration 2 (next deploy) - now safely NOT NULL
 migrationBuilder.AlterColumn<string>(
     name: "SLUG",
     table: "BLOG_POSTS",
@@ -116,7 +116,7 @@ migrationBuilder.AlterColumn<string>(
                 N'Apply the script at startup (optional)',
                 NULL, NULL, NULL, NULL, NULL
         UNION ALL SELECT 180, N'Text',
-                N'For small apps I run pending migrations on boot. Do not do this in a multi-instance deployment — you will race. Use a job or CI step instead.',
+                N'For small apps I run pending migrations on boot. Do not do this in a multi-instance deployment - you will race. Use a job or CI step instead.',
                 NULL, NULL, NULL, NULL, NULL
         UNION ALL SELECT 190, N'Code',
                 N'using (var scope = app.Services.CreateScope())
@@ -141,6 +141,6 @@ migrationBuilder.AlterColumn<string>(
 END
 ELSE
 BEGIN
-    PRINT 'EF Core migrations post already exists — skipping.';
+    PRINT 'EF Core migrations post already exists - skipping.';
 END
 GO
