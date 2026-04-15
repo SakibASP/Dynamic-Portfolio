@@ -21,4 +21,6 @@ public class MY_PROFILE
     public string? DES_1 { get; set; }
     public string? DES_2 { get; set; }
     public string? DES_3 { get; set; }
+    public string? STATUS { get; set; }
+    public string? TECH_STACK { get; set; }
 }

@@ -22,6 +22,12 @@
     string location = !string.IsNullOrWhiteSpace(profile?.CURRENT_CITY)
         ? profile!.CURRENT_CITY!
         : "Khulna · BD";
+    string status = !string.IsNullOrWhiteSpace(profile?.STATUS)
+        ? profile!.STATUS!
+        : "Open to work";
+    string stack = !string.IsNullOrWhiteSpace(profile?.TECH_STACK)
+        ? profile!.TECH_STACK!
+        : ".NET · SQL · Clean Arch";
 }
 
 <input type="hidden" id="coverName" value="@displayName" />
@@ -76,7 +82,7 @@
                 <div class="hero-meta">
                     <div>
                         <span class="k">Status</span>
-                        <span class="v"><span class="dot"></span>Open to work</span>
+                        <span class="v"><span class="dot"></span>@status</span>
                     </div>
                     <div>
                         <span class="k">Location</span>
@@ -84,7 +90,7 @@
                     </div>
                     <div>
                         <span class="k">Stack</span>
-                        <span class="v">.NET · SQL · Clean Arch</span>
+                        <span class="v">@stack</span>
                     </div>
                 </div>
             </div>
