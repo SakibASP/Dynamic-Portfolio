@@ -192,7 +192,7 @@ p { margin: 0 0 1rem; color: var(--muted); }
     margin-inline: auto !important;
 }
 
-.myContainer { padding-top: 5rem; /* offset for fixed header */ }
+.myContainer { padding-top: 3.25rem; /* offset for fixed header */ }
 
 /* ---------- Section title ---------- */
 
@@ -601,7 +601,7 @@ p { margin: 0 0 1rem; color: var(--muted); }
     margin: 0 auto;
     border-radius: var(--radius);
     overflow: hidden;
-    border: 1px solid var(--border);
+    border: 0;
     background: transparent;
 }
 
