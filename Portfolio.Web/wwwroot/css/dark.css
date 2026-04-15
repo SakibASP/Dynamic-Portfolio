@@ -192,7 +192,7 @@ p { margin: 0 0 1rem; color: var(--muted); }
     margin-inline: auto !important;
 }
 
-.myContainer { padding-top: 3.25rem; /* offset for fixed header */ }
+.myContainer { padding-top: 2rem; /* offset for fixed header */ }
 
 /* ---------- Section title ---------- */
 
