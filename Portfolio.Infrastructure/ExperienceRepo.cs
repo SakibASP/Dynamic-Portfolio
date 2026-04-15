@@ -26,7 +26,7 @@ public class ExperienceRepo(PortfolioDbContext context) : IExperienceRepo, IAsyn
 
     public async Task<EXPERIENCE?> GetExperienceByIdAsync(int? id)
     {
-        return await _context.EXPERIENCE.FirstOrDefaultAsync(x => x.AUTO_ID == id);
+        return await _context.EXPERIENCE.AsNoTracking().FirstOrDefaultAsync(x => x.AUTO_ID == id);
     }
 
     public async Task RemoveExperienceAsync(int? id)
