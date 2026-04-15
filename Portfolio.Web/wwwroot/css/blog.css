@@ -116,6 +116,31 @@
 .flash.err { background: rgba(239,68,68,.12);  color: #fca5a5; border: 1px solid rgba(239,68,68,.25); }
 .muted { opacity: .65; font-size: .85rem; margin-top: .3rem; }
 
+/* Admin form — grouped fieldset (Hero chips, etc.) */
+.admin-form .form-group {
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 10px;
+    padding: .85rem 1rem 1rem;
+    margin: 1rem 0 1.25rem;
+    background: rgba(255,255,255,.02);
+}
+.admin-form .form-group > legend {
+    padding: 0 .4rem;
+    font-size: .78rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    opacity: .7;
+    font-weight: 600;
+}
+.admin-form .form-group > legend small {
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+    font-size: .78rem;
+    opacity: .65;
+    margin-left: .5rem;
+}
+
 /* ===== Home — current role pill ===== */
 .current-role { display: inline-flex; align-items: center; gap: .9rem; padding: .7rem 1rem; margin: 1rem 0 1.25rem; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); border-radius: 12px; }
 .current-role__logo { height: 52px; min-width: 52px; max-width: 180px; border-radius: 8px; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 6px 10px; flex-shrink: 0; }
