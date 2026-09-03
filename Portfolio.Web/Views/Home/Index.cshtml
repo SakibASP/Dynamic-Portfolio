@@ -34,6 +34,7 @@
 <input type="hidden" id="coverDesc" value="@displayBio" />
 
 <section id="hero">
+    <div id="hero-webgl" aria-hidden="true"></div>
     <div class="container">
         <div class="hero-wrap">
             <div class="hero-intro">
@@ -97,6 +98,10 @@
 
             <div class="hero-avatar">
                 <img src="@avatar" alt="@displayName" />
+                <div class="avatar-hud" aria-hidden="true">
+                    <span class="avatar-hud__signal"></span>
+                    <span>system.online</span>
+                </div>
             </div>
         </div>
     </div>
@@ -184,6 +189,7 @@
 }
 
 @section Scripts {
+    <script type="module" src="~/assets/js/tree.js" asp-append-version="true"></script>
     <script>
         /* Typed role rotator */
         (function () {
@@ -247,6 +253,31 @@
                     btn.style.transform = `translate(${x * 0.15}px, ${y * 0.2}px)`;
                 });
                 btn.addEventListener("mouseleave", () => { btn.style.transform = ""; });
+            });
+        })();
+
+        /* Portrait depth, light direction and tilt */
+        (function () {
+            const avatar = document.querySelector(".hero-avatar");
+            if (!avatar || window.matchMedia("(hover: none), (prefers-reduced-motion: reduce)").matches) return;
+            let frame = 0, x = 0.5, y = 0.5;
+            avatar.addEventListener("pointermove", (event) => {
+                const rect = avatar.getBoundingClientRect();
+                x = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+                y = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
+                if (!frame) frame = requestAnimationFrame(() => {
+                    avatar.style.setProperty("--avatar-x", `${(x * 100).toFixed(1)}%`);
+                    avatar.style.setProperty("--avatar-y", `${(y * 100).toFixed(1)}%`);
+                    avatar.style.setProperty("--avatar-rx", `${((0.5 - y) * 7).toFixed(2)}deg`);
+                    avatar.style.setProperty("--avatar-ry", `${((x - 0.5) * 9).toFixed(2)}deg`);
+                    frame = 0;
+                });
+            });
+            avatar.addEventListener("pointerleave", () => {
+                avatar.style.setProperty("--avatar-x", "50%");
+                avatar.style.setProperty("--avatar-y", "50%");
+                avatar.style.setProperty("--avatar-rx", "0deg");
+                avatar.style.setProperty("--avatar-ry", "0deg");
             });
         })();
     </script>

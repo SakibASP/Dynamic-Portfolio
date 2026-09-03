@@ -118,7 +118,7 @@
 .blk-code__bar .lang { opacity: .7; text-transform: lowercase; letter-spacing: .02em; }
 .blk-code__bar .copy-btn { background: transparent; border: 1px solid rgba(255,255,255,.15); color: inherit; border-radius: 6px; padding: .2rem .6rem; font-size: .75rem; cursor: pointer; }
 .blk-code__bar .copy-btn:hover { background: rgba(255,255,255,.06); }
-.blk-code pre { margin: 0; padding: 1rem 1.1rem; overflow-x: auto; font-family: 'Geist Mono', ui-monospace, monospace; font-size: .88rem; line-height: 1.6; }
+.blk-code pre { margin: 0; padding: 1rem 1.1rem; overflow-x: auto; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .88rem; line-height: 1.6; }
 
 /* Admin block editor extras */
 .block-list { display: flex; flex-direction: column; gap: .6rem; }
